@@ -193,28 +193,43 @@
                     .replace(/[\u0300-\u036f]/g, "");
             }
 
-            function doesStudentMatchSearch(input, studentName) {
+            function getStudentNameMatchScore(input, studentName) {
                 const inputNames = normalizeName(input).split(/[\s\-]+/);
                 const studentNames = normalizeName(studentName).split(/[\s\-]+/);
-                return inputNames
-                    .some(i => studentNames.some(n => n.startsWith(i)));
+                let score = 0;
+                while (inputNames.length > 0) {
+                    const inputName = inputNames.pop();
+                    const matchIndex = studentNames.findIndex(n => n.startsWith(inputName));
+                    if (matchIndex !== -1) {
+                        score += inputName.length;
+                        studentNames.splice(matchIndex, 1);
+                    }
+                }
+                return score;
             }
 
             function findStudent(input) {
-                let result = null;
+                let bestMatch = null;
+                let bestMatchScore = 0;
+                let sameScoreCount = 0;
                 for (let i in data.groups) {
                     const group = data.groups[i];
                     for (let studentName of group) {
-                        if (doesStudentMatchSearch(input, studentName)) {
-                            // If we have another match, then there is an
-                            // ambiguation.
-                            if (result !== null)
-                                return null;
-                            result = { name: studentName, group: parseInt(i) };
+                        const score = getStudentNameMatchScore(input, studentName);
+                        if (score > bestMatchScore) {
+                            bestMatch = { name: studentName, group: parseInt(i) };
+                            bestMatchScore = score;
+                            sameScoreCount = 0;
+                        } else if (score === bestMatchScore) {
+                            sameScoreCount++;
                         }
                     }
                 }
-                return result;
+                // Multiple matches with the same score means that we aren't
+                // sure.
+                if (sameScoreCount > 0)
+                    return null;
+                return bestMatch;
             }
 
             const loadingEl = document.getElementById("loading");
