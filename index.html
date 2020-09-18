@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Colloscope MPSI1</title>
+        <style>
+            .student-info--hidden {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <label for="name-input">Votre nom:</label>
+        <input type="text" id="name-input">
+
+        <div id="student-info" class="student-info--hidden">
+            <ul>
+                <li>Nom: <strong id="student-name"></strong></li>
+                <li>Groupe: <strong id="student-group-number"></strong></li>
+                <li>Colles: <ul id="student-colles"></ul></li>
+            </ul>
+        </div>
+
+        <script>
+            let data = null;
+
+            function normalizeName(name) {
+                return name.trim()
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "");
+            }
+
+            function getStudentNameSearchScore(input, studentName) {
+                const inputNames = normalizeName(input).split(/[\s\-]+/);
+                const studentNames = normalizeName(studentName).split(/[\s\-]+/);
+                let score = 0;
+                while (inputNames.length > 0) {
+                    const inputName = inputNames.pop();
+                    const matchIndex = studentNames.findIndex(n => n.startsWith(inputName));
+                    if (matchIndex !== -1) {
+                        score += inputName.length;
+                        studentNames.splice(matchIndex, 1);
+                    }
+                }
+                return score;
+            }
+
+            function findStudent(input) {
+                let result = null;
+                for (let i in data.groups) {
+                    const group = data.groups[i];
+                    for (let studentName of group) {
+                        const score = getStudentNameSearchScore(input, studentName);
+                        if (score > 0) {
+                            // If we have another match, then there is an
+                            // ambiguation.
+                            if (result !== null)
+                                return null;
+                            result = { name: studentName, group: parseInt(i) };
+                        }
+                    }
+                }
+                return result;
+            }
+
+            const studentInfoEl = document.getElementById("student-info");
+            const nameEl = document.getElementById("student-name");
+            const groupNumberEl = document.getElementById("student-group-number");
+            const collesEl = document.getElementById("student-colles");
+
+            const nameInput = document.getElementById("name-input");
+            nameInput.addEventListener("input", function(e) {
+                const student = findStudent(nameInput.value);
+                if (student === null) {
+                    studentInfoEl.classList.add("student-info--hidden");
+                    return;
+                }
+                studentInfoEl.classList.remove("student-info--hidden");
+                nameEl.textContent = student.name;
+                groupNumberEl.textContent = student.group + 1;
+                while (collesEl.firstChild)
+                    collesEl.firstChild.remove()
+                for (let colle of data.colles[student.group]) {
+                    const weekStart = data.weeks[colle.week]
+                        .split("-");
+                    const colleType = data.types[colle.type];
+                    const days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimance"];
+                    const day = days[colleType.day];
+                    const subject = data.subjects[colleType.subject];
+                    const teacher = data.teachers[colleType.teacher];
+
+                    const colleEl = document.createElement("li");
+                    colleEl.textContent = `Semaine ${colle.week + 1} (${weekStart[1]}/${weekStart[0]}) - ${day} à ${colleType.time}h : ${subject} avec ${teacher} en salle ${colleType.room}`;
+                    collesEl.appendChild(colleEl);
+                }
+            });
+
+            async function loadData() {
+                const response = await fetch("./data.json");
+                if (!response.ok)
+                    throw new Error("response is not OK");
+                data = await response.json();
+            }
+            loadData()
+                .catch(err => console.error("failed to load data", err));
+        </script>
+    </body>
+</html>
