@@ -77,32 +77,69 @@
                     return;
                 }
                 studentInfoEl.classList.remove("student-info--hidden");
+
                 nameEl.textContent = student.name;
                 groupNumberEl.textContent = student.group + 1;
-                while (collesEl.firstChild)
-                    collesEl.firstChild.remove()
+
+                const now = new Date().valueOf();
+                let weeks = [];
+                let lastWeekIndex = null;
                 for (let colle of data.colles[student.group]) {
-                    const startWeek = data.weeks[colle.week]
+                    const colleType = data.types[colle.type];
+                    const week = data.weeks[colle.week]
                         .split("-")
                         .map(x => parseInt(x));
-                    const colleType = data.types[colle.type];
-                    const days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimance"];
-                    const day = days[colleType.day];
-                    const subject = data.subjects[colleType.subject];
-                    const teacher = data.teachers[colleType.teacher];
-
-                    const month = startWeek[0];
+                    const month = week[0];
                     const year = month < 9 ? 2021 : 2020;
-                    const startTime = new Date(year, month - 1, startWeek[1], colleType.time);
+                    const startTime = new Date(year, month - 1, week[1], colleType.time);
                     startTime.setDate(startTime.getDate() + colleType.day);
 
-                    // Skip if the colle already happened.
-                    if (new Date().valueOf() - startTime.valueOf() > 1000 * 60 * 60)
-                        continue;
+                    let state;
+                    if (now.valueOf() - startTime.valueOf() > 1000 * 60 * 60) {
+                        state = "done";
+                    } else if (now.valueOf() - startTime.valueOf() >= 0) {
+                        state = "doing";
+                    } else {
+                        state = "waiting";
+                    }
 
-                    const colleEl = document.createElement("li");
-                    colleEl.textContent = `Semaine ${colle.week + 1} (${startWeek[1]}/${startWeek[0]}) - ${day} à ${colleType.time}h : ${subject} avec ${teacher} en salle ${colleType.room}`;
-                    collesEl.appendChild(colleEl);
+                    if (weeks.length === 0 || colle.week !== lastWeekIndex)
+                        weeks.push({ index: colle.week, date: week, colles: [] });
+
+                    weeks[weeks.length - 1].colles.push({
+                        startTime,
+                        state,
+                        day: colleType.day,
+                        subject: colleType.subject,
+                        teacher: colleType.teacher,
+                        room: colleType.room,
+                    });
+                    lastWeekIndex = colle.week;
+                }
+
+                // Remove weeks where all colles are already done.
+                weeks = weeks.filter(w => w.colles.some(c => c.state !== "done"));
+
+                while (collesEl.firstChild)
+                    collesEl.firstChild.remove();
+                for (let week of weeks) {
+                    const weekEl = document.createElement("li");
+                    weekEl.textContent = `Semaine ${week.index + 1} (${week.date[1]}/${week.date[0]})`;
+
+                    const colleList = document.createElement("ul");
+                    for (let colle of week.colles) {
+                        const days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+                        const day = days[colle.day];
+                        const subject = data.subjects[colle.subject];
+                        const teacher = data.teachers[colle.teacher];
+
+                        const colleEl = document.createElement("li");
+                        colleEl.textContent = `${day} à ${colle.startTime.getHours()}h : ${subject} avec ${teacher} en salle ${colle.room}`;
+                        colleList.appendChild(colleEl);
+                    }
+                    weekEl.appendChild(colleList);
+
+                    collesEl.appendChild(weekEl);
                 }
             });
 
