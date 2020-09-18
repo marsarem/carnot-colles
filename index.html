@@ -252,8 +252,17 @@
             let groupDisplayedIndex = null;
 
             nameInput.addEventListener("input", function(e) {
+                // Remember the name so that the user doesn't have to type it on
+                // every page reload.
+                localStorage.setItem("name", nameInput.value);
+
                 refreshView();
             });
+
+            // Fill the input with the name that was entered the previous time.
+            const previousName = localStorage.getItem("name");
+            if (previousName !== null)
+                nameInput.value = previousName;
 
             function refreshView() {
                 const showLoading = data === null && nameInput.value.trim() !== "";
