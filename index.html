@@ -3,32 +3,188 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Colloscope MPSI1</title>
+
         <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            html, body {
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                /* Use the system font instead of the default sans-serif font
+                   because it's too ugly. */
+                font-family: system-ui;
+
+                line-height: 1.6;
+            }
+
+            .container {
+                max-width: 70em;
+                margin: 0 auto;
+                padding: 4em 1em;
+            }
+
+            .title {
+                margin: 0 0 2rem 0;
+            }
+
+            .name-input {
+                margin-top: 0.45em;
+
+                display: block;
+                font-size: 1em;
+                padding: 0.4em;
+            }
+
+            .loading {
+                margin: 2rem 0;
+            }
+
             .loading--hidden {
                 display: none;
+            }
+
+            .student-info {
+                margin: 2rem 0;
             }
 
             .student-info--hidden {
                 display: none;
             }
+
+            .week {
+                margin: 2rem 0;
+            }
+
+            .week__title {
+                margin: 2rem 0;
+            }
+
+            .week__colles {
+                /* Remove the margin on the sides. */
+                margin: -0.5em;
+            }
+
+            .colle {
+                margin: 0.5em;
+
+                display: inline-block;
+                width: 15em;
+                padding: 1em;
+
+                border-style: solid;
+                border-width: 0.2em;
+
+                text-align: center;
+            }
+
+            .colle--waiting {
+                border-color: #000000;
+            }
+
+            .colle--subject-0 {
+                background-color: #376A8B;
+                border-color: #083757;
+                color: #FFFFFF;
+            }
+
+            .colle--subject-1 {
+                background-color: #3D8A5D;
+                border-color: #086830;
+                color: #FFFFFF;
+            }
+
+            .colle--subject-2 {
+                background-color: #9B3838;
+                border-color: #570808;
+                color: #FFFFFF;
+            }
+
+            .colle--done {
+                border-color: #AAAAAA;
+            }
+
+            .colle--doing {
+                border-color: #E5FF00;
+            }
+
+            .colle__subject, .colle__teacher, .colle__room, .colle__time {
+                margin: 0;
+            }
+
+            .colle__subject {
+                font-weight: bold;
+            }
         </style>
     </head>
     <body>
-        <label for="name-input">Votre nom:</label>
-        <input type="text" id="name-input" placeholder="Jean Dupont">
+        <div class="container">
+            <h1 class="title">Colloscope MPSI1</h1>
 
-        <strong id="loading" class="loading--hidden">Chargement des données en cours...</strong>
+            <div>
+                <label for="name-input">Entrez votre nom:</label>
+                <input id="name-input" class="name-input" type="text"
+                    placeholder="Jean Dupont">
 
-        <div id="student-info" class="student-info--hidden">
-            <ul>
-                <li>Nom: <strong id="student-name"></strong></li>
-                <li>Groupe: <strong id="student-group-number"></strong></li>
-                <li>Colles: <ul id="student-colles"></ul></li>
-            </ul>
+                <p id="loading" class="loading--hidden">
+                    <strong>Chargement des données en cours...</strong>
+                </p>
+            </div>
+
+            <div id="student-info" class="student-info student-info--hidden">
+                Nom : <strong id="student-name"></strong>
+                <br/>
+
+                Groupe de colle : <strong id="student-group-number"></strong>
+                <br/>
+
+                <div id="student-colles-weeks" class="weeks"
+                    aria-label="Semaines de colles"></div>
+            </div>
         </div>
 
         <script>
             let data = null;
+
+            function isTimeBefore(a, b) {
+                return a.getHours() < b.getHours() || (a.getHours() === b.getHours() &&
+                        (a.getMinutes() < b.getMinutes() || (a.getMinutes() === b.getMinutes() &&
+                        (a.getSeconds() < b.getSeconds() || (a.getSeconds() === b.getSeconds() &&
+                        a.getMilliseconds() < b.getMilliseconds())))));
+            }
+
+            function formatRelativeDate(from, to) {
+                const rtf = new Intl.RelativeTimeFormat("fr", {
+                    numeric: "auto",
+                    style: "short",
+                });
+                const diffMs = to.valueOf() - from.valueOf();
+                const diffAbsMs = Math.abs(diffMs);
+                const minute = 1000 * 60;
+                const hour = minute * 60;
+                const day = hour * 24;
+                if (diffAbsMs < minute) {
+                    return "maintenant";
+                } else if (diffAbsMs < 2 * hour) {
+                    return rtf.format((diffMs / minute).toFixed(), "minutes");
+                } else if (diffAbsMs < 2 * day) {
+                    return rtf.format((diffMs / hour).toFixed(), "hours");
+                } else {
+                    let dayCount = Math.floor(diffAbsMs / day);
+                    if (diffMs > 0 && isTimeBefore(to, from)) {
+                        // It's tomorrow, even though the difference with today
+                        // is less than 24 hrs.
+                        dayCount++;
+                    } else if (diffMs < 0 && isTimeBefore(from, to)) {
+                        dayCount--;
+                    }
+                    return rtf.format(dayCount, "days");
+                }
+            }
 
             function normalizeName(name) {
                 return name.trim()
@@ -65,7 +221,7 @@
             const studentInfoEl = document.getElementById("student-info");
             const nameEl = document.getElementById("student-name");
             const groupNumberEl = document.getElementById("student-group-number");
-            const collesEl = document.getElementById("student-colles");
+            const collesWeeksEl = document.getElementById("student-colles-weeks");
             const nameInput = document.getElementById("name-input");
 
             let groupDisplayedIndex = null;
@@ -98,7 +254,7 @@
                 if (student.group !== groupDisplayedIndex) {
                     groupNumberEl.textContent = student.group + 1;
 
-                    const now = new Date().valueOf();
+                    const now = new Date();
                     let weeks = [];
                     let lastWeekIndex = null;
                     for (let colle of data.colles[student.group]) {
@@ -137,26 +293,53 @@
                     // Remove weeks where all colles are already done.
                     weeks = weeks.filter(w => w.colles.some(c => c.state !== "done"));
 
-                    while (collesEl.firstChild)
-                        collesEl.firstChild.remove();
+                    while (collesWeeksEl.firstChild)
+                        collesWeeksEl.firstChild.remove();
                     for (let week of weeks) {
-                        const weekEl = document.createElement("li");
-                        weekEl.textContent = `Semaine ${week.index + 1} (${week.date[1]}/${week.date[0]})`;
+                        const weekEl = document.createElement("section");
+                        weekEl.classList.add("week");
 
-                        const colleList = document.createElement("ul");
+                        const weekTitle = document.createElement("h1");
+                        weekTitle.classList.add("week__title");
+                        weekTitle.textContent = `Semaine ${week.index + 1} (${week.date[1]}/${week.date[0]})`;
+                        weekEl.appendChild(weekTitle);
+
+                        const colleList = document.createElement("div");
+                        colleList.classList.add("week__colles");
                         for (let colle of week.colles) {
                             const days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
                             const day = days[colle.day];
-                            const subject = data.subjects[colle.subject];
-                            const teacher = data.teachers[colle.teacher];
 
-                            const colleEl = document.createElement("li");
-                            colleEl.textContent = `${day} à ${colle.startTime.getHours()}h : ${subject} avec ${teacher} en salle ${colle.room}`;
+                            const colleEl = document.createElement("div");
+                            colleEl.classList.add("colle");
+                            colleEl.classList.add(`colle--${colle.state}`);
+                            colleEl.classList.add(`colle--subject-${colle.subject}`);
+
+                            const subjectEl = document.createElement("p");
+                            subjectEl.classList.add("colle__subject");
+                            subjectEl.textContent = data.subjects[colle.subject];
+                            colleEl.appendChild(subjectEl);
+
+                            const teacherEl = document.createElement("p");
+                            teacherEl.classList.add("colle__teacher");
+                            teacherEl.textContent = data.teachers[colle.teacher];
+                            colleEl.appendChild(teacherEl);
+
+                            const roomEl = document.createElement("p");
+                            roomEl.classList.add("colle__room");
+                            roomEl.textContent = `Salle ${colle.room}`;
+                            colleEl.appendChild(roomEl);
+
+                            const timeEl = document.createElement("p");
+                            timeEl.classList.add("colle__time");
+                            timeEl.textContent = `${day} à ${colle.startTime.getHours()} h (${formatRelativeDate(now, colle.startTime)})`;
+                            colleEl.appendChild(timeEl);
+
                             colleList.appendChild(colleEl);
                         }
                         weekEl.appendChild(colleList);
 
-                        collesEl.appendChild(weekEl);
+                        collesWeeksEl.appendChild(weekEl);
                     }
 
                     groupDisplayedIndex = student.group;
