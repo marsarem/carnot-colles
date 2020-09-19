@@ -6,7 +6,6 @@
 
         <title>Colloscope</title>
 
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
         <style>
             * {
                 box-sizing: border-box;
@@ -166,21 +165,6 @@
                     aria-label="Semaines de colles"></div>
             </div>
         </div>
-
-        <!-- Promise polyfill -->
-        <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8.1.3/dist/polyfill.min.js"
-            integrity="sha384-Oa9qd3zGPgIOjIcotuclp6o+1G/FJtvOBKJRGkHSQt/nQWcZY/UwxnQYvVL5dfV5"
-            crossorigin="anonymous"></script>
-
-        <!-- window.fetch polyfill -->
-        <script src="https://cdn.jsdelivr.net/npm/whatwg-fetch@3.4.1/dist/fetch.umd.js"
-            integrity="sha384-TAa5y9Rxs8yDMCt2eJIiRaKxwO91TzC3OXOCLSTWjdTtZLaJsnKgW8KcAZM3pO12"
-            crossorigin="anonymous"></script>
-
-        <!-- String.prototype.normalize polyfill -->
-        <script src="https://cdn.jsdelivr.net/npm/unorm@1.6.0/lib/unorm.js"
-            integrity="sha384-NlTD8LJJeDI67+9TO5iY/XBhr4NDPQwVcCBbaciass3dvrmlFMNzWE1jeY6E0/ET"
-            crossorigin="anonymous"></script>
 
         <script>
             "use strict";
@@ -347,37 +331,41 @@
                 groupIndex: null,
             };
 
-            dom.classSelect.addEventListener("change", function(e) {
-                // Remember the class so that the user doesn't have to type it
-                // on every page reload.
-                if (window.localStorage !== undefined)
-                    localStorage.setItem("class", dom.classSelect.value);
-                
-                selectedClass = dom.classSelect.value;
-                loadDataForSelectedClass();
-                
-                refreshView();
-            });
-
-            dom.nameInput.addEventListener("input", function(e) {
-                // Same as above.
-                if (window.localStorage !== undefined)
-                    localStorage.setItem("name", dom.nameInput.value);
-
-                refreshView();
-            });
-
-            // Fill the inputs with the values that were entered previously
-            // before the page was unloaded.
-            if (window.localStorage !== undefined) {
-                var previousClass = localStorage.getItem("class");
-                if (previousClass !== null)
-                    dom.classSelect.value = previousClass;
-
-                var previousName = localStorage.getItem("name");
-                if (previousName !== null) {
-                    dom.nameInput.value = previousName;
+            function registerEventListeners() {
+                dom.classSelect.addEventListener("change", function(e) {
+                    // Remember the class so that the user doesn't have to type it
+                    // on every page reload.
+                    if (window.localStorage !== undefined)
+                        localStorage.setItem("class", dom.classSelect.value);
+                    
+                    selectedClass = dom.classSelect.value;
+                    loadDataForSelectedClass();
+                    
                     refreshView();
+                });
+
+                dom.nameInput.addEventListener("input", function(e) {
+                    // Same as above.
+                    if (window.localStorage !== undefined)
+                        localStorage.setItem("name", dom.nameInput.value);
+
+                    refreshView();
+                });
+            }
+
+            function loadPreviousValues() {
+                // Fill the inputs with the values that were entered previously
+                // before the page was unloaded.
+                if (window.localStorage !== undefined) {
+                    var previousClass = localStorage.getItem("class");
+                    if (previousClass !== null)
+                        dom.classSelect.value = previousClass;
+
+                    var previousName = localStorage.getItem("name");
+                    if (previousName !== null) {
+                        dom.nameInput.value = previousName;
+                        refreshView();
+                    }
                 }
             }
 
@@ -563,7 +551,7 @@
                     return;
                 pending.push(classId);
 
-                fetch("./data/" + classId + ".json")
+                fetch("data/" + classId + ".json")
                     .then(function(response) {
                         if (!response.ok)
                             throw new Error("response is not OK");
@@ -597,8 +585,55 @@
                     });
             }
             
-            selectedClass = dom.classSelect.value;
-            loadDataForSelectedClass();
+            function main() {
+                selectedClass = dom.classSelect.value;
+                loadDataForSelectedClass();
+                registerEventListeners();
+                loadPreviousValues();
+            }
+
+            function loadPolyfillsAsync(cb) {
+                var POLYFILLS = [
+                    { check: window.Promise, url: "https://cdn.jsdelivr.net/npm/promise-polyfill@8.1.3/dist/polyfill.min.js" },
+                    { check: window.fetch, url: "https://cdn.jsdelivr.net/npm/whatwg-fetch@3.4.1/dist/fetch.umd.js" },
+                    { check: String.prototype.normalize, url: "https://cdn.jsdelivr.net/npm/unorm@1.6.0/lib/unorm.js" }
+                ];
+
+                var pending = 0;
+
+                for (var i = 0; i < POLYFILLS.length; i++) {
+                    var polyfill = POLYFILLS[i];
+                    if (polyfill.check !== undefined)
+                        continue;
+
+                    var $script = document.createElement("script");
+                    $script.src = polyfill.url;
+                    $script.onload = function(e) {
+                        pending--;
+                        if (pending === 0)
+                            cb();
+                    };
+                    $script.onerror = function(e) {
+                        console.error("failed to load polyfill", e);
+                    };
+                    document.head.appendChild($script);
+                    
+                    pending++;
+                }
+
+                if (pending === 0)
+                    cb();
+            }
+            
+            function loadFontAsync() {
+                var $link = document.createElement("link");
+                $link.rel = "stylesheet";
+                $link.href = "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap";
+                document.head.appendChild($link);
+            }
+
+            loadFontAsync();
+            loadPolyfillsAsync(main);
         </script>
     </body>
 </html>
