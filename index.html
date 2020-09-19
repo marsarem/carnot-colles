@@ -479,6 +479,13 @@
                     lastWeekIndex = colle.week;
                 }
 
+                // Sort the colles in chronological order.
+                for (var i = 0; i < weeks.length; i++) {
+                    weeks[i].colles.sort(function(a, b) {
+                        return a.startTime.valueOf() - b.startTime.valueOf();
+                    });
+                }
+
                 return weeks;
             }
 
