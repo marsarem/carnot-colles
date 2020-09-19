@@ -29,19 +29,19 @@
             }
 
             .title {
-                margin: 0 0 2rem 0;
+                margin: 0 0 1em 0;
+                font-size: 2em;
             }
 
             .name-input {
-                margin-top: 0.45em;
-
+                margin: 0.45em 0 0 0;
                 display: block;
                 font-size: 1em;
                 padding: 0.4em;
             }
 
             .loading {
-                margin: 2rem 0;
+                margin: 2em 0;
             }
 
             .loading--hidden {
@@ -49,7 +49,7 @@
             }
 
             .student-info {
-                margin: 2rem 0;
+                margin: 2em 0;
             }
 
             .student-info--hidden {
@@ -57,11 +57,11 @@
             }
 
             .week {
-                margin: 2rem 0;
+                margin: 2em 0;
             }
 
             .week__title {
-                margin: 2rem 0;
+                margin: 1em 0;
             }
 
             .week__colles {
@@ -154,53 +154,89 @@
             </div>
         </div>
 
+        <!-- Promise polyfill -->
+        <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8.1.3/dist/polyfill.min.js"
+            integrity="sha384-Oa9qd3zGPgIOjIcotuclp6o+1G/FJtvOBKJRGkHSQt/nQWcZY/UwxnQYvVL5dfV5"
+            crossorigin="anonymous"></script>
+
+        <!-- window.fetch polyfill -->
+        <script src="https://cdn.jsdelivr.net/npm/whatwg-fetch@3.4.1/dist/fetch.umd.js"
+            integrity="sha384-TAa5y9Rxs8yDMCt2eJIiRaKxwO91TzC3OXOCLSTWjdTtZLaJsnKgW8KcAZM3pO12"
+            crossorigin="anonymous"></script>
+
+        <!-- String.prototype.normalize polyfill -->
+        <script src="https://cdn.jsdelivr.net/npm/unorm@1.6.0/lib/unorm.js"
+            integrity="sha384-NlTD8LJJeDI67+9TO5iY/XBhr4NDPQwVcCBbaciass3dvrmlFMNzWE1jeY6E0/ET"
+            crossorigin="anonymous"></script>
+
         <script>
+            "use strict";
+
             let data = null;
 
             /**
-             * Time formatting
+             * Converts a difference between two {@code Date}s into a human
+             * readable string in French.
+             * @param from {Date} the starting date
+             * @param to {Date} the target date
              */
-
-            const rtf = new Intl.RelativeTimeFormat("fr", {
-                numeric: "auto",
-                style: "short",
-            });
-
-            const minuteMs = 1000 * 60;
-            const hourMs = minuteMs * 60;
-            const dayMs = hourMs * 24;
-
-            function isTimeBefore(a, b) {
-                return a.getHours() < b.getHours() || (a.getHours() === b.getHours() &&
-                        (a.getMinutes() < b.getMinutes() || (a.getMinutes() === b.getMinutes() &&
-                        (a.getSeconds() < b.getSeconds() || (a.getSeconds() === b.getSeconds() &&
-                        a.getMilliseconds() < b.getMilliseconds())))));
-            }
-
             function formatRelativeTime(from, to) {
                 const diffMs = to.valueOf() - from.valueOf();
                 const diffAbsMs = Math.abs(diffMs);
+
+                const minuteMs = 1000 * 60;
+                const hourMs = minuteMs * 60;
+                const dayMs = hourMs * 24;
+
+                function isTimeBefore(a, b) {
+                    return a.getHours() < b.getHours() || (a.getHours() === b.getHours() &&
+                            (a.getMinutes() < b.getMinutes() || (a.getMinutes() === b.getMinutes() &&
+                            (a.getSeconds() < b.getSeconds() || (a.getSeconds() === b.getSeconds() &&
+                            a.getMilliseconds() < b.getMilliseconds())))));
+                }
+
+                function formatHelper(value, label) {
+                    let result = "";
+                    result += value > 0 ? "dans " : "il y a ";
+                    result += value;
+                    result += " ";
+                    result += label;
+                    if (Math.abs(value) > 1)
+                        result += "s";
+                    return result;
+                }
+
                 if (diffAbsMs < minuteMs) {
                     return "maintenant";
                 } else if (diffAbsMs < 2 * hourMs) {
-                    return rtf.format((diffMs / minuteMs).toFixed(), "minutes");
-                } else if (diffAbsMs < 2 * dayMs) {
-                    return rtf.format((diffMs / hourMs).toFixed(), "hours");
+                    return formatHelper(Math.round(diffMs / minuteMs), "minute");
                 } else {
-                    let dayCount = Math.floor(diffAbsMs / dayMs);
+                    let diffDays = Math.floor(diffAbsMs / dayMs);
                     if (diffMs > 0 && isTimeBefore(to, from)) {
                         // It's tomorrow, even though the difference with today
                         // is less than 24 hrs.
-                        dayCount++;
+                        diffDays++;
                     } else if (diffMs < 0 && isTimeBefore(from, to)) {
-                        dayCount--;
+                        // Opposite of above.
+                        diffDays--;
                     }
-                    return rtf.format(dayCount, "days");
+                    if (diffDays === 0) {
+                        return formatHelper(Math.round(diffMs / hourMs), "heure");
+                    } else if (diffDays === -2) {
+                        return "avant-hier";
+                    } else if (diffDays === -1) {
+                        return "hier";
+                    } else if (diffDays === 1) {
+                        return "demain";
+                    } else if (diffDays === 2) {
+                        return "après-demain";
+                    }
+                    return formatHelper(diffDays, "jour");
                 }
             }
 
             /**
-             * Search
+             * Search functions
              */
 
             function normalizeName(name) {
@@ -216,44 +252,55 @@
                     .split(/[\s\-]+/);
             }
 
-            function getMatchScore(inputTokens, studentNameTokens) {
+            function getMatchScore(inputTokens, entryTokens) {
                 // Make a copy of the arrays because we are going to modify
                 // them.
-                inputTokens = [...inputTokens];
-                studentNameTokens = [...studentNameTokens];
+                inputTokens = inputTokens.slice();
+                entryTokens = entryTokens.slice();
 
                 let score = 0;
                 while (inputTokens.length > 0) {
                     const inputToken = inputTokens.pop();
-                    const matchIndex = studentNameTokens
-                        .findIndex(t => t.startsWith(inputToken));
+
+                    let matchIndex = -1;
+                    for (let i = 0; i < entryTokens.length; i++) {
+                        if (entryTokens[i].indexOf(inputToken) === 0) {
+                            matchIndex = i;
+                            break;
+                        }
+                    }
+
                     if (matchIndex !== -1) {
                         score += inputToken.length;
-                        studentNameTokens.splice(matchIndex, 1);
+                        entryTokens.splice(matchIndex, 1);
                     }
                 }
                 return score;
             }
 
-            function findStudent(input) {
+            function searchStudent(input) {
                 const inputTokens = tokenizeName(input);
-                let bestMatch = null;
+
+                let bestMatchIndex = -1;
                 let bestMatchScore = 0;
                 let sameScoreCount = 0;
-                for (let entry of data.searchIndex) {
-                    const score = getMatchScore(inputTokens, entry.tokens);
+                for (let i = 0; i < data.searchIndex.length; i++) {
+                    const score = getMatchScore(inputTokens, data.searchIndex[i].tokens);
                     if (score > bestMatchScore) {
-                        bestMatch = entry;
+                        bestMatchIndex = i;
                         bestMatchScore = score;
                         sameScoreCount = 0;
                     } else if (score === bestMatchScore) {
                         sameScoreCount++;
                     }
                 }
+
                 // Multiple matches with the same score means that we aren't
                 // sure.
-                if (bestMatch === null || sameScoreCount > 0)
+                if (bestMatchIndex === -1 || sameScoreCount > 0)
                     return null;
+
+                const bestMatch = data.searchIndex[bestMatchIndex];
                 return {
                     name: data.groups[bestMatch.group][bestMatch.index],
                     group: bestMatch.group,
@@ -261,7 +308,7 @@
             }
 
             /**
-             * DOM
+             * DOM manipulation
              */
 
             const loadingEl = document.getElementById("loading");
@@ -274,21 +321,26 @@
             nameInput.addEventListener("input", function(e) {
                 // Remember the name so that the user doesn't have to type it on
                 // every page reload.
-                localStorage.setItem("name", nameInput.value);
+                if (window.localStorage !== undefined)
+                    localStorage.setItem("name", nameInput.value);
 
                 refreshView();
             });
 
-            // Fill the input with the name that was entered the previous time.
-            const previousName = localStorage.getItem("name");
-            if (previousName !== null)
-                nameInput.value = previousName;
+            if (window.localStorage !== undefined) {
+                // Fill the input with the name that was entered the previous time.
+                const previousName = localStorage.getItem("name");
+                if (previousName !== null) {
+                    nameInput.value = previousName;
+                    refreshView();
+                }
+            }
 
             function createColleElement(colle) {
                 const colleEl = document.createElement("div");
                 colleEl.classList.add("colle");
-                colleEl.classList.add(`colle--${colle.state}`);
-                colleEl.classList.add(`colle--subject-${colle.subject}`);
+                colleEl.classList.add("colle--" + colle.state);
+                colleEl.classList.add("colle--subject-" + colle.subject);
 
                 const subjectEl = document.createElement("p");
                 subjectEl.classList.add("colle__subject");
@@ -302,7 +354,7 @@
 
                 const roomEl = document.createElement("p");
                 roomEl.classList.add("colle__room");
-                roomEl.textContent = `Salle ${colle.room}`;
+                roomEl.textContent = "Salle " + colle.room;
                 colleEl.appendChild(roomEl);
 
                 const days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
@@ -310,7 +362,9 @@
 
                 const timeEl = document.createElement("p");
                 timeEl.classList.add("colle__time");
-                timeEl.textContent = `${day} à ${colle.startTime.getHours()} h (${formatRelativeTime(new Date(), colle.startTime)})`;
+                timeEl.textContent = day + " à " + colle.startTime.getHours() +
+                    " h (" + formatRelativeTime(new Date(), colle.startTime)
+                    + ")";
                 colleEl.appendChild(timeEl);
 
                 return colleEl;
@@ -322,22 +376,73 @@
 
                 const weekTitle = document.createElement("h1");
                 weekTitle.classList.add("week__title");
-                weekTitle.textContent = `Semaine ${week.index + 1} (${week.date[1]}/${week.date[0]})`;
+                weekTitle.textContent = "Semaine " + (week.index + 1) + " (" + week.day + "/" + week.month + ")";
                 weekEl.appendChild(weekTitle);
 
                 const colleList = document.createElement("div");
                 colleList.classList.add("week__colles");
-                for (let colle of week.colles)
-                    colleList.appendChild(createColleElement(colle));
+                for (let i = 0; i < week.colles.length; i++)
+                    colleList.appendChild(createColleElement(week.colles[i]));
                 weekEl.appendChild(colleList);
 
                 return weekEl;
             }
 
+            function getWeeksForGroup(groupIndex) {
+                const colles = data.colles[groupIndex];
+
+                const now = new Date();
+                let weeks = [];
+                let lastWeekIndex = null;
+                for (let i = 0; i < colles.length; i++) {
+                    const colle = colles[i];
+                    const colleType = data.types[colle.type];
+
+                    const weekParts = data.weeks[colle.week].split("-");
+                    const month = parseInt(weekParts[0]);
+                    const day = parseInt(weekParts[1]);
+                    const year = month < 9 ? 2021 : 2020;
+
+                    const startTime = new Date(year, month - 1, day, colleType.time);
+                    startTime.setDate(startTime.getDate() + colleType.day);
+
+                    let state;
+                    if (now.valueOf() - startTime.valueOf() > 1000 * 60 * 60) {
+                        state = "done";
+                    } else if (now.valueOf() - startTime.valueOf() >= 0) {
+                        state = "doing";
+                    } else {
+                        state = "waiting";
+                    }
+
+                    if (weeks.length === 0 || colle.week !== lastWeekIndex) {
+                        weeks.push({
+                            index: colle.week,
+                            month: month,
+                            day: day,
+                            colles: [],
+                        });
+                    }
+
+                    weeks[weeks.length - 1].colles.push({
+                        startTime: startTime,
+                        state: state,
+                        day: colleType.day,
+                        subject: colleType.subject,
+                        teacher: colleType.teacher,
+                        room: colleType.room,
+                    });
+                    lastWeekIndex = colle.week;
+                }
+
+                return weeks;
+            }
+
             let groupDisplayedIndex = null;
 
             function refreshView() {
-                const showLoading = data === null && nameInput.value.trim() !== "";
+                const showLoading = data === null &&
+                    nameInput.value.trim() !== "";
                 if (showLoading) {
                     loadingEl.classList.remove("loading--hidden");
                 } else {
@@ -347,7 +452,7 @@
                 if (data === null)
                     return;
 
-                const student = findStudent(nameInput.value);
+                const student = searchStudent(nameInput.value);
                 if (student === null) {
                     studentInfoEl.classList.add("student-info--hidden");
                     return;
@@ -360,72 +465,56 @@
                 if (student.group !== groupDisplayedIndex) {
                     groupNumberEl.textContent = student.group + 1;
 
-                    const now = new Date();
-                    let weeks = [];
-                    let lastWeekIndex = null;
-                    for (let colle of data.colles[student.group]) {
-                        const colleType = data.types[colle.type];
-                        const week = data.weeks[colle.week]
-                            .split("-")
-                            .map(x => parseInt(x));
-                        const month = week[0];
-                        const year = month < 9 ? 2021 : 2020;
-                        const startTime = new Date(year, month - 1, week[1], colleType.time);
-                        startTime.setDate(startTime.getDate() + colleType.day);
-
-                        let state;
-                        if (now.valueOf() - startTime.valueOf() > 1000 * 60 * 60) {
-                            state = "done";
-                        } else if (now.valueOf() - startTime.valueOf() >= 0) {
-                            state = "doing";
-                        } else {
-                            state = "waiting";
-                        }
-
-                        if (weeks.length === 0 || colle.week !== lastWeekIndex)
-                            weeks.push({ index: colle.week, date: week, colles: [] });
-
-                        weeks[weeks.length - 1].colles.push({
-                            startTime,
-                            state,
-                            day: colleType.day,
-                            subject: colleType.subject,
-                            teacher: colleType.teacher,
-                            room: colleType.room,
-                        });
-                        lastWeekIndex = colle.week;
-                    }
+                    let weeks = getWeeksForGroup(student.group);
 
                     // Remove weeks where all colles are already done.
-                    weeks = weeks.filter(w => w.colles.some(c => c.state !== "done"));
+                    weeks = weeks.filter(function(w) {
+                        return w.colles
+                            .some(function(c) {
+                                return c.state !== "done";
+                            });
+                    });
 
-                    while (collesWeeksEl.firstChild)
-                        collesWeeksEl.firstChild.remove();
-                    for (let week of weeks)
-                        collesWeeksEl.appendChild(createWeekElement(week));
+                    while (collesWeeksEl.firstChild !== null)
+                        collesWeeksEl.removeChild(collesWeeksEl.firstChild);
+                    for (let i = 0; i < weeks.length; i++)
+                        collesWeeksEl.appendChild(createWeekElement(weeks[i]));
 
                     groupDisplayedIndex = student.group;
                 }
             }
 
-            async function loadData() {
-                const response = await fetch("./data.json");
-                if (!response.ok)
-                    throw new Error("response is not OK");
-                data = await response.json();
-                data.searchIndex = data.groups
-                    .flatMap((students, i) => students
-                        .map((name, j) => {
-                            return {
-                                tokens: tokenizeName(name),
+            /**
+             * Data loading
+             */
+
+            fetch("./data.json")
+                .then(function(response) {
+                    if (!response.ok)
+                        throw new Error("response is not OK");
+                    return response.json();
+                })
+                .then(function(responseJson) {
+                    data = responseJson;
+
+                    // Tokenize the names right away to make searching faster
+                    data.searchIndex = [];
+                    for (let i = 0; i < data.groups.length; i++) {
+                        const group = data.groups[i];
+                        for (let j = 0; j < group.length; j++) {
+                            data.searchIndex.push({
+                                tokens: tokenizeName(group[j]),
                                 group: i,
                                 index: j,
-                            };
-                        }));
-                refreshView();
-            }
-            loadData()
-                .catch(err => console.error("failed to load data", err));
+                            });
+                        }
+                    }
+
+                    refreshView();
+                })
+                .catch(function(err) {
+                    console.error("failed to load data", err);
+                });
         </script>
     </body>
 </html>
