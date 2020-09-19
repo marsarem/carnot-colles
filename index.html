@@ -369,9 +369,8 @@
             // before the page was unloaded.
             if (window.localStorage !== undefined) {
                 var previousClass = localStorage.getItem("class");
-                if (previousClass !== null) {
+                if (previousClass !== null)
                     dom.classSelect.value = previousClass;
-                }
 
                 var previousName = localStorage.getItem("name");
                 if (previousName !== null) {
