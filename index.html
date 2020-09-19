@@ -263,19 +263,25 @@
                 while (inputTokens.length > 0) {
                     var inputToken = inputTokens.pop();
 
-                    var matchIndex = -1;
+                    // Remove the closest match (that is, the token that matches
+                    // but that has the shortest length) so that the remaining
+                    // entry tokens can match with the remaining input tokens.
+                    var shortestMatchIndex = -1;
+                    var shortestMatchLength = Infinity;
                     for (var i = 0; i < entryTokens.length; i++) {
-                        if (entryTokens[i].indexOf(inputToken) === 0) {
-                            matchIndex = i;
-                            break;
+                        var entryToken = entryTokens[i];
+                        if (entryToken.length < shortestMatchLength &&
+                            entryToken.indexOf(inputToken) === 0) {
+                            shortestMatchIndex = i;
+                            shortestMatchLength = entryToken.length;
                         }
                     }
 
-                    if (matchIndex === -1) {
+                    if (shortestMatchIndex === -1) {
                         return 0;
                     } else {
                         score += inputToken.length;
-                        entryTokens.splice(matchIndex, 1);
+                        entryTokens.splice(shortestMatchIndex, 1);
                     }
                 }
                 return score;
@@ -283,6 +289,16 @@
 
             function searchStudent(classData, input) {
                 var inputTokens = tokenizeName(input);
+
+                // Put the shortest tokens at the beggining of the array so that
+                // they get matched last with the student name's tokens. Indeed,
+                // if we have a name such as "AB AAAAAA" and the input is
+                // "A AB", then we want to match the "AB" token first so that we
+                // remove it and continue with the "AAAAAA" token. Otherwise,
+                // the search will return no result.
+                inputTokens.sort(function(a, b) {
+                    return a.length - b.length;
+                });
 
                 var bestMatchIndex = -1;
                 var bestMatchScore = 0;
