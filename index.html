@@ -22,6 +22,10 @@
                 line-height: 1.6;
             }
 
+            p, .name-form, .student-info, .week {
+                margin: 2em 0;
+            }
+
             .container {
                 max-width: 70em;
                 margin: 0 auto;
@@ -44,24 +48,16 @@
                 padding: 0.4em;
             }
 
-            .loading {
-                margin: 2em 0;
-            }
-
             .loading--hidden {
                 display: none;
             }
 
-            .student-info {
-                margin: 2em 0;
+            .student-info, .weeks .week:last-child {
+                margin-bottom: 0;
             }
 
             .student-info--hidden {
                 display: none;
-            }
-
-            .week {
-                margin: 2em 0;
             }
 
             .week__title {
@@ -146,22 +142,25 @@
                 </select>
             </h1>
 
-            <div>
+            <form class="name-form">
                 <label for="name-input">Entrez votre nom :</label>
                 <input id="name-input" class="name-input" type="text"
                     placeholder="Jean Dupont">
+            </form>
 
-                <p id="loading" class="loading--hidden">
-                    <strong>Chargement des données en cours...</strong>
-                </p>
-            </div>
+            <p id="loading" class="loading--hidden">
+                <strong>Chargement des données en cours...</strong>
+            </p>
 
             <div id="student-info" class="student-info student-info--hidden">
-                Nom : <strong id="student-name"></strong>
-                <br/>
+                <p class="student-info-fields">
+                    Nom :
+                    <strong id="student-name"></strong>
+                    <br/>
 
-                Groupe de colle : <strong id="student-group-number"></strong>
-                <br/>
+                    Groupe de colle :
+                    <strong id="student-group-number"></strong>
+                </p>
 
                 <div id="student-colles-weeks" class="weeks"
                     aria-label="Semaines de colles"></div>
