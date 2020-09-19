@@ -4,7 +4,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <title>Colloscope MPSI1</title>
+        <title>Colloscope</title>
 
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
         <style>
@@ -31,6 +31,10 @@
             .title {
                 margin: 0 0 1em 0;
                 font-size: 2em;
+            }
+
+            .class-select {
+                font-size: 1em;
             }
 
             .name-input {
@@ -130,7 +134,14 @@
     </head>
     <body>
         <div class="container">
-            <h1 class="title">Colloscope MPSI1</h1>
+            <h1 class="title">
+                Colloscope
+
+                <select id="class-select" class="class-select">
+                    <option value="mpsi1">MPSI1</option>
+                    <option value="mp-star">MP*</option>
+                </select>
+            </h1>
 
             <div>
                 <label for="name-input">Entrez votre nom :</label>
@@ -172,7 +183,9 @@
         <script>
             "use strict";
 
-            var data = null;
+            var dataByClass = {};
+            var selectedClass;
+            var selectedClassData = undefined;
 
             /**
              * Converts a difference between two {@code Date}s into a human
@@ -284,8 +297,8 @@
                 var bestMatchIndex = -1;
                 var bestMatchScore = 0;
                 var sameScoreCount = 0;
-                for (var i = 0; i < data.searchIndex.length; i++) {
-                    var score = getMatchScore(inputTokens, data.searchIndex[i].tokens);
+                for (var i = 0; i < selectedClassData.searchIndex.length; i++) {
+                    var score = getMatchScore(inputTokens, selectedClassData.searchIndex[i].tokens);
                     if (score > bestMatchScore) {
                         bestMatchIndex = i;
                         bestMatchScore = score;
@@ -300,10 +313,10 @@
                 if (bestMatchIndex === -1 || sameScoreCount > 0)
                     return null;
 
-                var bestMatch = data.searchIndex[bestMatchIndex];
+                var bestMatch = selectedClassData.searchIndex[bestMatchIndex];
                 return {
                     index: bestMatchIndex,
-                    name: data.groups[bestMatch.group][bestMatch.index],
+                    name: selectedClassData.groups[bestMatch.group][bestMatch.index],
                     group: bestMatch.group,
                 };
             }
@@ -313,6 +326,7 @@
              */
 
             var dom = {
+                classSelect: document.getElementById("class-select"),
                 nameInput: document.getElementById("name-input"),
 
                 loading: document.getElementById("loading"),
@@ -330,17 +344,36 @@
                 groupIndex: -1,
             };
 
+            dom.classSelect.addEventListener("input", function(e) {
+                // Remember the class so that the user doesn't have to type it
+                // on every page reload.
+                if (window.localStorage !== undefined)
+                    localStorage.setItem("class", dom.classSelect.value);
+                
+                selectedClass = dom.classSelect.value;
+                selectedClassData = dataByClass[selectedClass];
+                if (selectedClassData === undefined)
+                    loadDataForClass(selectedClass);
+                
+                refreshView();
+            });
+
             dom.nameInput.addEventListener("input", function(e) {
-                // Remember the name so that the user doesn't have to type it on
-                // every page reload.
+                // Same as above.
                 if (window.localStorage !== undefined)
                     localStorage.setItem("name", dom.nameInput.value);
 
                 refreshView();
             });
 
+            // Fill the inputs with the values that were entered previously
+            // before the page was unloaded.
             if (window.localStorage !== undefined) {
-                // Fill the input with the name that was entered the previous time.
+                var previousClass = localStorage.getItem("class");
+                if (previousClass !== null) {
+                    dom.classSelect.value = previousClass;
+                }
+
                 var previousName = localStorage.getItem("name");
                 if (previousName !== null) {
                     dom.nameInput.value = previousName;
@@ -356,12 +389,12 @@
 
                 var $subject = document.createElement("p");
                 $subject.classList.add("colle__subject");
-                $subject.textContent = data.subjects[colle.subject];
+                $subject.textContent = selectedClassData.subjects[colle.subject];
                 $colle.appendChild($subject);
 
                 var $teacher = document.createElement("p");
                 $teacher.classList.add("colle__teacher");
-                $teacher.textContent = data.teachers[colle.teacher];
+                $teacher.textContent = selectedClassData.teachers[colle.teacher];
                 $colle.appendChild($teacher);
 
                 var $room = document.createElement("p");
@@ -401,16 +434,16 @@
             }
 
             function getWeeksForGroup(groupIndex) {
-                var colles = data.colles[groupIndex];
+                var colles = selectedClassData.colles[groupIndex];
 
                 var now = new Date();
                 var weeks = [];
                 var lastWeekIndex = null;
                 for (var i = 0; i < colles.length; i++) {
                     var colle = colles[i];
-                    var colvarype = data.types[colle.type];
+                    var colvarype = selectedClassData.types[colle.type];
 
-                    var weekParts = data.weeks[colle.week].split("-");
+                    var weekParts = selectedClassData.weeks[colle.week].split("-");
                     var month = parseInt(weekParts[0]);
                     var day = parseInt(weekParts[1]);
                     var year = month < 9 ? 2021 : 2020;
@@ -451,7 +484,7 @@
             }
 
             function refreshView() {
-                var showLoading = data === null &&
+                var showLoading = selectedClassData === undefined &&
                     dom.nameInput.value.trim() !== "";
                 if (showLoading !== uiState.isLoadingVisible) {
                     if (showLoading) {
@@ -462,7 +495,7 @@
                     uiState.isLoadingVisible = showLoading;
                 }
 
-                var student = data === null ? null :
+                var student = selectedClassData === undefined ? null :
                     searchStudent(dom.nameInput.value);
 
                 var showStudentInfo = student !== null;
@@ -476,6 +509,11 @@
                 }
 
                 if (showStudentInfo) {
+                    if (selectedClass !== uiState.classId) {
+                        uiState.studentIndex = -1;
+                        uiState.groupIndex = -1;
+                    }
+
                     if (student.index !== uiState.studentIndex) {
                         dom.studentName.textContent = student.name;
                         uiState.studentIndex = student.index;
@@ -507,33 +545,56 @@
              * Data loading
              */
 
-            fetch("./data.json")
-                .then(function(response) {
-                    if (!response.ok)
-                        throw new Error("response is not OK");
-                    return response.json();
-                })
-                .then(function(responseJson) {
-                    data = responseJson;
+            var pending = [];
 
-                    // Tokenize the names right away to make searching faster
-                    data.searchIndex = [];
-                    for (var i = 0; i < data.groups.length; i++) {
-                        var group = data.groups[i];
-                        for (var j = 0; j < group.length; j++) {
-                            data.searchIndex.push({
-                                tokens: tokenizeName(group[j]),
-                                group: i,
-                                index: j,
-                            });
+            function loadDataForClass(classId) {
+                // Already loading the data.
+                if (pending.indexOf(classId) !== -1)
+                    return;
+
+                pending.push(classId);
+
+                fetch("./data/" + classId + ".json")
+                    .then(function(response) {
+                        if (!response.ok)
+                            throw new Error("response is not OK");
+                        return response.json();
+                    })
+                    .then(function(responseJson) {
+                        var classData = responseJson;
+
+                        // Tokenize the names right away to make searching faster
+                        classData.searchIndex = [];
+                        for (var i = 0; i < classData.groups.length; i++) {
+                            var group = classData.groups[i];
+                            for (var j = 0; j < group.length; j++) {
+                                classData.searchIndex.push({
+                                    tokens: tokenizeName(group[j]),
+                                    group: i,
+                                    index: j,
+                                });
+                            }
                         }
-                    }
 
-                    refreshView();
-                })
-                .catch(function(err) {
-                    console.error("failed to load data", err);
-                });
+                        dataByClass[classId] = classData;
+
+                        if (selectedClass === classId)
+                            selectedClassData = classData;
+
+                        refreshView();
+                    })
+                    .catch(function(err) {
+                        console.error("failed to load data", err);
+                    })
+                    .then(function() {
+                        // Remove from pending.
+                        pending.splice(pending.indexOf(classId), 1);
+                    });
+            }
+            
+            selectedClass = dom.classSelect.value;
+            uiState.classId = selectedClass;
+            loadDataForClass(selectedClass);
         </script>
     </body>
 </html>
