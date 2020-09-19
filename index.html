@@ -4,6 +4,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+        <!-- Disable favicon. -->
+        <link rel="icon" href="data:,">
+
         <title>Colloscope</title>
 
         <style>
@@ -535,6 +538,33 @@
              * Data loading
              */
 
+            function deepEquals(a, b) {
+                if (a === b)
+                    return true;
+                if (a === null || b === null)
+                    return false;
+                if (typeof a === "object") {
+                    if (typeof b !== "object")
+                        return false;
+                    if (Array.isArray(a)) {
+                        if (a.length !== b.length)
+                            return false;
+                        for (var i = 0; i < a.length; i++) {
+                            if (!deepEquals(a[i], b[i]))
+                                return false;
+                        }
+                        return true;
+                    } else {
+                        for (var i in a) {
+                            if (a[i] !== b[i])
+                                return false;
+                        }
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             var pendingOrLoaded = [];
 
             function loadDataForSelectedClass() {
@@ -583,8 +613,10 @@
                         if (window.localStorage !== undefined)
                             window.localStorage.setItem("data-" + classId, JSON.stringify(responseJson));
 
-                        dataByClass[classId] = classData;
-                        refreshView();
+                        if (!deepEquals(dataByClass[classId], classData)) {
+                            dataByClass[classId] = classData;
+                            refreshView();
+                        }
                     })
                     .catch(function(err) {
                         console.error("failed to load data", err);
