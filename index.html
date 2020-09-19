@@ -69,8 +69,11 @@
             }
 
             .week__colles {
+                list-style-type: none;
+
                 /* Remove the margin on the sides. */
                 margin: -0.5em;
+                padding: 0;
             }
 
             .colle {
@@ -116,7 +119,7 @@
                 border-color: #E5FF00;
             }
 
-            .colle__subject, .colle__teacher, .colle__room, .colle__time {
+            .colle__subject, .colle__info {
                 margin: 0;
             }
 
@@ -380,7 +383,7 @@
             }
 
             function createColleElement(classData, colle) {
-                var $colle = document.createElement("div");
+                var $colle = document.createElement("li");
                 $colle.classList.add("colle");
                 $colle.classList.add("colle--" + colle.state);
                 $colle.classList.add("colle--subject-" + colle.subject);
@@ -390,25 +393,19 @@
                 $subject.textContent = classData.subjects[colle.subject];
                 $colle.appendChild($subject);
 
-                var $teacher = document.createElement("p");
-                $teacher.classList.add("colle__teacher");
-                $teacher.textContent = classData.teachers[colle.teacher];
-                $colle.appendChild($teacher);
-
-                var $room = document.createElement("p");
-                $room.classList.add("colle__room");
-                $room.textContent = "Salle " + colle.room;
-                $colle.appendChild($room);
-
                 var days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
                 var day = days[colle.day];
 
-                var $time = document.createElement("p");
-                $time.classList.add("colle__time");
-                $time.textContent = day + " à " + colle.startTime.getHours() +
-                    " h (" + formatRelativeTime(new Date(), colle.startTime)
-                    + ")";
-                $colle.appendChild($time);
+                var $info = document.createElement("p");
+                $info.classList.add("colle__info");
+                $info.appendChild(document.createTextNode(classData.teachers[colle.teacher]));
+                $info.appendChild(document.createElement("br"));
+                $info.appendChild(document.createTextNode("Salle " + colle.room));
+                $info.appendChild(document.createElement("br"));
+                $info.appendChild(document.createTextNode(day + " à " +
+                    colle.startTime.getHours() + " h (" +
+                    formatRelativeTime(new Date(), colle.startTime) + ")"));
+                $colle.appendChild($info);
 
                 return $colle;
             }
@@ -422,7 +419,7 @@
                 $weekTitle.textContent = "Semaine " + (week.index + 1) + " (" + week.day + "/" + week.month + ")";
                 $week.appendChild($weekTitle);
 
-                var $colles = document.createElement("div");
+                var $colles = document.createElement("ul");
                 $colles.classList.add("week__colles");
                 for (var i = 0; i < week.colles.length; i++)
                     $colles.appendChild(createColleElement(classData, week.colles[i]));
