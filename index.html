@@ -596,10 +596,10 @@
              */
             
             function main() {
+                loadPreviousValues();
                 selectedClass = dom.classSelect.value;
                 loadDataForSelectedClass();
                 registerEventListeners();
-                loadPreviousValues();
             }
 
             function loadPolyfillsAsync(cb) {
