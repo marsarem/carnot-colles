@@ -1,58 +1,53 @@
 {
     "groups": [
         [
-            "Huard",
-            "Ingelaere",
-            "Vazquez"
         ],
         [
-            "Besson",
-            "Fouchard",
-            "Pinson"
+            "BESSON Maxime",
+            "FOUCHARD Denis",
+            "PINSON Vincent"
         ],
         [
-            "Antoine",
-            "Bretin",
-            "Guérin"
+            "ANTOINE Thibaut",
+            "BRETIN Alexis",
+            "GUÉRIN Clément"
         ],
         [
-            "Bernot",
-            "Brendlé",
-            "Gachet"
+            "BERNOT Lilian"
         ],
         [
-            "Cambon",
-            "Carneau",
-            "Lafrad"
+            "CAMBON Paul",
+            "CARNEAU Jérémy",
+            "LAFRAD Sonia"
         ],
         [
-            "Carpentier",
-            "Choplin",
-            "Gilarès"
+            "CARPENTIER Téo",
+            "CHOPLIN Louis",
+            "GILARÈS Paul"
         ],
         [
-            "Chantre",
-            "Vignon",
-            "Yriarte"
+            "CHANTRE Hugo",
+            "VIGNON Thomas",
+            "YRIARTE Axelle"
         ],
         [
-            "Colinot",
-            "Dewulf",
-            "Duhamel"
+            "COLINOT Paul",
+            "DEWULF Romain",
+            "DUHAMEL Benjamin"
         ],
         [
-            "Gullo",
-            "Merle",
-            "Vallet"
+            "GULLO Alexis",
+            "MERLE Antoine",
+            "VALLET Thibault"
         ],
         [
-            "Claustre",
-            "Guiborat",
-            "Longo"
+            "CLAUSTRE Baptiste",
+            "GUIBORAT Jona",
+            "LONGO Mattéo"
         ],
         [
-            "Caratgé",
-            "Labourdette"
+            "CARATGÉ Élie",
+            "LABOURDETTE Rémi"
         ]
     ],
     "subjects": [
@@ -98,7 +93,7 @@
             "subject": 0,
             "teacher": 1,
             "day": 1,
-            "room": "111",
+            "room": "105",
             "time": 18
         },
         {
