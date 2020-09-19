@@ -185,7 +185,6 @@
 
             var dataByClass = {};
             var selectedClass;
-            var selectedClassData = undefined;
 
             /**
              * Converts a difference between two {@code Date}s into a human
@@ -291,14 +290,14 @@
                 return score;
             }
 
-            function searchStudent(input) {
+            function searchStudent(classData, input) {
                 var inputTokens = tokenizeName(input);
 
                 var bestMatchIndex = -1;
                 var bestMatchScore = 0;
                 var sameScoreCount = 0;
-                for (var i = 0; i < selectedClassData.searchIndex.length; i++) {
-                    var score = getMatchScore(inputTokens, selectedClassData.searchIndex[i].tokens);
+                for (var i = 0; i < classData.searchIndex.length; i++) {
+                    var score = getMatchScore(inputTokens, classData.searchIndex[i].tokens);
                     if (score > bestMatchScore) {
                         bestMatchIndex = i;
                         bestMatchScore = score;
@@ -313,10 +312,10 @@
                 if (bestMatchIndex === -1 || sameScoreCount > 0)
                     return null;
 
-                var bestMatch = selectedClassData.searchIndex[bestMatchIndex];
+                var bestMatch = classData.searchIndex[bestMatchIndex];
                 return {
                     index: bestMatchIndex,
-                    name: selectedClassData.groups[bestMatch.group][bestMatch.index],
+                    name: classData.groups[bestMatch.group][bestMatch.index],
                     group: bestMatch.group,
                 };
             }
@@ -340,8 +339,8 @@
             var uiState = {
                 isLoadingVisible: false,
                 isStudentInfoVisible: false,
-                studentIndex: -1,
-                groupIndex: -1,
+                studentIndex: null,
+                groupIndex: null,
             };
 
             dom.classSelect.addEventListener("input", function(e) {
@@ -351,9 +350,7 @@
                     localStorage.setItem("class", dom.classSelect.value);
                 
                 selectedClass = dom.classSelect.value;
-                selectedClassData = dataByClass[selectedClass];
-                if (selectedClassData === undefined)
-                    loadDataForClass(selectedClass);
+                loadDataForSelectedClass();
                 
                 refreshView();
             });
@@ -381,7 +378,7 @@
                 }
             }
 
-            function createColleElement(colle) {
+            function createColleElement(classData, colle) {
                 var $colle = document.createElement("div");
                 $colle.classList.add("colle");
                 $colle.classList.add("colle--" + colle.state);
@@ -389,12 +386,12 @@
 
                 var $subject = document.createElement("p");
                 $subject.classList.add("colle__subject");
-                $subject.textContent = selectedClassData.subjects[colle.subject];
+                $subject.textContent = classData.subjects[colle.subject];
                 $colle.appendChild($subject);
 
                 var $teacher = document.createElement("p");
                 $teacher.classList.add("colle__teacher");
-                $teacher.textContent = selectedClassData.teachers[colle.teacher];
+                $teacher.textContent = classData.teachers[colle.teacher];
                 $colle.appendChild($teacher);
 
                 var $room = document.createElement("p");
@@ -415,7 +412,7 @@
                 return $colle;
             }
 
-            function createWeekElement(week) {
+            function createWeekElement(classData, week) {
                 var $week = document.createElement("section");
                 $week.classList.add("week");
 
@@ -427,29 +424,29 @@
                 var $colles = document.createElement("div");
                 $colles.classList.add("week__colles");
                 for (var i = 0; i < week.colles.length; i++)
-                    $colles.appendChild(createColleElement(week.colles[i]));
+                    $colles.appendChild(createColleElement(classData, week.colles[i]));
                 $week.appendChild($colles);
 
                 return $week;
             }
 
-            function getWeeksForGroup(groupIndex) {
-                var colles = selectedClassData.colles[groupIndex];
+            function getWeeksForGroup(classData, groupIndex) {
+                var colles = classData.colles[groupIndex];
 
                 var now = new Date();
                 var weeks = [];
                 var lastWeekIndex = null;
                 for (var i = 0; i < colles.length; i++) {
                     var colle = colles[i];
-                    var colvarype = selectedClassData.types[colle.type];
+                    var colleType = classData.types[colle.type];
 
-                    var weekParts = selectedClassData.weeks[colle.week].split("-");
+                    var weekParts = classData.weeks[colle.week].split("-");
                     var month = parseInt(weekParts[0]);
                     var day = parseInt(weekParts[1]);
                     var year = month < 9 ? 2021 : 2020;
 
-                    var startTime = new Date(year, month - 1, day, colvarype.time);
-                    startTime.setDate(startTime.getDate() + colvarype.day);
+                    var startTime = new Date(year, month - 1, day, colleType.time);
+                    startTime.setDate(startTime.getDate() + colleType.day);
 
                     var state;
                     if (now.valueOf() - startTime.valueOf() > 1000 * 60 * 60) {
@@ -472,10 +469,10 @@
                     weeks[weeks.length - 1].colles.push({
                         startTime: startTime,
                         state: state,
-                        day: colvarype.day,
-                        subject: colvarype.subject,
-                        teacher: colvarype.teacher,
-                        room: colvarype.room,
+                        day: colleType.day,
+                        subject: colleType.subject,
+                        teacher: colleType.teacher,
+                        room: colleType.room,
                     });
                     lastWeekIndex = colle.week;
                 }
@@ -484,7 +481,9 @@
             }
 
             function refreshView() {
-                var showLoading = selectedClassData === undefined &&
+                var classData = dataByClass[selectedClass];
+
+                var showLoading = classData === undefined &&
                     dom.nameInput.value.trim() !== "";
                 if (showLoading !== uiState.isLoadingVisible) {
                     if (showLoading) {
@@ -495,8 +494,8 @@
                     uiState.isLoadingVisible = showLoading;
                 }
 
-                var student = selectedClassData === undefined ? null :
-                    searchStudent(dom.nameInput.value);
+                var student = classData === undefined ? null :
+                    searchStudent(classData, dom.nameInput.value);
 
                 var showStudentInfo = student !== null;
                 if (showStudentInfo !== uiState.isStudentInfoVisible) {
@@ -509,20 +508,19 @@
                 }
 
                 if (showStudentInfo) {
-                    if (selectedClass !== uiState.classId) {
-                        uiState.studentIndex = -1;
-                        uiState.groupIndex = -1;
-                    }
-
-                    if (student.index !== uiState.studentIndex) {
+                    if (uiState.studentIndex === null ||
+                        selectedClass !== uiState.studentIndex[0] ||
+                        student.index !== uiState.studentIndex[1]) {
                         dom.studentName.textContent = student.name;
-                        uiState.studentIndex = student.index;
+                        uiState.studentIndex = [selectedClass, student.index];
                     }
 
-                    if (student.group !== uiState.groupIndex) {
+                    if (uiState.groupIndex === null ||
+                        selectedClass !== uiState.groupIndex[0] ||
+                        student.group !== uiState.groupIndex[1]) {
                         dom.studentGroupNumber.textContent = student.group + 1;
 
-                        var weeks = getWeeksForGroup(student.group);
+                        var weeks = getWeeksForGroup(classData, student.group);
                         // Remove weeks where all colles are already done.
                         weeks = weeks.filter(function(w) {
                             return w.colles
@@ -534,9 +532,9 @@
                         while (dom.collesWeeks.firstChild !== null)
                             dom.collesWeeks.removeChild(dom.collesWeeks.firstChild);
                         for (var i = 0; i < weeks.length; i++)
-                            dom.collesWeeks.appendChild(createWeekElement(weeks[i]));
+                            dom.collesWeeks.appendChild(createWeekElement(classData, weeks[i]));
 
-                        uiState.groupIndex = student.group;
+                        uiState.groupIndex = [selectedClass, student.group];
                     }
                 }
             }
@@ -547,11 +545,12 @@
 
             var pending = [];
 
-            function loadDataForClass(classId) {
+            function loadDataForSelectedClass() {
+                var classId = selectedClass;
+
                 // Already loading the data.
                 if (pending.indexOf(classId) !== -1)
                     return;
-
                 pending.push(classId);
 
                 fetch("./data/" + classId + ".json")
@@ -577,10 +576,6 @@
                         }
 
                         dataByClass[classId] = classData;
-
-                        if (selectedClass === classId)
-                            selectedClassData = classData;
-
                         refreshView();
                     })
                     .catch(function(err) {
@@ -593,8 +588,7 @@
             }
             
             selectedClass = dom.classSelect.value;
-            uiState.classId = selectedClass;
-            loadDataForClass(selectedClass);
+            loadDataForSelectedClass();
         </script>
     </body>
 </html>
