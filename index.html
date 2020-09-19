@@ -157,6 +157,19 @@
         <script>
             let data = null;
 
+            /**
+             * Time formatting
+             */
+
+            const rtf = new Intl.RelativeTimeFormat("fr", {
+                numeric: "auto",
+                style: "short",
+            });
+
+            const minuteMs = 1000 * 60;
+            const hourMs = minuteMs * 60;
+            const dayMs = hourMs * 24;
+
             function isTimeBefore(a, b) {
                 return a.getHours() < b.getHours() || (a.getHours() === b.getHours() &&
                         (a.getMinutes() < b.getMinutes() || (a.getMinutes() === b.getMinutes() &&
@@ -164,24 +177,17 @@
                         a.getMilliseconds() < b.getMilliseconds())))));
             }
 
-            function formatRelativeDate(from, to) {
-                const rtf = new Intl.RelativeTimeFormat("fr", {
-                    numeric: "auto",
-                    style: "short",
-                });
+            function formatRelativeTime(from, to) {
                 const diffMs = to.valueOf() - from.valueOf();
                 const diffAbsMs = Math.abs(diffMs);
-                const minute = 1000 * 60;
-                const hour = minute * 60;
-                const day = hour * 24;
-                if (diffAbsMs < minute) {
+                if (diffAbsMs < minuteMs) {
                     return "maintenant";
-                } else if (diffAbsMs < 2 * hour) {
-                    return rtf.format((diffMs / minute).toFixed(), "minutes");
-                } else if (diffAbsMs < 2 * day) {
-                    return rtf.format((diffMs / hour).toFixed(), "hours");
+                } else if (diffAbsMs < 2 * hourMs) {
+                    return rtf.format((diffMs / minuteMs).toFixed(), "minutes");
+                } else if (diffAbsMs < 2 * dayMs) {
+                    return rtf.format((diffMs / hourMs).toFixed(), "hours");
                 } else {
-                    let dayCount = Math.floor(diffAbsMs / day);
+                    let dayCount = Math.floor(diffAbsMs / dayMs);
                     if (diffMs > 0 && isTimeBefore(to, from)) {
                         // It's tomorrow, even though the difference with today
                         // is less than 24 hrs.
@@ -193,51 +199,70 @@
                 }
             }
 
+            /**
+             * Search
+             */
+
             function normalizeName(name) {
-                return name.trim()
-                    .toLowerCase()
-                    .normalize("NFD")
+                name = name.trim()
+                    .toLowerCase();
+                // Remove accents
+                return name.normalize("NFD")
                     .replace(/[\u0300-\u036f]/g, "");
             }
 
-            function getStudentNameMatchScore(input, studentName) {
-                const inputNames = normalizeName(input).split(/[\s\-]+/);
-                const studentNames = normalizeName(studentName).split(/[\s\-]+/);
+            function tokenizeName(name) {
+                return normalizeName(name)
+                    .split(/[\s\-]+/);
+            }
+
+            function getMatchScore(inputTokens, studentNameTokens) {
+                // Make a copy of the arrays because we are going to modify
+                // them.
+                inputTokens = [...inputTokens];
+                studentNameTokens = [...studentNameTokens];
+
                 let score = 0;
-                while (inputNames.length > 0) {
-                    const inputName = inputNames.pop();
-                    const matchIndex = studentNames.findIndex(n => n.startsWith(inputName));
+                while (inputTokens.length > 0) {
+                    const inputToken = inputTokens.pop();
+                    const matchIndex = studentNameTokens
+                        .findIndex(t => t.startsWith(inputToken));
                     if (matchIndex !== -1) {
-                        score += inputName.length;
-                        studentNames.splice(matchIndex, 1);
+                        score += inputToken.length;
+                        studentNameTokens.splice(matchIndex, 1);
                     }
                 }
                 return score;
             }
 
             function findStudent(input) {
+                const inputTokens = tokenizeName(input);
                 let bestMatch = null;
                 let bestMatchScore = 0;
                 let sameScoreCount = 0;
-                for (let i in data.groups) {
-                    const group = data.groups[i];
-                    for (let studentName of group) {
-                        const score = getStudentNameMatchScore(input, studentName);
-                        if (score > bestMatchScore) {
-                            bestMatch = { name: studentName, group: parseInt(i) };
-                            bestMatchScore = score;
-                            sameScoreCount = 0;
-                        } else if (score === bestMatchScore) {
-                            sameScoreCount++;
-                        }
+                for (let entry of data.searchIndex) {
+                    const score = getMatchScore(inputTokens, entry.tokens);
+                    if (score > bestMatchScore) {
+                        bestMatch = entry;
+                        bestMatchScore = score;
+                        sameScoreCount = 0;
+                    } else if (score === bestMatchScore) {
+                        sameScoreCount++;
                     }
                 }
                 // Multiple matches with the same score means that we aren't
                 // sure.
-                if (sameScoreCount > 0)
+                if (bestMatch === null || sameScoreCount > 0)
                     return null;
-                return bestMatch;
+                return {
+                    name: data.groups[bestMatch.group][bestMatch.index],
+                    group: bestMatch.group,
+                };
             }
+
+            /**
+             * DOM
+             */
 
             const loadingEl = document.getElementById("loading");
             const studentInfoEl = document.getElementById("student-info");
@@ -245,8 +270,6 @@
             const groupNumberEl = document.getElementById("student-group-number");
             const collesWeeksEl = document.getElementById("student-colles-weeks");
             const nameInput = document.getElementById("name-input");
-
-            let groupDisplayedIndex = null;
 
             nameInput.addEventListener("input", function(e) {
                 // Remember the name so that the user doesn't have to type it on
@@ -260,6 +283,58 @@
             const previousName = localStorage.getItem("name");
             if (previousName !== null)
                 nameInput.value = previousName;
+
+            function createColleElement(colle) {
+                const colleEl = document.createElement("div");
+                colleEl.classList.add("colle");
+                colleEl.classList.add(`colle--${colle.state}`);
+                colleEl.classList.add(`colle--subject-${colle.subject}`);
+
+                const subjectEl = document.createElement("p");
+                subjectEl.classList.add("colle__subject");
+                subjectEl.textContent = data.subjects[colle.subject];
+                colleEl.appendChild(subjectEl);
+
+                const teacherEl = document.createElement("p");
+                teacherEl.classList.add("colle__teacher");
+                teacherEl.textContent = data.teachers[colle.teacher];
+                colleEl.appendChild(teacherEl);
+
+                const roomEl = document.createElement("p");
+                roomEl.classList.add("colle__room");
+                roomEl.textContent = `Salle ${colle.room}`;
+                colleEl.appendChild(roomEl);
+
+                const days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+                const day = days[colle.day];
+
+                const timeEl = document.createElement("p");
+                timeEl.classList.add("colle__time");
+                timeEl.textContent = `${day} à ${colle.startTime.getHours()} h (${formatRelativeTime(new Date(), colle.startTime)})`;
+                colleEl.appendChild(timeEl);
+
+                return colleEl;
+            }
+
+            function createWeekElement(week) {
+                const weekEl = document.createElement("section");
+                weekEl.classList.add("week");
+
+                const weekTitle = document.createElement("h1");
+                weekTitle.classList.add("week__title");
+                weekTitle.textContent = `Semaine ${week.index + 1} (${week.date[1]}/${week.date[0]})`;
+                weekEl.appendChild(weekTitle);
+
+                const colleList = document.createElement("div");
+                colleList.classList.add("week__colles");
+                for (let colle of week.colles)
+                    colleList.appendChild(createColleElement(colle));
+                weekEl.appendChild(colleList);
+
+                return weekEl;
+            }
+
+            let groupDisplayedIndex = null;
 
             function refreshView() {
                 const showLoading = data === null && nameInput.value.trim() !== "";
@@ -326,52 +401,8 @@
 
                     while (collesWeeksEl.firstChild)
                         collesWeeksEl.firstChild.remove();
-                    for (let week of weeks) {
-                        const weekEl = document.createElement("section");
-                        weekEl.classList.add("week");
-
-                        const weekTitle = document.createElement("h1");
-                        weekTitle.classList.add("week__title");
-                        weekTitle.textContent = `Semaine ${week.index + 1} (${week.date[1]}/${week.date[0]})`;
-                        weekEl.appendChild(weekTitle);
-
-                        const colleList = document.createElement("div");
-                        colleList.classList.add("week__colles");
-                        for (let colle of week.colles) {
-                            const days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
-                            const day = days[colle.day];
-
-                            const colleEl = document.createElement("div");
-                            colleEl.classList.add("colle");
-                            colleEl.classList.add(`colle--${colle.state}`);
-                            colleEl.classList.add(`colle--subject-${colle.subject}`);
-
-                            const subjectEl = document.createElement("p");
-                            subjectEl.classList.add("colle__subject");
-                            subjectEl.textContent = data.subjects[colle.subject];
-                            colleEl.appendChild(subjectEl);
-
-                            const teacherEl = document.createElement("p");
-                            teacherEl.classList.add("colle__teacher");
-                            teacherEl.textContent = data.teachers[colle.teacher];
-                            colleEl.appendChild(teacherEl);
-
-                            const roomEl = document.createElement("p");
-                            roomEl.classList.add("colle__room");
-                            roomEl.textContent = `Salle ${colle.room}`;
-                            colleEl.appendChild(roomEl);
-
-                            const timeEl = document.createElement("p");
-                            timeEl.classList.add("colle__time");
-                            timeEl.textContent = `${day} à ${colle.startTime.getHours()} h (${formatRelativeDate(now, colle.startTime)})`;
-                            colleEl.appendChild(timeEl);
-
-                            colleList.appendChild(colleEl);
-                        }
-                        weekEl.appendChild(colleList);
-
-                        collesWeeksEl.appendChild(weekEl);
-                    }
+                    for (let week of weeks)
+                        collesWeeksEl.appendChild(createWeekElement(week));
 
                     groupDisplayedIndex = student.group;
                 }
@@ -382,6 +413,15 @@
                 if (!response.ok)
                     throw new Error("response is not OK");
                 data = await response.json();
+                data.searchIndex = data.groups
+                    .flatMap((students, i) => students
+                        .map((name, j) => {
+                            return {
+                                tokens: tokenizeName(name),
+                                group: i,
+                                index: j,
+                            };
+                        }));
                 refreshView();
             }
             loadData()
