@@ -552,7 +552,13 @@
             function loadDataForSelectedClass() {
                 var classId = selectedClass;
 
-                // Already loading the data.
+                // Check if the data for that class was already loaded.
+                if (dataByClass[classId] !== undefined)
+                    return;
+
+                // Check if the date is already being loaded (this can happen if
+                // the user switches to another class and then switches back to
+                // this class).
                 if (pending.indexOf(classId) !== -1)
                     return;
                 pending.push(classId);
