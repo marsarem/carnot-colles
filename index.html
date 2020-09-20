@@ -554,33 +554,6 @@
              * Data loading
              */
 
-            function deepEquals(a, b) {
-                if (a === b)
-                    return true;
-                if (a === null || b === null)
-                    return false;
-                if (typeof a === "object") {
-                    if (typeof b !== "object")
-                        return false;
-                    if (Array.isArray(a)) {
-                        if (a.length !== b.length)
-                            return false;
-                        for (var i = 0; i < a.length; i++) {
-                            if (!deepEquals(a[i], b[i]))
-                                return false;
-                        }
-                        return true;
-                    } else {
-                        for (var i in a) {
-                            if (a[i] !== b[i])
-                                return false;
-                        }
-                        return true;
-                    }
-                }
-                return false;
-            }
-
             var pendingOrLoaded = [];
 
             function loadDataForSelectedClass() {
