@@ -593,16 +593,6 @@
                     return;
                 pendingOrLoaded.push(classId);
 
-                if (window.localStorage !== undefined) {
-                    var classData = window.localStorage.getItem("data-" + classId);
-                    if (classData !== null) {
-                        // Show the cached (maybe stale) version before fetching
-                        // the new version to reduce latency.
-                        dataByClass[classId] = JSON.parse(classData);
-                        refreshView();
-                    }
-                }
-
                 fetch("data/" + classId + ".json")
                     .then(function(response) {
                         if (!response.ok)
@@ -629,10 +619,8 @@
                         if (window.localStorage !== undefined)
                             window.localStorage.setItem("data-" + classId, JSON.stringify(responseJson));
 
-                        if (!deepEquals(dataByClass[classId], classData)) {
-                            dataByClass[classId] = classData;
-                            refreshView();
-                        }
+                        dataByClass[classId] = classData;
+                        refreshView();
                     })
                     .catch(function(err) {
                         console.error("failed to load data", err);
