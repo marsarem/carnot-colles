@@ -199,7 +199,7 @@
                 function formatHelper(value, label) {
                     var result = "";
                     result += value > 0 ? "dans " : "il y a ";
-                    result += value;
+                    result += Math.abs(value);
                     result += " ";
                     result += label;
                     if (Math.abs(value) > 1)
