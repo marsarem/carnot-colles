@@ -212,13 +212,17 @@
                 } else if (diffAbsMs < 2 * hourMs) {
                     return formatHelper(Math.round(diffMs / minuteMs), "minute");
                 } else {
-                    var diffDays = Math.floor(diffMs / dayMs);
+                    // First take the difference in actual days between the two
+                    // time points.
+                    var diffDays = Math.trunc(diffMs / dayMs);
+                    // Then increment the count if midnight has passed between
+                    // from + diffDays * dayMs and to. In French, when we talk
+                    // a difference in days, we are actually taking about the
+                    // count of midnights between the two times. This code will
+                    // correct for this.
                     if (diffMs > 0 && isTimeBefore(to, from)) {
-                        // It's tomorrow, even though the difference with today
-                        // is less than 24 hrs.
                         diffDays++;
                     } else if (diffMs < 0 && isTimeBefore(from, to)) {
-                        // Opposite of above.
                         diffDays--;
                     }
                     if (diffDays === 0) {
