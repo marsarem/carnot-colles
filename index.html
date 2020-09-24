@@ -212,7 +212,7 @@
                 } else if (diffAbsMs < 2 * hourMs) {
                     return formatHelper(Math.round(diffMs / minuteMs), "minute");
                 } else {
-                    var diffDays = Math.floor(diffAbsMs / dayMs);
+                    var diffDays = Math.floor(diffMs / dayMs);
                     if (diffMs > 0 && isTimeBefore(to, from)) {
                         // It's tomorrow, even though the difference with today
                         // is less than 24 hrs.
