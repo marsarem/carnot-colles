@@ -62,6 +62,10 @@
                 display: none;
             }
 
+            .weeks {
+                margin: 2em 0;
+            }
+
             .week__title {
                 margin: 1em 0;
             }
@@ -125,6 +129,26 @@
                 font-weight: bold;
             }
 
+            .data-credit--header {
+                margin: 2.5em 0 0 0;
+            }
+
+            .data-credit--header, .data-credit--list {
+                font-size: 0.8em;
+            }
+
+            .data-credit--list {
+                margin: 0;
+            }
+
+            .data-credit--name {
+                font-style: italic;
+            }
+
+            .data-credit__hidden {
+                display: none;
+            }
+
             @media (prefers-color-scheme: dark) {
                 body {
                     background-color: #000000;
@@ -166,6 +190,12 @@
 
                 <div id="student-colles-weeks" class="weeks"
                     aria-label="Semaines de colles"></div>
+
+                <p class="data-credit--header">
+                    Personne(s) ayant participé à l'importation et la correction
+                    des données :
+                </p>
+                <ul id="data-credit-list" class="data-credit--list"></ul>
             </div>
         </div>
 
@@ -345,6 +375,7 @@
                 studentName: document.getElementById("student-name"),
                 studentGroupNumber: document.getElementById("student-group-number"),
                 collesWeeks: document.getElementById("student-colles-weeks"),
+                dataCreditList: document.getElementById("data-credit-list"),
             };
 
             var uiState = {
@@ -436,6 +467,14 @@
                 $week.appendChild($colles);
 
                 return $week;
+            }
+
+            function createCreditElement(name) {
+                var $item = document.createElement("li");
+                $item.classList.add("data-credit--name");
+                $item.innerText = name;
+
+                return $item;
             }
 
             function getWeeksForGroup(classData, groupIndex) {
@@ -551,6 +590,11 @@
 
                         uiState.groupIndex = [selectedClass, student.group];
                     }
+
+                    while (dom.dataCreditList.firstChild !== null)
+                        dom.dataCreditList.removeChild(dom.dataCreditList.firstChild);
+                    for (var i = 0; i < classData.credit.length; i++)
+                        dom.dataCreditList.appendChild(createCreditElement(classData.credit[i]));
                 }
             }
 
