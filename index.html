@@ -203,7 +203,26 @@
             "use strict";
 
             var dataByClass = {};
-            var selectedClass;
+
+            /**
+             * Relative time formatting
+             */
+
+            var MINUTE_MS = 1000 * 60;
+            var HOUR_MS = MINUTE_MS * 60;
+            var DAY_MS = HOUR_MS * 24;
+
+            /**
+             * For a given date, returns the amount of seconds from the
+             * start of the day of the date.
+             * @param date {Date} the date
+             * @returns the amount of seconds from the start of the day
+             */
+            function getTimeOfDay(date) {
+                return date.getHours() * HOUR_MS +
+                    date.getMinutes() * MINUTE_MS +
+                    date.getSeconds();
+            }
 
             /**
              * Converts a difference between two {@code Date}s into a human
@@ -214,17 +233,6 @@
             function formatRelativeTime(from, to) {
                 var diffMs = to.valueOf() - from.valueOf();
                 var diffAbsMs = Math.abs(diffMs);
-
-                var minuteMs = 1000 * 60;
-                var hourMs = minuteMs * 60;
-                var dayMs = hourMs * 24;
-
-                function isTimeBefore(a, b) {
-                    return a.getHours() < b.getHours() || (a.getHours() === b.getHours() &&
-                            (a.getMinutes() < b.getMinutes() || (a.getMinutes() === b.getMinutes() &&
-                            (a.getSeconds() < b.getSeconds() || (a.getSeconds() === b.getSeconds() &&
-                            a.getMilliseconds() < b.getMilliseconds())))));
-                }
 
                 function formatHelper(value, label) {
                     var result = "";
@@ -237,26 +245,28 @@
                     return result;
                 }
 
-                if (diffAbsMs < minuteMs) {
+                if (diffAbsMs < MINUTE_MS) {
                     return "maintenant";
-                } else if (diffAbsMs < 2 * hourMs) {
-                    return formatHelper(Math.round(diffMs / minuteMs), "minute");
+                } else if (diffAbsMs < 2 * HOUR_MS) {
+                    return formatHelper(Math.round(diffMs / MINUTE_MS), "minute");
                 } else {
                     // First take the difference in actual days between the two
                     // time points.
-                    var diffDays = Math.trunc(diffMs / dayMs);
+                    var diffDays = Math.trunc(diffMs / DAY_MS);
                     // Then increment the count if midnight has passed between
-                    // from + diffDays * dayMs and to. In French, when we talk
-                    // a difference in days, we are actually taking about the
+                    // from + diffDays * DAY_MS and to. In French, when we talk
+                    // a difference in days, we are actually talking about the
                     // count of midnights between the two times. This code will
                     // correct for this.
-                    if (diffMs > 0 && isTimeBefore(to, from)) {
+                    var timeOfDayFrom = getTimeOfDay(from);
+                    var timeOfDayTo = getTimeOfDay(to);
+                    if (diffMs > 0 && timeOfDayTo < timeOfDayFrom) {
                         diffDays++;
-                    } else if (diffMs < 0 && isTimeBefore(from, to)) {
+                    } else if (diffMs < 0 && timeOfDayFrom < timeOfDayTo) {
                         diffDays--;
                     }
                     if (diffDays === 0) {
-                        return formatHelper(Math.round(diffMs / hourMs), "heure");
+                        return formatHelper(Math.round(diffMs / HOUR_MS), "heure");
                     } else if (diffDays === -2) {
                         return "avant-hier";
                     } else if (diffDays === -1) {
@@ -271,9 +281,17 @@
             }
 
             /**
-             * Search functions
+             * Search functionality
              */
 
+            var TOKEN_SPLIT_REGEX = /\W/;
+
+            /**
+             * Remove accents and leading/final spaces from a name and converts
+             * it to lower case.
+             * @param name {string} the name to convert
+             * @returns the new normalized name
+             */
             function normalizeName(name) {
                 name = name.trim()
                     .toLowerCase();
@@ -282,12 +300,14 @@
                     .replace(/[\u0300-\u036f]/g, "");
             }
 
-            function tokenizeName(name) {
-                return normalizeName(name)
-                    .split(/[\s\-]+/);
-            }
-
-            function getMatchScore(inputTokens, entryTokens) {
+            /**
+             * Computes a matching score between the tokens entered by the user
+             * and tokens for a particular entry.
+             * @param inputTokens {string[]} the tokens entered by the user
+             * @param entryTokens {string[]} the tokens for a particular entry
+             * @returns the matching score
+             */
+            function getMatchingScore(inputTokens, entryTokens) {
                 // Make a copy of the arrays because we are going to modify
                 // them.
                 inputTokens = inputTokens.slice();
@@ -312,17 +332,58 @@
                     }
 
                     if (shortestMatchIndex === -1) {
+                        // Return zero when at least one input token didn't
+                        // match with any of the entry's tokens.
                         return 0;
                     } else {
                         score += inputToken.length;
                         entryTokens.splice(shortestMatchIndex, 1);
                     }
                 }
+
                 return score;
             }
 
+            /**
+             * Creates a new student object.
+             * @param classData {object} the class data
+             * @param group {number} the index of the student's group
+             * @param index {number} the student's index in its group
+             */
+            function Student(classData, group, index) {
+                this.classData = classData;
+                this.group = group;
+                this.index = index;
+            }
+
+            /**
+             * Returns the student's name.
+             * @returns the student's name
+             */
+            Student.prototype.getName = function() {
+                return this.classData.groups[this.group][this.index];
+            };
+
+            /**
+             * Returns a unique ID for the student.
+             * @returns a unique ID for the student.
+             */
+            Student.prototype.getId = function() {
+                return this.classData.id * 1000000 +
+                    this.group * 1000 +
+                    this.index;
+            };
+
+            /**
+             * Performs a search given an input from the user and returns the
+             * student that was found.
+             * @param classData {object} the selected class' data
+             * @param input {string} the user input
+             * @returns the student or null if none were found
+             */
             function searchStudent(classData, input) {
-                var inputTokens = tokenizeName(input);
+                var inputTokens = normalizeName(input)
+                    .split(TOKEN_SPLIT_REGEX);
 
                 // Put the shortest tokens at the beggining of the array so that
                 // they get matched last with the student name's tokens. Indeed,
@@ -338,7 +399,8 @@
                 var bestMatchScore = 0;
                 var sameScoreCount = 0;
                 for (var i = 0; i < classData.searchIndex.length; i++) {
-                    var score = getMatchScore(inputTokens, classData.searchIndex[i].tokens);
+                    var score = getMatchingScore(inputTokens,
+                        classData.searchIndex[i].tokens);
                     if (score > bestMatchScore) {
                         bestMatchIndex = i;
                         bestMatchScore = score;
@@ -354,23 +416,20 @@
                     return null;
 
                 var bestMatch = classData.searchIndex[bestMatchIndex];
-                return {
-                    index: bestMatchIndex,
-                    name: classData.groups[bestMatch.group][bestMatch.index],
-                    group: bestMatch.group,
-                };
+                return new Student(classData, bestMatch.group, bestMatch.index);
             }
 
             /**
-             * DOM manipulation
+             * UI interface
              */
 
             var dom = {
+                // Search form
                 classSelect: document.getElementById("class-select"),
                 nameInput: document.getElementById("name-input"),
-
                 loading: document.getElementById("loading"),
 
+                // Student information
                 studentInfo: document.getElementById("student-info"),
                 studentName: document.getElementById("student-name"),
                 studentGroupNumber: document.getElementById("student-group-number"),
@@ -379,48 +438,51 @@
             };
 
             var uiState = {
-                isLoadingVisible: false,
-                isStudentInfoVisible: false,
-                studentIndex: null,
-                groupIndex: null,
+                selectedClass: null,
+                loadingHidden: true,
+                studentInfoHidden: true,
+                studentId: null,
+                dataCreditDirty: true,
             };
 
             function registerEventListeners() {
                 dom.classSelect.addEventListener("change", function(e) {
-                    // Remember the class so that the user doesn't have to type it
-                    // on every page reload.
+                    var classId = dom.classSelect.value;
+
+                    // Remember the class so that the user doesn't have to type
+                    // it after the page is closed and opened again.
                     if (window.localStorage !== undefined)
-                        localStorage.setItem("class", dom.classSelect.value);
+                        localStorage.setItem("class", classId);
                     
-                    selectedClass = dom.classSelect.value;
-                    loadDataForSelectedClass();
+                    if (uiState.selectedClass === classId)
+                        return;
+                    uiState.selectedClass = classId;
+
+                    loadClassData(classId)
+                        .then(function() {
+                            // Only refresh the view if the selected class was
+                            // not changed in between the load start and end.
+                            if (uiState.selectedClass !== classId)
+                                return;
+
+                            // Recreate class dependent elements
+                            uiState.dataCreditDirty = true;
+
+                            refreshView();
+                        });
                     
+                    // Show loader
                     refreshView();
                 });
 
                 dom.nameInput.addEventListener("input", function(e) {
-                    // Same as above.
+                    // Remember the name so that the user doesn't have to type
+                    // it after the page is closed and opened again.
                     if (window.localStorage !== undefined)
                         localStorage.setItem("name", dom.nameInput.value);
 
                     refreshView();
                 });
-            }
-
-            function loadPreviousValues() {
-                // Fill the inputs with the values that were entered previously
-                // before the page was unloaded.
-                if (window.localStorage !== undefined) {
-                    var previousClass = localStorage.getItem("class");
-                    if (previousClass !== null)
-                        dom.classSelect.value = previousClass;
-
-                    var previousName = localStorage.getItem("name");
-                    if (previousName !== null) {
-                        dom.nameInput.value = previousName;
-                        refreshView();
-                    }
-                }
             }
 
             function createColleElement(classData, colle) {
@@ -434,8 +496,8 @@
                 $subject.textContent = classData.subjects[colle.subject];
                 $colle.appendChild($subject);
 
-                var days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
-                var day = days[colle.day];
+                var DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+                var day = DAYS[colle.day];
 
                 var $info = document.createElement("p");
                 $info.classList.add("colle__info");
@@ -535,43 +597,36 @@
             }
 
             function refreshView() {
-                var classData = dataByClass[selectedClass];
+                var classData = dataByClass[uiState.selectedClass];
 
-                var showLoading = classData === undefined &&
-                    dom.nameInput.value.trim() !== "";
-                if (showLoading !== uiState.isLoadingVisible) {
-                    if (showLoading) {
-                        dom.loading.classList.remove("loading--hidden");
-                    } else {
+                var loadingHidden = classData !== undefined ||
+                    dom.nameInput.value.trim() === "";
+                if (loadingHidden !== uiState.loadingHidden) {
+                    if (loadingHidden) {
                         dom.loading.classList.add("loading--hidden");
+                    } else {
+                        dom.loading.classList.remove("loading--hidden");
                     }
-                    uiState.isLoadingVisible = showLoading;
+                    uiState.loadingHidden = loadingHidden;
                 }
 
                 var student = classData === undefined ? null :
                     searchStudent(classData, dom.nameInput.value);
 
-                var showStudentInfo = student !== null;
-                if (showStudentInfo !== uiState.isStudentInfoVisible) {
-                    if (showStudentInfo) {
-                        dom.studentInfo.classList.remove("student-info--hidden");
-                    } else {
+                var studentInfoHidden = student === null;
+                if (studentInfoHidden !== uiState.studentInfoHidden) {
+                    if (studentInfoHidden) {
                         dom.studentInfo.classList.add("student-info--hidden");
+                    } else {
+                        dom.studentInfo.classList.remove("student-info--hidden");
                     }
-                    uiState.isStudentInfoVisible = showStudentInfo;
+                    uiState.studentInfoHidden = studentInfoHidden;
                 }
 
-                if (showStudentInfo) {
-                    if (uiState.studentIndex === null ||
-                        selectedClass !== uiState.studentIndex[0] ||
-                        student.index !== uiState.studentIndex[1]) {
-                        dom.studentName.textContent = student.name;
-                        uiState.studentIndex = [selectedClass, student.index];
-                    }
-
-                    if (uiState.groupIndex === null ||
-                        selectedClass !== uiState.groupIndex[0] ||
-                        student.group !== uiState.groupIndex[1]) {
+                if (!studentInfoHidden) {
+                    var studentId = student.getId();
+                    if (studentId !== uiState.studentId) {
+                        dom.studentName.textContent = student.getName();
                         dom.studentGroupNumber.textContent = student.group + 1;
 
                         var weeks = getWeeksForGroup(classData, student.group);
@@ -588,13 +643,17 @@
                         for (var i = 0; i < weeks.length; i++)
                             dom.collesWeeks.appendChild(createWeekElement(classData, weeks[i]));
 
-                        uiState.groupIndex = [selectedClass, student.group];
+                        uiState.studentId = studentId;
                     }
 
-                    while (dom.dataCreditList.firstChild !== null)
-                        dom.dataCreditList.removeChild(dom.dataCreditList.firstChild);
-                    for (var i = 0; i < classData.credit.length; i++)
-                        dom.dataCreditList.appendChild(createCreditElement(classData.credit[i]));
+                    if (uiState.dataCreditDirty) {
+                        while (dom.dataCreditList.firstChild !== null)
+                            dom.dataCreditList.removeChild(dom.dataCreditList.firstChild);
+                        for (var i = 0; i < classData.credit.length; i++)
+                            dom.dataCreditList.appendChild(createCreditElement(classData.credit[i]));
+
+                        uiState.dataCreditDirty = false;
+                    }
                 }
             }
 
@@ -602,56 +661,112 @@
              * Data loading
              */
 
-            var pendingOrLoaded = [];
+            var pendingLoad = {};
+            var idCounter = 0;
 
-            function loadDataForSelectedClass() {
-                var classId = selectedClass;
-
+            /**
+             * Loads the data for a given class ID. A promise is returned that
+             * resolves when the data is finished loading.
+             * @param classId {string} the id of the class' data to load
+             * @returns a promise that resolves on completion
+             */
+            function loadClassData(classId) {
+                if (dataByClass[classId] !== undefined)
+                    return Promise.resolve();
+                
                 // Check if the date is already being loaded (this can happen if
                 // the user switches to another class and then switches back to
                 // this class).
-                if (pendingOrLoaded.indexOf(classId) !== -1)
-                    return;
-                pendingOrLoaded.push(classId);
-
-                fetch("data/" + classId + ".json")
-                    .then(function(response) {
-                        if (!response.ok)
-                            throw new Error("response is not OK");
-                        return response.json();
-                    })
-                    .then(function(responseJson) {
-                        var classData = responseJson;
-
-                        // Tokenize the names right away to make searching faster
-                        classData.searchIndex = [];
-                        for (var i = 0; i < classData.groups.length; i++) {
-                            var group = classData.groups[i];
-                            for (var j = 0; j < group.length; j++) {
-                                classData.searchIndex.push({
-                                    tokens: tokenizeName(group[j]),
-                                    group: i,
-                                    index: j,
-                                });
-                            }
-                        }
-
-                        dataByClass[classId] = classData;
-                        refreshView();
-                    })
-                    .catch(function(err) {
-                        console.error("failed to load data", err);
+                if (pendingLoad[classId] !== undefined) {
+                    return new Promise(function(resolve, reject) {
+                        pendingLoad[classId].push(resolve);
                     });
+                }
+                
+                return new Promise(function(resolve, reject) {
+                    var resolveFunctions = [];
+                    resolveFunctions.push(resolve);
+
+                    pendingLoad[classId] = resolveFunctions;
+
+                    fetch("data/" + classId + ".json")
+                        .then(function(response) {
+                            if (!response.ok)
+                                throw new Error("response is not OK");
+                            return response.json();
+                        })
+                        .then(function(responseJson) {
+                            var classData = responseJson;
+
+                            classData.id = idCounter++;
+
+                            // Tokenize the names right away to make searching
+                            // faster.
+                            classData.searchIndex = [];
+                            for (var i = 0; i < classData.groups.length; i++) {
+                                var group = classData.groups[i];
+                                for (var j = 0; j < group.length; j++) {
+                                    classData.searchIndex.push({
+                                        tokens: normalizeName(group[j])
+                                            .split(TOKEN_SPLIT_REGEX),
+                                        group: i,
+                                        index: j,
+                                    });
+                                }
+                            }
+
+                            dataByClass[classId] = classData;
+                            
+                            // Call the resolve functions for every promise.
+                            for (var i = 0; i < resolveFunctions.length; i++)
+                                resolveFunctions[i]();
+                            
+                            pendingLoad[classId] = null;
+                        })
+                        .catch(function(err) {
+                            console.error("failed to load data", err);
+                        });
+                });
             }
 
             /**
              * Entry point and resource loading
              */
+
+            function loadPreviousValues() {
+                // Fill the inputs with the values that were entered previously
+                // before the page was closed.
+                if (window.localStorage !== undefined) {
+                    var previousClass = localStorage.getItem("class");
+                    if (previousClass !== null) {
+                        dom.classSelect.value = previousClass;
+                        uiState.selectedClass = previousClass;
+                    }
+
+                    var previousName = localStorage.getItem("name");
+                    if (previousName !== null) {
+                        dom.nameInput.value = previousName;
+
+                        // Initial search
+                        refreshView();
+                    }
+                }
+
+                if (uiState.selectedClass === null)
+                    uiState.selectedClass = dom.classSelect.value;
+            }
             
             function main() {
                 loadPreviousValues();
-                selectedClass = dom.classSelect.value;
-                loadDataForSelectedClass();
+
+                var classId = uiState.selectedClass;
+                loadClassData(classId)
+                    .then(function() {
+                        if (uiState.selectedClass !== classId)
+                            return;
+                        refreshView();
+                    });
+                
                 registerEventListeners();
             }
 
