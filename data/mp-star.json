@@ -1,5 +1,5 @@
 {
-    "credit": [
+    "credits": [
         "DEPOIRE--FERRER Greg"
     ],
     "groups": [
@@ -261,7 +261,7 @@
         {
             "subject": 3,
             "teacher": 22,
-            "day": "1",
+            "day": 1,
             "room": "104",
             "time": 16
         }

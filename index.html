@@ -132,23 +132,23 @@
                 font-weight: bold;
             }
 
-            .data-credit--header {
+            .data-credits--header {
                 margin: 2.5em 0 0 0;
             }
 
-            .data-credit--header, .data-credit--list {
+            .data-credits--header, .data-credits--list {
                 font-size: 0.8em;
             }
 
-            .data-credit--list {
+            .data-credits--list {
                 margin: 0;
             }
 
-            .data-credit--name {
+            .data-credits--name {
                 font-style: italic;
             }
 
-            .data-credit__hidden {
+            .data-credits__hidden {
                 display: none;
             }
 
@@ -210,11 +210,11 @@
                 <div id="student-colles-weeks" class="weeks"
                     aria-label="Semaines de colles"></div>
 
-                <p class="data-credit--header">
+                <p class="data-credits--header">
                     Personne(s) ayant participé à l'importation et la correction
                     des données :
                 </p>
-                <ul id="data-credit-list" class="data-credit--list"></ul>
+                <ul id="data-credits-list" class="data-credits--list"></ul>
             </div>
         </div>
 
@@ -453,7 +453,7 @@
                 studentName: document.getElementById("student-name"),
                 studentGroupNumber: document.getElementById("student-group-number"),
                 collesWeeks: document.getElementById("student-colles-weeks"),
-                dataCreditList: document.getElementById("data-credit-list"),
+                dataCredits: document.getElementById("data-credits-list"),
             };
 
             var uiState = {
@@ -461,7 +461,7 @@
                 loadingHidden: true,
                 studentInfoHidden: true,
                 studentId: null,
-                dataCreditDirty: true,
+                dataCreditsDirty: true,
             };
 
             function registerEventListeners() {
@@ -485,7 +485,7 @@
                                 return;
 
                             // Recreate class dependent elements
-                            uiState.dataCreditDirty = true;
+                            uiState.dataCreditsDirty = true;
 
                             refreshView();
                         });
@@ -550,9 +550,9 @@
                 return $week;
             }
 
-            function createCreditElement(name) {
+            function createCreditsElement(name) {
                 var $item = document.createElement("li");
-                $item.classList.add("data-credit--name");
+                $item.classList.add("data-credits--name");
                 $item.innerText = name;
 
                 return $item;
@@ -665,13 +665,13 @@
                         uiState.studentId = studentId;
                     }
 
-                    if (uiState.dataCreditDirty) {
-                        while (dom.dataCreditList.firstChild !== null)
-                            dom.dataCreditList.removeChild(dom.dataCreditList.firstChild);
-                        for (var i = 0; i < classData.credit.length; i++)
-                            dom.dataCreditList.appendChild(createCreditElement(classData.credit[i]));
+                    if (uiState.dataCreditsDirty) {
+                        while (dom.dataCredits.firstChild !== null)
+                            dom.dataCredits.removeChild(dom.dataCredits.firstChild);
+                        for (var i = 0; i < classData.credits.length; i++)
+                            dom.dataCredits.appendChild(createCreditsElement(classData.credits[i]));
 
-                        uiState.dataCreditDirty = false;
+                        uiState.dataCreditsDirty = false;
                     }
                 }
             }
