@@ -6,7 +6,7 @@ stockées dans le dossier `data`, avec un fichier par classe.
 ## Format des fichiers par classe
 
 Le fichier est un fichier JSON. À la racine, on trouve un objet avec dans
-l'ordre:
+l'ordre :
 * Les personnes ayant participé à l'importation et la correction des données
   (clé `credits`) sous forme d'un tableau de chaînes de caractères.
 * Les groupes (clé `groups`) sous forme de tableau de groupes, chaque groupe
@@ -16,7 +16,7 @@ l'ordre:
 * Les colleurs (clé `teachers`) sous forme d'un tableau de chaînes de
   caractères.
 * Les types de colles (clé `types`). Chaque type est un object lui-même qui
-  comporte dans l'ordre:
+  comporte dans l'ordre :
   * Une matière (clé `subject`) qui représente un indice partant de 0 dans le
     tableau des matières.
   * Un colleur (clé `teacher`) qui représente un indice partant de 0 dans le
@@ -35,7 +35,7 @@ l'ordre:
   entrée représente le tableau de colles du deuxième groupe, etc. Dans un
   tableau de colles pour un groupe, il y a les colles triées par ordre
   chronologique à la semaine près et pas forcément au jour près. Chaque colle
-  est un objet qui comporte:
+  est un objet qui comporte dans l'ordre :
   * La semaine (clé `week`) qui représente un indice partant de 0 dans le
     tableau des semaines.
   * Le type de colle (clé `type`) qui représente un indice partant de 0 dans le
