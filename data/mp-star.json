@@ -122,7 +122,7 @@
             "subject": 0,
             "teacher": 4,
             "day": 1,
-            "room": "011",
+            "room": "11",
             "time": 17
         },
         {
@@ -227,7 +227,7 @@
             "subject": 2,
             "teacher": 19,
             "day": 3,
-            "room": "026",
+            "room": "26",
             "time": 17
         },
         {
@@ -248,7 +248,7 @@
             "subject": 2,
             "teacher": 19,
             "day": 3,
-            "room": "026",
+            "room": "26",
             "time": 16
         },
         {
