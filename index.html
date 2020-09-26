@@ -20,7 +20,7 @@
             }
 
             body {
-                font-family: 'Open Sans', sans-serif;
+                font-family: Roboto, sans-serif;
                 line-height: 1.6;
             }
 
@@ -41,6 +41,7 @@
 
             .class-select {
                 font-size: 1em;
+                font-weight: bold;
             }
 
             .name-input {
@@ -86,9 +87,8 @@
                 padding: 1em;
 
                 border-style: solid;
-                border-width: 0.2em;
-
-                text-align: center;
+                border-width: 0.3em;
+                border-radius: 0.5em;
             }
 
             .colle--waiting {
@@ -123,6 +123,10 @@
 
             .colle__subject, .colle__info {
                 margin: 0;
+                
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             .colle__subject {
@@ -149,9 +153,24 @@
                 display: none;
             }
 
+            @media (max-width: 30em) {
+                .title {
+                    text-align: center;
+                }
+
+                .week__colles {
+                    margin: -0.5em 0;
+                }
+
+                .colle {
+                    width: 100%;
+                    margin: 0.5em 0;
+                }
+            }
+
             @media (prefers-color-scheme: dark) {
                 body {
-                    background-color: #000000;
+                    background-color: #121314;
                     color: #FFFFFF;
                 }
             }
@@ -171,7 +190,7 @@
             <form class="name-form">
                 <label for="name-input">Entrez votre nom :</label>
                 <input id="name-input" class="name-input" type="text"
-                    placeholder="Jean Dupont">
+                    placeholder="e.g. Jean Dupont">
             </form>
 
             <p id="loading" class="loading--hidden">
@@ -771,6 +790,12 @@
             }
 
             function loadPolyfillsAsync(cb) {
+                if (Math.trunc === undefined) {
+                    Math.trunc = function(v) {
+                        return v < 0 ? Math.ceil(v) : Math.floor(v);
+                    };
+                }
+
                 var POLYFILLS = [
                     { check: window.Promise, url: "https://cdn.jsdelivr.net/npm/promise-polyfill@8.1.3/dist/polyfill.min.js" },
                     { check: window.fetch, url: "https://cdn.jsdelivr.net/npm/whatwg-fetch@3.4.1/dist/fetch.umd.js" },
@@ -806,7 +831,7 @@
             function loadFontAsync() {
                 var $link = document.createElement("link");
                 $link.rel = "stylesheet";
-                $link.href = "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap";
+                $link.href = "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap";
                 document.head.appendChild($link);
             }
 
