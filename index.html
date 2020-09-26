@@ -592,10 +592,6 @@
                             }
                         }
 
-                        // Cache it for later.
-                        if (window.localStorage !== undefined)
-                            window.localStorage.setItem("data-" + classId, JSON.stringify(responseJson));
-
                         dataByClass[classId] = classData;
                         refreshView();
                     })
