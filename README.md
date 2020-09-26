@@ -5,7 +5,10 @@ stockées dans le dossier `data`, avec un fichier par classe.
 
 ## Format des fichiers par classe
 
-Le fichier est un fichier JSON. À la racine, on trouve un objet avec:
+Le fichier est un fichier JSON. À la racine, on trouve un objet avec dans
+l'ordre:
+* Les personnes ayant participé à l'importation et la correction des données
+  (clé `credits`) sous forme d'un tableau de chaînes de caractères.
 * Les groupes (clé `groups`) sous forme de tableau de groupes, chaque groupe
   étant un tableau d'élèves.
 * Les matières (clé `subjects`) sous forme d'un tableau de chaînes de
@@ -13,7 +16,7 @@ Le fichier est un fichier JSON. À la racine, on trouve un objet avec:
 * Les colleurs (clé `teachers`) sous forme d'un tableau de chaînes de
   caractères.
 * Les types de colles (clé `types`). Chaque type est un object lui-même qui
-  comporte:
+  comporte dans l'ordre:
   * Une matière (clé `subject`) qui représente un indice partant de 0 dans le
     tableau des matières.
   * Un colleur (clé `teacher`) qui représente un indice partant de 0 dans le
@@ -25,7 +28,8 @@ Le fichier est un fichier JSON. À la racine, on trouve un objet avec:
   * Une heure (clé `time`) sous forme d'entier qui représente l'heure de début
     de la colle.
 * Les semaines (clé `weeks`) sous forme d'un tableau de semaines, chaque semaine
-  étant représentée par une chaîne de caractère du type `<mois>-<jour>`.
+  étant représentée par une chaîne de caractère du type `<mois>-<jour>`. Les
+  semaines sont triées par ordre chronologique.
 * Les colles (clé `colles`) sous forme de tableau de colles par groupe. La
   première entrée représente le tableau de colles du premier groupe, la deuxième
   entrée représente le tableau de colles du deuxième groupe, etc. Dans un
@@ -36,6 +40,9 @@ Le fichier est un fichier JSON. À la racine, on trouve un objet avec:
     tableau des semaines.
   * Le type de colle (clé `type`) qui représente un indice partant de 0 dans le
     tableau des types de colles.
+
+L'indentation utilisée est 4 espaces, et chaque object et tableau est écrit sur
+plusieurs lignes.
 
 ## Erreurs ou changements de colles
 

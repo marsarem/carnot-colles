@@ -1,0 +1,11 @@
+name: validate-pr
+on: [push, pull_request]
+jobs:
+  validate-class-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: node ./validate-data.js
+        env:
+          VALIDATE_LF: 1
