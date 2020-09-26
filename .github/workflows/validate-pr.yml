@@ -1,5 +1,7 @@
-name: validate-push
-on: [push]
+name: validate-pr
+on:
+  pull_request:
+    branches: [main]
 jobs:
   validate-class-data:
     runs-on: ubuntu-latest
