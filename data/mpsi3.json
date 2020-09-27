@@ -4,7 +4,7 @@
         "DEPOIRE--FERRER Greg"
     ],
     "groups": [
-    	[
+        [
             "CATTÉ Aurélien",
             "LABILLE Maaike",
             "MOUNIER Timothée"
@@ -93,252 +93,257 @@
         "Physique",
         "Anglais"
     ],
-	"teachers": [
-		"Mr CHENAL",
-		"Mr PHILIPPE",
-		"Mme BAROZET",
-		"Mr TOINET",
-		"Mr EUZENAT",
-		"Mr CAIRE",
-		"Mr BELOUAL",
-		"Mme AYED",
-		"Mme COUZON",
-		"Mr ROGNERUD",
-		"Mr PETITIEAN",
-		"Mr CURIE",
-		"Mme MARCET",
-		"Mr MAUNY",
-		"Mr LAURENCON",
-		"Mr SLASSI",
-		"Mme RENAULT",
-		"Mr SUGNY",
-		"Mr LABOPIN",
-		"Mr FOUCHE",
-		"Mr BATT",
-		"Mr KOHLI",
-		"Mr BELLAASSALI",
-		"Mr TROTTIER",
-		"Mr RIBOULET",
-		"Mr BATHELIER",
-		"Mr MOREAU-ALEXANDRE",
-		"Mr MILLOT",
-		"Mme RATIVEAU",
-		"Mr BLANQUET"
-	],
-	"types": [
-		{
+    "teachers": [
+        "Mr CHENAL",
+        "Mr PHILIPPE",
+        "Mme BAROZET",
+        "Mr TOINET",
+        "Mr EUZENAT",
+        "Mr CAIRE",
+        "Mr BELOUAL",
+        "Mme AYED",
+        "Mme COUZON",
+        "Mr ROGNERUD",
+        "Mr PETITIEAN",
+        "Mr CURIE",
+        "Mme MARCET",
+        "Mr MAUNY",
+        "Mr LAURENCON",
+        "Mr SLASSI",
+        "Mme RENAULT",
+        "Mr SUGNY",
+        "Mr LABOPIN",
+        "Mr FOUCHE",
+        "Mr BATT",
+        "Mr KOHLI",
+        "Mr BELLAASSALI",
+        "Mr TROTTIER",
+        "Mr RIBOULET",
+        "Mr BATHELIER",
+        "Mr MOREAU-ALEXANDRE",
+        "Mr MILLOT",
+        "Mme RATIVEAU",
+        "Mr BLANQUET"
+    ],
+    "types": [
+        {
             "subject": 0,
             "teacher": 3,
             "day": 0,
             "room": "191",
-            "time": 16        
+            "time": 16
         },
-		{
+        {
             "subject": 0,
             "teacher": 6,
             "day": 4,
             "room": "13",
             "time": 17
         },
-		{
+        {
             "subject": 0,
             "teacher": 25,
             "day": 0,
             "room": "13",
             "time": 18
         },
-		{
+        {
             "subject": 0,
             "teacher": 29,
             "day": 4,
             "room": "12",
             "time": 18
         },
-		{
+        {
             "subject": 0,
             "teacher": 2,
             "day": 1,
             "room": "206",
             "time": 17
         },
-		{
+        {
             "subject": 0,
             "teacher": 18,
             "day": 4,
             "room": "24",
             "time": 18
         },
-		{
+        {
             "subject": 0,
             "teacher": 23,
             "day": 1,
             "room": "223",
             "time": 17
         },
-		{
+        {
             "subject": 0,
             "teacher": 14,
             "day": 4,
-            "room": "273",            "time": 16
+            "room": "273",
+            "time": 16
         },
-		{
+        {
             "subject": 0,
             "teacher": 21,
             "day": 3,
             "room": "108",
             "time": 18
         },
-		{
+        {
             "subject": 0,
             "teacher": 19,
             "day": 4,
             "room": "25",
             "time": 17
         },
-		{
+        {
             "subject": 0,
             "teacher": 15,
             "day": 1,
             "room": "14",
             "time": 18
         },
-		{
+        {
             "subject": 0,
             "teacher": 4,
             "day": 4,
             "room": "121",
-                        "time": 16
-        
+            "time": 16
         },
-		{
+        {
             "subject": 0,
             "teacher": 22,
             "day": 0,
             "room": "12",
             "time": 18
         },
-		{
+        {
             "subject": 0,
             "teacher": 0,
             "day": 4,
             "room": "205",
             "time": 17
         },
-		{
+        {
             "subject": 0,
             "teacher": 8,
             "day": 0,
             "room": "11",
             "time": 18
         },
-		{
+        {
             "subject": 0,
             "teacher": 10,
             "day": 4,
             "room": "223",
             "time": 18
         },
-		{
+        {
             "subject": 0,
             "teacher": 1,
             "day": 3,
             "room": "13",
             "time": 18
         },
-		{
+        {
             "subject": 1,
             "teacher": 13,
             "day": 4,
             "room": "164",
             "time": 16
         },
-		{
+        {
             "subject": 1,
             "teacher": 28,
             "day": 0,
-            "room": "165",            "time": 16
+            "room": "165",
+            "time": 16
         },
-		{
+        {
             "subject": 1,
             "teacher": 27,
             "day": 4,
-            "room": "166",            "time": 16
+            "room": "166",
+            "time": 16
         },
-		{
+        {
             "subject": 1,
             "teacher": 11,
             "day": 0,
-            "room": "171",            "time": 16
+            "room": "171",
+            "time": 16
         },
-		{
+        {
             "subject": 1,
             "teacher": 17,
             "day": 1,
             "room": "166",
             "time": 17
         },
-		{
+        {
             "subject": 1,
             "teacher": 24,
             "day": 1,
             "room": "159",
             "time": 17
         },
-		{
+        {
             "subject": 1,
             "teacher": 9,
             "day": 0,
-            "room": "166",            "time": 16
+            "room": "166",
+            "time": 16
         },
-		{
+        {
             "subject": 1,
             "teacher": 12,
             "day": 1,
             "room": "158",
             "time": 18
         },
-		{
+        {
             "subject": 1,
             "teacher": 16,
             "day": 0,
-            "room": "202",            "time": 16
+            "room": "202",
+            "time": 16
         },
-		{
+        {
             "subject": 2,
             "teacher": 5,
             "day": 4,
             "room": "104",
             "time": 18
         },
-		{
+        {
             "subject": 2,
             "teacher": 7,
             "day": 1,
             "room": "203",
             "time": 17
         },
-		{
+        {
             "subject": 2,
             "teacher": 20,
             "day": 4,
             "room": "103",
             "time": 18
         },
-		{
+        {
             "subject": 2,
             "teacher": 7,
             "day": 1,
             "room": "203",
             "time": 17
         },
-		{
+        {
             "subject": 2,
             "teacher": 26,
             "day": 4,
             "room": "136",
             "time": 18
         },
-		{
+        {
             "subject": 2,
             "teacher": 16,
             "day": 1,
@@ -352,8 +357,8 @@
             "room": "32",
             "time": 18
         }
-	],
-	"weeks": [
+    ],
+    "weeks": [
         "9-14",
         "9-21",
         "9-28",
@@ -385,7 +390,7 @@
         "5-31",
         "6-7"
     ],
-	"colles": [
+    "colles": [
         [
             {
                 "week": 0,
@@ -2431,6 +2436,6 @@
                 "week": 14,
                 "type": 18
             }
-        ]   
+        ]
     ]
 }
