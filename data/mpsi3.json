@@ -303,6 +303,13 @@
         },
         {
             "subject": 1,
+            "teacher": 11,
+            "day": 0,
+            "room": "171",
+            "time": 18
+        },
+        {
+            "subject": 2,
             "teacher": 16,
             "day": 0,
             "room": "202",
