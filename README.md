@@ -13,7 +13,7 @@ l'ordre :
   étant un tableau d'élèves.
 * Le numéro du premier groupe (clé `firstGroup`) sous forme d'entier. Dans
   certaines classes, les numéros de groupes commencent à 0 alors que dans
-  d'autres, il commence à 1.
+  d'autres, ils commencent à 1.
 * Les matières (clé `subjects`) sous forme d'un tableau de chaînes de
   caractères.
 * Les colleurs (clé `teachers`) sous forme d'un tableau de chaînes de
