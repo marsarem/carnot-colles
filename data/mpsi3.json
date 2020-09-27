@@ -1,0 +1,2447 @@
+{
+    "credits": [
+        "COSTE Elio"
+    ],
+    "groups": [
+        [
+            "CATTÉ Aurélien",
+            "LABILLE Maaike",
+            "MOUNIER Timothée"
+        ],
+        [
+            "DUMONT Joshua",
+            "GAUTHÉ Corentin",
+            "ROMAIN Jason"
+        ],
+        [
+            "MEDIGUE Baptiste",
+            "PALAZY Cyriak",
+            "REVERCHON Étienne"
+        ],
+        [
+            "CAVAILLAC Hugo",
+            "NZENGU Pierre",
+            "SALL Ibrahim"
+        ],
+        [
+            "BERMOND Léa",
+            "DHIVERT Sarah",
+            "GRUET Léa"
+        ],
+        [
+            "AULAGNIER Mathis",
+            "COUTURIER Gaël",
+            "HANCHIN Thomas"
+        ],
+        [
+            "GADY Aure",
+            "NGUYEN Kim",
+            "SHEHABI Fanny"
+        ],
+        [
+            "DE ROUGEMONT Guillaume",
+            "DIVETAIN Mathieu"
+        ],
+        [
+            "BACHER Louis",
+            "MONS Kim",
+            "THOMAS Louis"
+        ],
+        [
+            "GUIGNARD Camille",
+            "JAMOUS Dany",
+            "MISTON Clara"
+        ],
+        [
+            "BOUKLOU Hamza",
+            "GUINGAND Gabriel",
+            "REZZOUQA Mohamed"
+        ],
+        [
+            "BARATA Tristan",
+            "OUTREY Arthur",
+            "COSTE Elio"
+        ],
+        [
+            "CAMELIN Lisa",
+            "GARDIENNET Louise"
+        ],
+        [
+            "CHARROIN Camille",
+            "DERAIN Lilian",
+            "LANGE Nicolas"
+        ],
+        [
+            "ALI SALEH AMMAR",
+            "PETEL Noa",
+            "BLONDEL Camille"
+        ],
+        [
+            "COURTOIS Thibault",
+            "DENIEL théo",
+            "NAIME Mathieu"
+        ],
+        [
+            "BAILLY Louis",
+            "BAZEROLLE François",
+            "GUIGON Marie"
+        ]
+    ],
+    "subjects": [
+        "Mathématiques",
+        "Physique",
+        "Anglais"
+    ],
+    "teachers": [
+        "Mr CHENAL",
+        "Mr PHILIPPE",
+        "Mme BAROZET",
+        "Mr TOINET",
+        "Mr EUZENAT",
+        "Mr CAIRE",
+        "Mr BELOUAL",
+        "Mme AYED",
+        "Mme COUZON",
+        "Mr ROGNERUD",
+        "Mr PETITIEAN",
+        "Mr CURIE",
+        "Mme MARCET",
+        "Mr MAUNY",
+        "Mr LAURENCON",
+        "Mr SLASSI",
+        "Mme RENAULT",
+        "Mr SUGNY",
+        "Mr LABOPIN",
+        "Mr FOUCHE",
+        "Mr BATT",
+        "Mr KOHLI",
+        "Mr BELLAASSALI",
+        "Mr TROTTIER",
+        "Mr RIBOULET",
+        "Mr BATHELIER",
+        "Mr MOREAU-ALEXANDRE",
+        "Mr MILLOT",
+        "Mme RATIVEAU",
+        "Mr BLANQUET"
+    ],
+    "types": [
+        {
+            "subject": 0,
+            "teacher": 3,
+            "day": 0,
+            "room": "191",
+            "time": 16
+        },
+        {
+            "subject": 0,
+            "teacher": 6,
+            "day": 4,
+            "room": "13",
+            "time": 17
+        },
+        {
+            "subject": 0,
+            "teacher": 25,
+            "day": 0,
+            "room": "13",
+            "time": 18
+        },
+        {
+            "subject": 0,
+            "teacher": 29,
+            "day": 4,
+            "room": "12",
+            "time": 18
+        },
+        {
+            "subject": 0,
+            "teacher": 2,
+            "day": 1,
+            "room": "206",
+            "time": 17
+        },
+        {
+            "subject": 0,
+            "teacher": 18,
+            "day": 4,
+            "room": "24",
+            "time": 18
+        },
+        {
+            "subject": 0,
+            "teacher": 23,
+            "day": 1,
+            "room": "223",
+            "time": 17
+        },
+        {
+            "subject": 0,
+            "teacher": 14,
+            "day": 4,
+            "room": "273",
+            "time": 16
+        },
+        {
+            "subject": 0,
+            "teacher": 21,
+            "day": 3,
+            "room": "108",
+            "time": 18
+        },
+        {
+            "subject": 0,
+            "teacher": 19,
+            "day": 4,
+            "room": "25",
+            "time": 17
+        },
+        {
+            "subject": 0,
+            "teacher": 15,
+            "day": 1,
+            "room": "14",
+            "time": 18
+        },
+        {
+            "subject": 0,
+            "teacher": 4,
+            "day": 4,
+            "room": "121",
+            "time": 16
+        },
+        {
+            "subject": 0,
+            "teacher": 22,
+            "day": 0,
+            "room": "12",
+            "time": 18
+        },
+        {
+            "subject": 0,
+            "teacher": 0,
+            "day": 4,
+            "room": "205",
+            "time": 17
+        },
+        {
+            "subject": 0,
+            "teacher": 8,
+            "day": 0,
+            "room": "11",
+            "time": 18
+        },
+        {
+            "subject": 0,
+            "teacher": 10,
+            "day": 4,
+            "room": "223",
+            "time": 18
+        },
+        {
+            "subject": 0,
+            "teacher": 1,
+            "day": 3,
+            "room": "13",
+            "time": 18
+        },
+        {
+            "subject": 1,
+            "teacher": 13,
+            "day": 4,
+            "room": "164",
+            "time": 16
+        },
+        {
+            "subject": 1,
+            "teacher": 28,
+            "day": 0,
+            "room": "165",
+            "time": 16
+        },
+        {
+            "subject": 1,
+            "teacher": 27,
+            "day": 4,
+            "room": "166",
+            "time": 16
+        },
+        {
+            "subject": 1,
+            "teacher": 11,
+            "day": 0,
+            "room": "171",
+            "time": 16
+        },
+        {
+            "subject": 1,
+            "teacher": 17,
+            "day": 1,
+            "room": "166",
+            "time": 17
+        },
+        {
+            "subject": 1,
+            "teacher": 24,
+            "day": 1,
+            "room": "159",
+            "time": 17
+        },
+        {
+            "subject": 1,
+            "teacher": 9,
+            "day": 0,
+            "room": "166",
+            "time": 16
+        },
+        {
+            "subject": 1,
+            "teacher": 12,
+            "day": 1,
+            "room": "158",
+            "time": 18
+        },
+        {
+            "subject": 1,
+            "teacher": 11,
+            "day": 0,
+            "room": "171",
+            "time": 18
+        },
+        {
+            "subject": 2,
+            "teacher": 16,
+            "day": 0,
+            "room": "202",
+            "time": 16
+        },
+        {
+            "subject": 2,
+            "teacher": 5,
+            "day": 4,
+            "room": "104",
+            "time": 18
+        },
+        {
+            "subject": 2,
+            "teacher": 7,
+            "day": 1,
+            "room": "203",
+            "time": 17
+        },
+        {
+            "subject": 2,
+            "teacher": 20,
+            "day": 4,
+            "room": "103",
+            "time": 18
+        },
+        {
+            "subject": 2,
+            "teacher": 7,
+            "day": 1,
+            "room": "203",
+            "time": 17
+        },
+        {
+            "subject": 2,
+            "teacher": 26,
+            "day": 4,
+            "room": "136",
+            "time": 18
+        },
+        {
+            "subject": 2,
+            "teacher": 16,
+            "day": 1,
+            "room": "32",
+            "time": 17
+        },
+        {
+            "subject": 2,
+            "teacher": 16,
+            "day": 1,
+            "room": "32",
+            "time": 18
+        }
+    ],
+    "weeks": [
+        "9-14",
+        "9-21",
+        "9-28",
+        "10-5",
+        "10-12",
+        "11-2",
+        "11-9",
+        "11-16",
+        "11-23",
+        "11-30",
+        "12-7",
+        "12-14",
+        "1-4",
+        "1-11",
+        "1-18",
+        "1-25",
+        "2-1",
+        "2-22",
+        "3-1",
+        "3-8",
+        "3-15",
+        "3-22",
+        "3-29",
+        "4-5",
+        "4-26",
+        "5-3",
+        "5-17",
+        "5-24",
+        "5-31",
+        "6-7"
+    ],
+    "colles": [
+        [
+            {
+                "week": 0,
+                "type": 0
+            },
+            {
+                "week": 0,
+                "type": 17
+            },
+            {
+                "week": 1,
+                "type": 7
+            },
+            {
+                "week": 2,
+                "type": 8
+            },
+            {
+                "week": 2,
+                "type": 23
+            },
+            {
+                "week": 3,
+                "type": 14
+            },
+            {
+                "week": 3,
+                "type": 31
+            },
+            {
+                "week": 4,
+                "type": 4
+            },
+            {
+                "week": 4,
+                "type": 25
+            },
+            {
+                "week": 5,
+                "type": 16
+            },
+            {
+                "week": 5,
+                "type": 33
+            },
+            {
+                "week": 6,
+                "type": 9
+            },
+            {
+                "week": 6,
+                "type": 24
+            },
+            {
+                "week": 7,
+                "type": 15
+            },
+            {
+                "week": 7,
+                "type": 32
+            },
+            {
+                "week": 8,
+                "type": 7
+            },
+            {
+                "week": 8,
+                "type": 22
+            },
+            {
+                "week": 9,
+                "type": 13
+            },
+            {
+                "week": 9,
+                "type": 30
+            },
+            {
+                "week": 10,
+                "type": 5
+            },
+            {
+                "week": 10,
+                "type": 21
+            },
+            {
+                "week": 11,
+                "type": 10
+            },
+            {
+                "week": 11,
+                "type": 29
+            },
+            {
+                "week": 12,
+                "type": 3
+            },
+            {
+                "week": 12,
+                "type": 20
+            },
+            {
+                "week": 13,
+                "type": 12
+            },
+            {
+                "week": 13,
+                "type": 28
+            },
+            {
+                "week": 14,
+                "type": 2
+            },
+            {
+                "week": 14,
+                "type": 19
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 6
+            },
+            {
+                "week": 0,
+                "type": 27
+            },
+            {
+                "week": 1,
+                "type": 0
+            },
+            {
+                "week": 1,
+                "type": 17
+            },
+            {
+                "week": 2,
+                "type": 2
+            },
+            {
+                "week": 2,
+                "type": 26
+            },
+            {
+                "week": 3,
+                "type": 8
+            },
+            {
+                "week": 3,
+                "type": 25
+            },
+            {
+                "week": 4,
+                "type": 14
+            },
+            {
+                "week": 4,
+                "type": 31
+            },
+            {
+                "week": 5,
+                "type": 4
+            },
+            {
+                "week": 5,
+                "type": 25
+            },
+            {
+                "week": 6,
+                "type": 16
+            },
+            {
+                "week": 6,
+                "type": 33
+            },
+            {
+                "week": 7,
+                "type": 9
+            },
+            {
+                "week": 7,
+                "type": 24
+            },
+            {
+                "week": 8,
+                "type": 15
+            },
+            {
+                "week": 8,
+                "type": 32
+            },
+            {
+                "week": 9,
+                "type": 7
+            },
+            {
+                "week": 9,
+                "type": 22
+            },
+            {
+                "week": 10,
+                "type": 13
+            },
+            {
+                "week": 10,
+                "type": 30
+            },
+            {
+                "week": 11,
+                "type": 5
+            },
+            {
+                "week": 11,
+                "type": 21
+            },
+            {
+                "week": 12,
+                "type": 10
+            },
+            {
+                "week": 12,
+                "type": 29
+            },
+            {
+                "week": 13,
+                "type": 3
+            },
+            {
+                "week": 13,
+                "type": 20
+            },
+            {
+                "week": 14,
+                "type": 12
+            },
+            {
+                "week": 14,
+                "type": 28
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 1
+            },
+            {
+                "week": 0,
+                "type": 18
+            },
+            {
+                "week": 1,
+                "type": 6
+            },
+            {
+                "week": 1,
+                "type": 27
+            },
+            {
+                "week": 2,
+                "type": 0
+            },
+            {
+                "week": 2,
+                "type": 17
+            },
+            {
+                "week": 3,
+                "type": 11
+            },
+            {
+                "week": 4,
+                "type": 8
+            },
+            {
+                "week": 4,
+                "type": 23
+            },
+            {
+                "week": 5,
+                "type": 14
+            },
+            {
+                "week": 5,
+                "type": 31
+            },
+            {
+                "week": 6,
+                "type": 4
+            },
+            {
+                "week": 6,
+                "type": 25
+            },
+            {
+                "week": 7,
+                "type": 16
+            },
+            {
+                "week": 7,
+                "type": 33
+            },
+            {
+                "week": 8,
+                "type": 9
+            },
+            {
+                "week": 8,
+                "type": 24
+            },
+            {
+                "week": 9,
+                "type": 15
+            },
+            {
+                "week": 9,
+                "type": 32
+            },
+            {
+                "week": 10,
+                "type": 7
+            },
+            {
+                "week": 10,
+                "type": 22
+            },
+            {
+                "week": 11,
+                "type": 13
+            },
+            {
+                "week": 11,
+                "type": 30
+            },
+            {
+                "week": 12,
+                "type": 5
+            },
+            {
+                "week": 12,
+                "type": 21
+            },
+            {
+                "week": 13,
+                "type": 10
+            },
+            {
+                "week": 13,
+                "type": 29
+            },
+            {
+                "week": 14,
+                "type": 3
+            },
+            {
+                "week": 14,
+                "type": 20
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 11
+            },
+            {
+                "week": 0,
+                "type": 26
+            },
+            {
+                "week": 1,
+                "type": 1
+            },
+            {
+                "week": 1,
+                "type": 18
+            },
+            {
+                "week": 2,
+                "type": 6
+            },
+            {
+                "week": 2,
+                "type": 27
+            },
+            {
+                "week": 3,
+                "type": 0
+            },
+            {
+                "week": 3,
+                "type": 17
+            },
+            {
+                "week": 4,
+                "type": 16
+            },
+            {
+                "week": 4,
+                "type": 33
+            },
+            {
+                "week": 5,
+                "type": 8
+            },
+            {
+                "week": 5,
+                "type": 24
+            },
+            {
+                "week": 6,
+                "type": 14
+            },
+            {
+                "week": 6,
+                "type": 31
+            },
+            {
+                "week": 7,
+                "type": 4
+            },
+            {
+                "week": 7,
+                "type": 25
+            },
+            {
+                "week": 8,
+                "type": 16
+            },
+            {
+                "week": 8,
+                "type": 33
+            },
+            {
+                "week": 9,
+                "type": 9
+            },
+            {
+                "week": 9,
+                "type": 24
+            },
+            {
+                "week": 10,
+                "type": 15
+            },
+            {
+                "week": 10,
+                "type": 32
+            },
+            {
+                "week": 11,
+                "type": 7
+            },
+            {
+                "week": 11,
+                "type": 22
+            },
+            {
+                "week": 12,
+                "type": 13
+            },
+            {
+                "week": 12,
+                "type": 30
+            },
+            {
+                "week": 13,
+                "type": 5
+            },
+            {
+                "week": 13,
+                "type": 21
+            },
+            {
+                "week": 14,
+                "type": 10
+            },
+            {
+                "week": 14,
+                "type": 29
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 2
+            },
+            {
+                "week": 0,
+                "type": 19
+            },
+            {
+                "week": 1,
+                "type": 11
+            },
+            {
+                "week": 1,
+                "type": 26
+            },
+            {
+                "week": 2,
+                "type": 1
+            },
+            {
+                "week": 2,
+                "type": 18
+            },
+            {
+                "week": 3,
+                "type": 6
+            },
+            {
+                "week": 3,
+                "type": 27
+            },
+            {
+                "week": 4,
+                "type": 0
+            },
+            {
+                "week": 4,
+                "type": 17
+            },
+            {
+                "week": 5,
+                "type": 9
+            },
+            {
+                "week": 6,
+                "type": 8
+            },
+            {
+                "week": 6,
+                "type": 23
+            },
+            {
+                "week": 7,
+                "type": 14
+            },
+            {
+                "week": 7,
+                "type": 31
+            },
+            {
+                "week": 8,
+                "type": 4
+            },
+            {
+                "week": 8,
+                "type": 25
+            },
+            {
+                "week": 9,
+                "type": 16
+            },
+            {
+                "week": 9,
+                "type": 33
+            },
+            {
+                "week": 10,
+                "type": 9
+            },
+            {
+                "week": 10,
+                "type": 24
+            },
+            {
+                "week": 11,
+                "type": 15
+            },
+            {
+                "week": 11,
+                "type": 32
+            },
+            {
+                "week": 12,
+                "type": 7
+            },
+            {
+                "week": 12,
+                "type": 22
+            },
+            {
+                "week": 13,
+                "type": 13
+            },
+            {
+                "week": 13,
+                "type": 30
+            },
+            {
+                "week": 14,
+                "type": 5
+            },
+            {
+                "week": 14,
+                "type": 21
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 12
+            },
+            {
+                "week": 0,
+                "type": 28
+            },
+            {
+                "week": 1,
+                "type": 2
+            },
+            {
+                "week": 1,
+                "type": 19
+            },
+            {
+                "week": 2,
+                "type": 11
+            },
+            {
+                "week": 2,
+                "type": 31
+            },
+            {
+                "week": 3,
+                "type": 1
+            },
+            {
+                "week": 3,
+                "type": 18
+            },
+            {
+                "week": 4,
+                "type": 6
+            },
+            {
+                "week": 4,
+                "type": 27
+            },
+            {
+                "week": 5,
+                "type": 0
+            },
+            {
+                "week": 5,
+                "type": 17
+            },
+            {
+                "week": 6,
+                "type": 15
+            },
+            {
+                "week": 6,
+                "type": 32
+            },
+            {
+                "week": 7,
+                "type": 8
+            },
+            {
+                "week": 7,
+                "type": 22
+            },
+            {
+                "week": 8,
+                "type": 14
+            },
+            {
+                "week": 8,
+                "type": 31
+            },
+            {
+                "week": 9,
+                "type": 4
+            },
+            {
+                "week": 9,
+                "type": 25
+            },
+            {
+                "week": 10,
+                "type": 16
+            },
+            {
+                "week": 10,
+                "type": 33
+            },
+            {
+                "week": 11,
+                "type": 9
+            },
+            {
+                "week": 11,
+                "type": 24
+            },
+            {
+                "week": 12,
+                "type": 15
+            },
+            {
+                "week": 12,
+                "type": 32
+            },
+            {
+                "week": 13,
+                "type": 7
+            },
+            {
+                "week": 13,
+                "type": 22
+            },
+            {
+                "week": 14,
+                "type": 13
+            },
+            {
+                "week": 14,
+                "type": 26
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 3
+            },
+            {
+                "week": 0,
+                "type": 20
+            },
+            {
+                "week": 1,
+                "type": 12
+            },
+            {
+                "week": 1,
+                "type": 28
+            },
+            {
+                "week": 2,
+                "type": 14
+            },
+            {
+                "week": 2,
+                "type": 19
+            },
+            {
+                "week": 3,
+                "type": 4
+            },
+            {
+                "week": 3,
+                "type": 26
+            },
+            {
+                "week": 4,
+                "type": 1
+            },
+            {
+                "week": 4,
+                "type": 18
+            },
+            {
+                "week": 5,
+                "type": 6
+            },
+            {
+                "week": 5,
+                "type": 27
+            },
+            {
+                "week": 6,
+                "type": 0
+            },
+            {
+                "week": 6,
+                "type": 17
+            },
+            {
+                "week": 7,
+                "type": 7
+            },
+            {
+                "week": 8,
+                "type": 8
+            },
+            {
+                "week": 8,
+                "type": 23
+            },
+            {
+                "week": 9,
+                "type": 14
+            },
+            {
+                "week": 9,
+                "type": 31
+            },
+            {
+                "week": 10,
+                "type": 4
+            },
+            {
+                "week": 10,
+                "type": 25
+            },
+            {
+                "week": 11,
+                "type": 16
+            },
+            {
+                "week": 11,
+                "type": 33
+            },
+            {
+                "week": 12,
+                "type": 9
+            },
+            {
+                "week": 12,
+                "type": 24
+            },
+            {
+                "week": 13,
+                "type": 15
+            },
+            {
+                "week": 13,
+                "type": 32
+            },
+            {
+                "week": 14,
+                "type": 7
+            },
+            {
+                "week": 14,
+                "type": 22
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 10
+            },
+            {
+                "week": 0,
+                "type": 29
+            },
+            {
+                "week": 1,
+                "type": 3
+            },
+            {
+                "week": 1,
+                "type": 20
+            },
+            {
+                "week": 2,
+                "type": 12
+            },
+            {
+                "week": 2,
+                "type": 28
+            },
+            {
+                "week": 3,
+                "type": 2
+            },
+            {
+                "week": 3,
+                "type": 19
+            },
+            {
+                "week": 4,
+                "type": 11
+            },
+            {
+                "week": 4,
+                "type": 26
+            },
+            {
+                "week": 5,
+                "type": 1
+            },
+            {
+                "week": 5,
+                "type": 18
+            },
+            {
+                "week": 6,
+                "type": 6
+            },
+            {
+                "week": 6,
+                "type": 27
+            },
+            {
+                "week": 7,
+                "type": 0
+            },
+            {
+                "week": 7,
+                "type": 17
+            },
+            {
+                "week": 8,
+                "type": 13
+            },
+            {
+                "week": 8,
+                "type": 30
+            },
+            {
+                "week": 9,
+                "type": 8
+            },
+            {
+                "week": 9,
+                "type": 21
+            },
+            {
+                "week": 10,
+                "type": 14
+            },
+            {
+                "week": 10,
+                "type": 31
+            },
+            {
+                "week": 11,
+                "type": 4
+            },
+            {
+                "week": 11,
+                "type": 25
+            },
+            {
+                "week": 12,
+                "type": 16
+            },
+            {
+                "week": 12,
+                "type": 33
+            },
+            {
+                "week": 13,
+                "type": 9
+            },
+            {
+                "week": 13,
+                "type": 24
+            },
+            {
+                "week": 14,
+                "type": 15
+            },
+            {
+                "week": 14,
+                "type": 32
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 5
+            },
+            {
+                "week": 0,
+                "type": 21
+            },
+            {
+                "week": 1,
+                "type": 10
+            },
+            {
+                "week": 1,
+                "type": 29
+            },
+            {
+                "week": 2,
+                "type": 3
+            },
+            {
+                "week": 2,
+                "type": 20
+            },
+            {
+                "week": 3,
+                "type": 12
+            },
+            {
+                "week": 3,
+                "type": 28
+            },
+            {
+                "week": 4,
+                "type": 2
+            },
+            {
+                "week": 4,
+                "type": 19
+            },
+            {
+                "week": 5,
+                "type": 11
+            },
+            {
+                "week": 5,
+                "type": 26
+            },
+            {
+                "week": 6,
+                "type": 1
+            },
+            {
+                "week": 6,
+                "type": 18
+            },
+            {
+                "week": 7,
+                "type": 6
+            },
+            {
+                "week": 7,
+                "type": 27
+            },
+            {
+                "week": 8,
+                "type": 0
+            },
+            {
+                "week": 8,
+                "type": 17
+            },
+            {
+                "week": 9,
+                "type": 5
+            },
+            {
+                "week": 10,
+                "type": 8
+            },
+            {
+                "week": 10,
+                "type": 23
+            },
+            {
+                "week": 11,
+                "type": 14
+            },
+            {
+                "week": 11,
+                "type": 31
+            },
+            {
+                "week": 12,
+                "type": 4
+            },
+            {
+                "week": 12,
+                "type": 25
+            },
+            {
+                "week": 13,
+                "type": 16
+            },
+            {
+                "week": 13,
+                "type": 33
+            },
+            {
+                "week": 14,
+                "type": 9
+            },
+            {
+                "week": 14,
+                "type": 24
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 13
+            },
+            {
+                "week": 0,
+                "type": 30
+            },
+            {
+                "week": 1,
+                "type": 5
+            },
+            {
+                "week": 1,
+                "type": 21
+            },
+            {
+                "week": 2,
+                "type": 10
+            },
+            {
+                "week": 2,
+                "type": 29
+            },
+            {
+                "week": 3,
+                "type": 3
+            },
+            {
+                "week": 3,
+                "type": 20
+            },
+            {
+                "week": 4,
+                "type": 12
+            },
+            {
+                "week": 4,
+                "type": 28
+            },
+            {
+                "week": 5,
+                "type": 2
+            },
+            {
+                "week": 5,
+                "type": 19
+            },
+            {
+                "week": 6,
+                "type": 11
+            },
+            {
+                "week": 6,
+                "type": 26
+            },
+            {
+                "week": 7,
+                "type": 1
+            },
+            {
+                "week": 7,
+                "type": 18
+            },
+            {
+                "week": 8,
+                "type": 6
+            },
+            {
+                "week": 8,
+                "type": 27
+            },
+            {
+                "week": 9,
+                "type": 0
+            },
+            {
+                "week": 9,
+                "type": 17
+            },
+            {
+                "week": 10,
+                "type": 10
+            },
+            {
+                "week": 10,
+                "type": 29
+            },
+            {
+                "week": 11,
+                "type": 8
+            },
+            {
+                "week": 11,
+                "type": 20
+            },
+            {
+                "week": 12,
+                "type": 14
+            },
+            {
+                "week": 12,
+                "type": 31
+            },
+            {
+                "week": 13,
+                "type": 4
+            },
+            {
+                "week": 13,
+                "type": 25
+            },
+            {
+                "week": 14,
+                "type": 16
+            },
+            {
+                "week": 14,
+                "type": 33
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 7
+            },
+            {
+                "week": 0,
+                "type": 22
+            },
+            {
+                "week": 1,
+                "type": 13
+            },
+            {
+                "week": 1,
+                "type": 30
+            },
+            {
+                "week": 2,
+                "type": 5
+            },
+            {
+                "week": 2,
+                "type": 21
+            },
+            {
+                "week": 3,
+                "type": 10
+            },
+            {
+                "week": 3,
+                "type": 29
+            },
+            {
+                "week": 4,
+                "type": 3
+            },
+            {
+                "week": 4,
+                "type": 20
+            },
+            {
+                "week": 5,
+                "type": 12
+            },
+            {
+                "week": 5,
+                "type": 28
+            },
+            {
+                "week": 6,
+                "type": 2
+            },
+            {
+                "week": 6,
+                "type": 19
+            },
+            {
+                "week": 7,
+                "type": 11
+            },
+            {
+                "week": 7,
+                "type": 26
+            },
+            {
+                "week": 8,
+                "type": 1
+            },
+            {
+                "week": 8,
+                "type": 18
+            },
+            {
+                "week": 9,
+                "type": 6
+            },
+            {
+                "week": 9,
+                "type": 27
+            },
+            {
+                "week": 10,
+                "type": 0
+            },
+            {
+                "week": 10,
+                "type": 17
+            },
+            {
+                "week": 11,
+                "type": 3
+            },
+            {
+                "week": 12,
+                "type": 8
+            },
+            {
+                "week": 12,
+                "type": 23
+            },
+            {
+                "week": 13,
+                "type": 14
+            },
+            {
+                "week": 13,
+                "type": 31
+            },
+            {
+                "week": 14,
+                "type": 4
+            },
+            {
+                "week": 14,
+                "type": 25
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 15
+            },
+            {
+                "week": 0,
+                "type": 32
+            },
+            {
+                "week": 1,
+                "type": 8
+            },
+            {
+                "week": 1,
+                "type": 22
+            },
+            {
+                "week": 2,
+                "type": 13
+            },
+            {
+                "week": 2,
+                "type": 30
+            },
+            {
+                "week": 3,
+                "type": 5
+            },
+            {
+                "week": 3,
+                "type": 21
+            },
+            {
+                "week": 4,
+                "type": 10
+            },
+            {
+                "week": 4,
+                "type": 29
+            },
+            {
+                "week": 5,
+                "type": 3
+            },
+            {
+                "week": 5,
+                "type": 20
+            },
+            {
+                "week": 6,
+                "type": 12
+            },
+            {
+                "week": 6,
+                "type": 28
+            },
+            {
+                "week": 7,
+                "type": 2
+            },
+            {
+                "week": 7,
+                "type": 19
+            },
+            {
+                "week": 8,
+                "type": 11
+            },
+            {
+                "week": 8,
+                "type": 26
+            },
+            {
+                "week": 9,
+                "type": 1
+            },
+            {
+                "week": 9,
+                "type": 18
+            },
+            {
+                "week": 10,
+                "type": 6
+            },
+            {
+                "week": 10,
+                "type": 27
+            },
+            {
+                "week": 11,
+                "type": 0
+            },
+            {
+                "week": 11,
+                "type": 17
+            },
+            {
+                "week": 12,
+                "type": 12
+            },
+            {
+                "week": 12,
+                "type": 28
+            },
+            {
+                "week": 13,
+                "type": 8
+            },
+            {
+                "week": 13,
+                "type": 19
+            },
+            {
+                "week": 14,
+                "type": 14
+            },
+            {
+                "week": 14,
+                "type": 31
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 9
+            },
+            {
+                "week": 0,
+                "type": 24
+            },
+            {
+                "week": 1,
+                "type": 15
+            },
+            {
+                "week": 1,
+                "type": 32
+            },
+            {
+                "week": 2,
+                "type": 7
+            },
+            {
+                "week": 2,
+                "type": 22
+            },
+            {
+                "week": 3,
+                "type": 13
+            },
+            {
+                "week": 3,
+                "type": 30
+            },
+            {
+                "week": 4,
+                "type": 5
+            },
+            {
+                "week": 4,
+                "type": 21
+            },
+            {
+                "week": 5,
+                "type": 10
+            },
+            {
+                "week": 5,
+                "type": 29
+            },
+            {
+                "week": 6,
+                "type": 3
+            },
+            {
+                "week": 6,
+                "type": 20
+            },
+            {
+                "week": 7,
+                "type": 12
+            },
+            {
+                "week": 7,
+                "type": 28
+            },
+            {
+                "week": 8,
+                "type": 2
+            },
+            {
+                "week": 8,
+                "type": 19
+            },
+            {
+                "week": 9,
+                "type": 11
+            },
+            {
+                "week": 9,
+                "type": 26
+            },
+            {
+                "week": 10,
+                "type": 1
+            },
+            {
+                "week": 10,
+                "type": 18
+            },
+            {
+                "week": 11,
+                "type": 6
+            },
+            {
+                "week": 11,
+                "type": 27
+            },
+            {
+                "week": 12,
+                "type": 0
+            },
+            {
+                "week": 12,
+                "type": 17
+            },
+            {
+                "week": 13,
+                "type": 2
+            },
+            {
+                "week": 14,
+                "type": 8
+            },
+            {
+                "week": 14,
+                "type": 23
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 16
+            },
+            {
+                "week": 0,
+                "type": 33
+            },
+            {
+                "week": 1,
+                "type": 9
+            },
+            {
+                "week": 1,
+                "type": 24
+            },
+            {
+                "week": 2,
+                "type": 15
+            },
+            {
+                "week": 2,
+                "type": 32
+            },
+            {
+                "week": 3,
+                "type": 7
+            },
+            {
+                "week": 3,
+                "type": 22
+            },
+            {
+                "week": 4,
+                "type": 13
+            },
+            {
+                "week": 4,
+                "type": 30
+            },
+            {
+                "week": 5,
+                "type": 5
+            },
+            {
+                "week": 5,
+                "type": 21
+            },
+            {
+                "week": 6,
+                "type": 10
+            },
+            {
+                "week": 6,
+                "type": 29
+            },
+            {
+                "week": 7,
+                "type": 3
+            },
+            {
+                "week": 7,
+                "type": 20
+            },
+            {
+                "week": 8,
+                "type": 12
+            },
+            {
+                "week": 8,
+                "type": 28
+            },
+            {
+                "week": 9,
+                "type": 2
+            },
+            {
+                "week": 9,
+                "type": 19
+            },
+            {
+                "week": 10,
+                "type": 11
+            },
+            {
+                "week": 10,
+                "type": 26
+            },
+            {
+                "week": 11,
+                "type": 1
+            },
+            {
+                "week": 11,
+                "type": 18
+            },
+            {
+                "week": 12,
+                "type": 6
+            },
+            {
+                "week": 12,
+                "type": 27
+            },
+            {
+                "week": 13,
+                "type": 0
+            },
+            {
+                "week": 13,
+                "type": 17
+            },
+            {
+                "week": 14,
+                "type": 11
+            },
+            {
+                "week": 14,
+                "type": 30
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 4
+            },
+            {
+                "week": 0,
+                "type": 25
+            },
+            {
+                "week": 1,
+                "type": 16
+            },
+            {
+                "week": 1,
+                "type": 33
+            },
+            {
+                "week": 2,
+                "type": 9
+            },
+            {
+                "week": 2,
+                "type": 24
+            },
+            {
+                "week": 3,
+                "type": 15
+            },
+            {
+                "week": 3,
+                "type": 32
+            },
+            {
+                "week": 4,
+                "type": 7
+            },
+            {
+                "week": 4,
+                "type": 22
+            },
+            {
+                "week": 5,
+                "type": 13
+            },
+            {
+                "week": 5,
+                "type": 30
+            },
+            {
+                "week": 6,
+                "type": 5
+            },
+            {
+                "week": 6,
+                "type": 21
+            },
+            {
+                "week": 7,
+                "type": 10
+            },
+            {
+                "week": 7,
+                "type": 29
+            },
+            {
+                "week": 8,
+                "type": 3
+            },
+            {
+                "week": 8,
+                "type": 20
+            },
+            {
+                "week": 9,
+                "type": 12
+            },
+            {
+                "week": 9,
+                "type": 28
+            },
+            {
+                "week": 10,
+                "type": 2
+            },
+            {
+                "week": 10,
+                "type": 19
+            },
+            {
+                "week": 11,
+                "type": 11
+            },
+            {
+                "week": 11,
+                "type": 26
+            },
+            {
+                "week": 12,
+                "type": 1
+            },
+            {
+                "week": 12,
+                "type": 18
+            },
+            {
+                "week": 13,
+                "type": 6
+            },
+            {
+                "week": 13,
+                "type": 27
+            },
+            {
+                "week": 14,
+                "type": 0
+            },
+            {
+                "week": 14,
+                "type": 17
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 14
+            },
+            {
+                "week": 0,
+                "type": 31
+            },
+            {
+                "week": 1,
+                "type": 4
+            },
+            {
+                "week": 1,
+                "type": 25
+            },
+            {
+                "week": 2,
+                "type": 16
+            },
+            {
+                "week": 2,
+                "type": 33
+            },
+            {
+                "week": 3,
+                "type": 9
+            },
+            {
+                "week": 3,
+                "type": 24
+            },
+            {
+                "week": 4,
+                "type": 15
+            },
+            {
+                "week": 4,
+                "type": 32
+            },
+            {
+                "week": 5,
+                "type": 7
+            },
+            {
+                "week": 5,
+                "type": 22
+            },
+            {
+                "week": 6,
+                "type": 13
+            },
+            {
+                "week": 6,
+                "type": 30
+            },
+            {
+                "week": 7,
+                "type": 5
+            },
+            {
+                "week": 7,
+                "type": 21
+            },
+            {
+                "week": 8,
+                "type": 10
+            },
+            {
+                "week": 8,
+                "type": 29
+            },
+            {
+                "week": 9,
+                "type": 3
+            },
+            {
+                "week": 9,
+                "type": 20
+            },
+            {
+                "week": 10,
+                "type": 12
+            },
+            {
+                "week": 10,
+                "type": 28
+            },
+            {
+                "week": 11,
+                "type": 2
+            },
+            {
+                "week": 11,
+                "type": 19
+            },
+            {
+                "week": 12,
+                "type": 11
+            },
+            {
+                "week": 12,
+                "type": 26
+            },
+            {
+                "week": 13,
+                "type": 1
+            },
+            {
+                "week": 13,
+                "type": 18
+            },
+            {
+                "week": 14,
+                "type": 6
+            },
+            {
+                "week": 14,
+                "type": 27
+            }
+        ],
+        [
+            {
+                "week": 0,
+                "type": 8
+            },
+            {
+                "week": 0,
+                "type": 23
+            },
+            {
+                "week": 1,
+                "type": 14
+            },
+            {
+                "week": 1,
+                "type": 31
+            },
+            {
+                "week": 2,
+                "type": 4
+            },
+            {
+                "week": 2,
+                "type": 25
+            },
+            {
+                "week": 3,
+                "type": 16
+            },
+            {
+                "week": 3,
+                "type": 33
+            },
+            {
+                "week": 4,
+                "type": 9
+            },
+            {
+                "week": 4,
+                "type": 24
+            },
+            {
+                "week": 5,
+                "type": 15
+            },
+            {
+                "week": 5,
+                "type": 32
+            },
+            {
+                "week": 6,
+                "type": 7
+            },
+            {
+                "week": 6,
+                "type": 22
+            },
+            {
+                "week": 7,
+                "type": 13
+            },
+            {
+                "week": 7,
+                "type": 30
+            },
+            {
+                "week": 8,
+                "type": 5
+            },
+            {
+                "week": 8,
+                "type": 21
+            },
+            {
+                "week": 9,
+                "type": 10
+            },
+            {
+                "week": 9,
+                "type": 29
+            },
+            {
+                "week": 10,
+                "type": 3
+            },
+            {
+                "week": 10,
+                "type": 20
+            },
+            {
+                "week": 11,
+                "type": 12
+            },
+            {
+                "week": 11,
+                "type": 28
+            },
+            {
+                "week": 12,
+                "type": 2
+            },
+            {
+                "week": 12,
+                "type": 19
+            },
+            {
+                "week": 13,
+                "type": 11
+            },
+            {
+                "week": 13,
+                "type": 26
+            },
+            {
+                "week": 14,
+                "type": 1
+            },
+            {
+                "week": 14,
+                "type": 18
+            }
+        ]
+    ]
+}
