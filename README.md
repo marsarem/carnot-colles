@@ -1,4 +1,4 @@
-# Colles MPSI1/MP*
+# Colles Carnot
 
 Ce projet est une simple application web pour voir vos colles. Les données sont
 stockées dans le dossier `data`, avec un fichier par classe.
