@@ -66,6 +66,9 @@ function validateData(json) {
         data.groups.some(g => !isNonEmptyStringArray(g)))
         throw new Error("invalid groups");
     
+    if (typeof data.firstGroup !== "number" || !Number.isInteger(data.firstGroup))
+        throw new Error("invalid first group number");
+
     if (!isNonEmptyStringArray(data.subjects))
         throw new Error("invalid subjects");
 
@@ -162,7 +165,7 @@ function validateData(json) {
         }
     }
 
-    if (!arrayEquals(Object.keys(data), ["credits", "groups", "subjects", "teachers", "types", "weeks", "colles"]))
+    if (!arrayEquals(Object.keys(data), ["credits", "groups", "firstGroup", "subjects", "teachers", "types", "weeks", "colles"]))
         throw new Error("invalid key order at root");
 }
 

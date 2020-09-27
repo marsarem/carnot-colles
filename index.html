@@ -647,7 +647,7 @@
                     var studentId = student.getId();
                     if (studentId !== uiState.studentId) {
                         dom.studentName.textContent = student.getName();
-                        dom.studentGroupNumber.textContent = student.group + 1;
+                        dom.studentGroupNumber.textContent = student.group + classData.firstGroup;
 
                         var weeks = getWeeksForGroup(classData, student.group);
                         // Remove weeks where all colles are already done.
