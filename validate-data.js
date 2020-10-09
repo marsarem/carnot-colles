@@ -83,14 +83,15 @@ function validateData(json) {
         if (typeof val.subject !== "number" ||
             typeof val.teacher !== "number" ||
             typeof val.day !== "number" ||
-            typeof val.room !== "string" ||
+            (val.room !== undefined && typeof val.room !== "string") ||
             typeof val.time !== "number")
             return false;
         if (!Number.isInteger(val.subject) || val.subject < 0 ||
             val.subject >= data.subjects.length)
             return false;
-        if (val.room === "" || val.room.trim() !== val.room ||
-            (val.room.indexOf("0") === 0 && val !== "0"))
+        if (val.room !== undefined &&
+		(val.room === "" || val.room.trim() !== val.room ||
+            	(val.room.indexOf("0") === 0 && val !== "0")))
             return false;
         if (!Number.isInteger(val.time) || val.time < 0 || val.time >= 24)
             return false;
@@ -102,8 +103,8 @@ function validateData(json) {
     for (let i = 0; i < data.types.length; i++) {
         if (!isValidColleType(data.types[i]))
             throw new Error(`invalid colle type ${i}`);
-        if (!arrayEquals(Object.keys(data.types[i]),
-            ["subject", "teacher", "day", "room", "time"]))
+        if (!arrayEquals(Object.keys(data.types[i]), ["subject", "teacher", "day", "room", "time"]) &&
+            !arrayEquals(Object.keys(data.types[i]), ["subject", "teacher", "day", "time"]))
             throw new Error(`invalid key order for colle type ${i}`);
     }
 
