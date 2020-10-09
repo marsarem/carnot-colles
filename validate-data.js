@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 "use strict";
 
 const fs = require("fs");
@@ -51,7 +53,7 @@ function validateData(json) {
 
     const data = JSON.parse(json);
     
-    const formattedJson = JSON.stringify(data, null, "    ");
+    const formattedJson = JSON.stringify(data, null, "    ") + "\n";
     if (json !== formattedJson)
         throw new Error("bad formatting: " +
             describeDifference(json, formattedJson));
