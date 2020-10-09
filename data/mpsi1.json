@@ -89,7 +89,8 @@
     "subjects": [
         "Mathématiques",
         "Physique",
-        "Anglais"
+        "Anglais",
+        "Français"
     ],
     "teachers": [
         "Mr CHENAL",
@@ -118,7 +119,9 @@
         "Mme BOUSSEAU",
         "Mme GUITTON",
         "Mr CAIRE",
-        "Mr BATT"
+        "Mr BATT",
+        "Mr BAYROU",
+        "Mme RIVAT"
     ],
     "types": [
         {
@@ -344,6 +347,20 @@
             "day": 4,
             "room": "103",
             "time": 17
+        },
+        {
+            "subject": 3,
+            "teacher": 27,
+            "day": 0,
+            "room": "C16",
+            "time": 18
+        },
+        {
+            "subject": 3,
+            "teacher": 28,
+            "day": 0,
+            "room": "24",
+            "time": 18
         }
     ],
     "weeks": [
@@ -437,6 +454,10 @@
                 "type": 30
             },
             {
+                "week": 6,
+                "type": 32
+            },
+            {
                 "week": 7,
                 "type": 0
             },
@@ -687,6 +708,10 @@
                 "type": 30
             },
             {
+                "week": 7,
+                "type": 32
+            },
+            {
                 "week": 8,
                 "type": 0
             },
@@ -937,6 +962,10 @@
                 "type": 30
             },
             {
+                "week": 8,
+                "type": 32
+            },
+            {
                 "week": 9,
                 "type": 0
             },
@@ -1187,6 +1216,10 @@
                 "type": 30
             },
             {
+                "week": 9,
+                "type": 32
+            },
+            {
                 "week": 10,
                 "type": 0
             },
@@ -1437,6 +1470,10 @@
                 "type": 30
             },
             {
+                "week": 10,
+                "type": 32
+            },
+            {
                 "week": 11,
                 "type": 0
             },
@@ -1687,6 +1724,10 @@
                 "type": 30
             },
             {
+                "week": 11,
+                "type": 32
+            },
+            {
                 "week": 12,
                 "type": 0
             },
@@ -1913,6 +1954,10 @@
                 "type": 16
             },
             {
+                "week": 9,
+                "type": 33
+            },
+            {
                 "week": 10,
                 "type": 8
             },
@@ -2163,6 +2208,10 @@
                 "type": 16
             },
             {
+                "week": 10,
+                "type": 33
+            },
+            {
                 "week": 11,
                 "type": 8
             },
@@ -2413,6 +2462,10 @@
                 "type": 16
             },
             {
+                "week": 11,
+                "type": 33
+            },
+            {
                 "week": 12,
                 "type": 8
             },
@@ -2599,6 +2652,10 @@
                 "type": 22
             },
             {
+                "week": 4,
+                "type": 33
+            },
+            {
                 "week": 5,
                 "type": 9
             },
@@ -2849,6 +2906,10 @@
                 "type": 22
             },
             {
+                "week": 5,
+                "type": 32
+            },
+            {
                 "week": 6,
                 "type": 9
             },
@@ -3099,6 +3160,10 @@
                 "type": 22
             },
             {
+                "week": 6,
+                "type": 33
+            },
+            {
                 "week": 7,
                 "type": 9
             },
@@ -3349,6 +3414,10 @@
                 "type": 22
             },
             {
+                "week": 7,
+                "type": 33
+            },
+            {
                 "week": 8,
                 "type": 9
             },
@@ -3599,6 +3668,10 @@
                 "type": 22
             },
             {
+                "week": 8,
+                "type": 33
+            },
+            {
                 "week": 9,
                 "type": 9
             },
@@ -3807,6 +3880,10 @@
             {
                 "week": 4,
                 "type": 30
+            },
+            {
+                "week": 4,
+                "type": 32
             },
             {
                 "week": 5,
@@ -4057,6 +4134,10 @@
             {
                 "week": 5,
                 "type": 30
+            },
+            {
+                "week": 5,
+                "type": 33
             },
             {
                 "week": 6,
