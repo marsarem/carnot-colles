@@ -27,7 +27,7 @@ l'ordre :
   * Un jour (clé `day`) où `0`, `1`, `2`, `3`, `4`, `5`, et `6` correspondent
     respectivement à Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, et
     Dimanche.
-  * Une salle (clé `room`) sous forme de chaîne de caractères.
+  * Une salle (clé `room`, optionelle) sous forme de chaîne de caractères.
   * Une heure (clé `time`) sous forme d'entier qui représente l'heure de début
     de la colle.
 * Les semaines (clé `weeks`) sous forme d'un tableau de semaines, chaque semaine
