@@ -104,7 +104,7 @@
         "Mme AYED",
         "Mme COUZON",
         "Mr ROGNERUD",
-        "Mr PETITIEAN",
+        "Mr PETITJEAN",
         "Mr CURIE",
         "Mme MARCET",
         "Mr MAUNY",
@@ -236,7 +236,7 @@
             "teacher": 10,
             "day": 4,
             "room": "223",
-            "time": 18
+            "time": 17
         },
         {
             "subject": 0,
