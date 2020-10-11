@@ -146,7 +146,7 @@ function validateData(json) {
         const groupColles = data.colles[groupIndex];
 
         let lastWeek = null;
-        let daysOccupied = [];
+        const typesByWeek = new Map();
         for (let i = 0; i < groupColles.length; i++) {
             const colle = groupColles[i];
             if (!isValidColle(colle))
@@ -154,19 +154,16 @@ function validateData(json) {
             if (!arrayEquals(Object.keys(colle), ["week", "type"]))
                 throw new Error(`invalid key order in colle ${i} for group ${groupIndex}`);
 
-            if (lastWeek != null) {
-                if (colle.week < lastWeek) {
-                    throw new Error(`colles for group ${groupIndex} are not sorted by week ascending`);
-                } else if (colle.week !== lastWeek) {
-                    daysOccupied = [];
-                }
+            if (!typesByWeek.has(colle.week)) {
+                typesByWeek.set(colle.week, []);
+            } else if (typesByWeek.get(colle.week).includes(colle.type)) {
+                throw new Error(`duplicate colle ${i} for group ${groupIndex}`);
             }
+            typesByWeek.get(colle.week)
+                .push(colle.type);
 
-            const day = data.types[colle.type].day;
-            if (daysOccupied.includes(day))
-                throw new Error(`colle ${i} is on a day already occupied for group ${groupIndex}`);
-            daysOccupied.push(day);
-
+            if (lastWeek !== null && colle.week < lastWeek)
+                throw new Error(`colles for group ${groupIndex} are not sorted by week ascending`);
             lastWeek = colle.week;
         }
     }
