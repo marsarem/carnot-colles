@@ -3,11 +3,9 @@ on:
   pull_request:
     branches: [main]
 jobs:
-  validate-class-data:
+  validate-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - run: node ./validate-data.js
-        env:
-          VALIDATE_LF: 1
+      - run: node ./tools/validate-build.mjs

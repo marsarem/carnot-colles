@@ -1,0 +1,17 @@
+{
+  "name": "carnot-colles",
+  "version": "0.1.0",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "build": "node ./tools/build.mjs",
+    "validate-build": "node ./tools/validate-build.mjs"
+  },
+  "license": "GPL",
+  "dependencies": {
+    "clean-css": "^4.2.3",
+    "dir-compare": "^2.4.0",
+    "html-minifier": "^4.0.0",
+    "uglify-js": "^3.11.6"
+  }
+}

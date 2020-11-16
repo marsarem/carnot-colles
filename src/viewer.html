@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="content-type" content="text/html;charset=utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-        <!-- Disable favicon. -->
-        <link rel="icon" href="data:,">
+        <!-- PWA manifest -->
+        <link rel="manifest" href="/manifest.webmanifest">
 
         <title>Colloscope</title>
 
@@ -119,10 +119,10 @@
             }
 
             .colle--done {
-                border-color: #AAAAAA;
+                opacity: 0.7;
             }
 
-            .colle--doing {
+            .colle--sson {
                 border-color: #E5FF00;
             }
 
@@ -572,60 +572,52 @@
             }
 
             function getWeeksForGroup(classData, groupIndex) {
-                var colles = classData.colles[groupIndex];
-
+                var result = [];
                 var now = new Date();
-                var weeks = [];
-                var lastWeekIndex = null;
-                for (var i = 0; i < colles.length; i++) {
-                    var colle = colles[i];
-                    var colleType = classData.types[colle.type];
 
-                    var weekParts = classData.weeks[colle.week].split("-");
-                    var month = parseInt(weekParts[0]);
-                    var day = parseInt(weekParts[1]);
-                    var year = month < 9 ? 2021 : 2020;
+                var weeks = classData.groups[groupIndex].weeks;
+                for (var i = 0; i < weeks.length; i++) {
+                    var weekParts = classData.weeks[i].split("-");
+                    var year = parseInt(weekParts[0]);
+                    var month = parseInt(weekParts[1]);
+                    var day = parseInt(weekParts[2]);
 
-                    var startTime = new Date(year, month - 1, day, colleType.time);
-                    startTime.setDate(startTime.getDate() + colleType.day);
+                    var insert = [];
+                    result.push({
+                        colles: insert,
+                        index: i,
+                        day,
+                        month,
+                    });
 
-                    var state;
-                    if (now.valueOf() - startTime.valueOf() > 1000 * 60 * 60) {
-                        state = "done";
-                    } else if (now.valueOf() - startTime.valueOf() >= 0) {
-                        state = "doing";
-                    } else {
-                        state = "waiting";
-                    }
+                    for (var j = 0; j < weeks[i].length; j++) {
+                        var colle = weeks[i][j];
+                        var colleType = classData.colles[colle];
 
-                    if (weeks.length === 0 || colle.week !== lastWeekIndex) {
-                        weeks.push({
-                            index: colle.week,
-                            month: month,
-                            day: day,
-                            colles: [],
+                        var startTime = new Date(year, month - 1, day, colleType.time);
+                        startTime.setDate(startTime.getDate() + colleType.day);
+
+                        var state;
+                        if (now.valueOf() - startTime.valueOf() > 1000 * 60 * 60) {
+                            state = "done";
+                        } else if (startTime.valueOf() - now.valueOf() >= 1000 * 60 * 60) {
+                            state = "soon";
+                        } else {
+                            state = "waiting";
+                        }
+
+                        insert.push({
+                            startTime: startTime,
+                            state: state,
+                            day: colleType.day,
+                            subject: colleType.subject,
+                            teacher: colleType.teacher,
+                            room: colleType.room,
                         });
                     }
-
-                    weeks[weeks.length - 1].colles.push({
-                        startTime: startTime,
-                        state: state,
-                        day: colleType.day,
-                        subject: colleType.subject,
-                        teacher: colleType.teacher,
-                        room: colleType.room,
-                    });
-                    lastWeekIndex = colle.week;
                 }
 
-                // Sort the colles in chronological order.
-                for (var i = 0; i < weeks.length; i++) {
-                    weeks[i].colles.sort(function(a, b) {
-                        return a.startTime.valueOf() - b.startTime.valueOf();
-                    });
-                }
-
-                return weeks;
+                return result;
             }
 
             function refreshView() {
@@ -736,10 +728,10 @@
                             // faster.
                             classData.searchIndex = [];
                             for (var i = 0; i < classData.groups.length; i++) {
-                                var group = classData.groups[i];
-                                for (var j = 0; j < group.length; j++) {
+                                var groupStudents = classData.groups[i].students;
+                                for (var j = 0; j < groupStudents.length; j++) {
                                     classData.searchIndex.push({
-                                        tokens: normalizeName(group[j])
+                                        tokens: normalizeName(groupStudents[j])
                                             .split(TOKEN_SPLIT_REGEX),
                                         group: i,
                                         index: j,
