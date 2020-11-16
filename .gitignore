@@ -1,2 +1,5 @@
+# Build files
+/dist
+
 # NPM
 /node_modules

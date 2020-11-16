@@ -1,3 +1,0 @@
-# Prevent data from being indexed.
-User-agent: *
-Disallow: /
