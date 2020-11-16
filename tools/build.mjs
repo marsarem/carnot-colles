@@ -135,6 +135,14 @@ function lightweightGroupPageHtml(classData, groupIndex) {
     const weeks = getWeeksForGroup(classData, groupIndex);
     const weeksHtml = weeks.map(weekHtml).join("");
 
+    const creditsHtml = `<p>
+            Personne(s) ayant participé à l'importation et la correction des
+            données :
+        </p>
+        <ul>
+            ${classData.credits.map(c => `<li>${c}</li>`).join("")}
+        </ul>`;
+
     const title = `Colloscope ${classData.name}, groupe ${humanGroupNumber}`;
     return minifyHtml(`<!doctype html>
 <html>
@@ -146,6 +154,7 @@ function lightweightGroupPageHtml(classData, groupIndex) {
         <h1>${title}</h1>
         ${studentsHtml}
         ${weeksHtml}
+        ${creditsHtml}
     </body>
 </html>`);
 }
