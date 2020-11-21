@@ -159,8 +159,43 @@ function lightweightGroupPageHtml(classData, groupIndex) {
 </html>`);
 }
 
+/**
+ * Generates HTML code for the lightweight index page, with links to the
+ * specific groups and classes.
+ * @param {Array} links an array of objects that represent links to a page with
+ *                      colles for a group
+ * @returns HTML code that has information about colles for that group
+ */
+function lightweightIndexPageHtml(classes) {
+    function groupHtml(g) {
+        return `<li><a href="${g.url}">Groupe ${g.groupNr}</a></li>`;
+    }
+
+    function classHtml(c) {
+        return `<h2>${c.className}</h2>
+<ul>${c.groups.map(groupHtml).join("")}</ul>`;
+    }
+
+    const classesHtml = classes.map(classHtml).join("");
+    return minifyHtml(`<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html;charset=utf-8">
+        <title>Liste des colloscopes</title>
+    </head>
+    <body>
+        <h1>Liste des colloscopes</h1>
+        ${classesHtml}
+    </body>
+</html>`);
+}
+
 async function main() {
-    const classes = await readClasses();
+    const promises = await readClasses();
+
+    // Keep track of what we write so that we can generate an index.html page
+    // for browsers without JavaScript later.
+    const writtenClasses = [];
 
     await prepareDistDirectory();
     await Promise.all([
@@ -172,8 +207,11 @@ async function main() {
         fs.readFile(path.join(SRC_DIR, "manifest.webmanifest"), "utf8")
             .then(json => fs.writeFile(path.join(DIST_DIR, "manifest.webmanifest"), JSON.stringify(JSON.parse(json)), "utf8")),
 
-        ...classes.map(async promise => {
+        ...promises.map(async promise => {
             const { id, data } = await promise;
+
+            const writtenGroups = [];
+            writtenClasses.push({ className: data.name, groups: writtenGroups });
 
             return Promise.all([
                 // A minified version of the data.
@@ -185,15 +223,22 @@ async function main() {
                     .then(() => {
                         const writes = [];
                         for (let i = 0; i < data.groups.length; i++) {
-                            const dest = path.join(DIST_DIR, "light", id, `groupe-${i + data.firstGroup}.html`);
+                            const groupNr = i + data.firstGroup;
+                            const file = `groupe-${groupNr}.html`;
+
                             const html = lightweightGroupPageHtml(data, i);
+                            const dest = path.join(DIST_DIR, "light", id, file);
                             writes.push(fs.writeFile(dest, html, "utf8"));
+
+                            writtenGroups.push({ groupNr, url: `${id}/${file}` });
                         }
                         return Promise.all(writes);
                     }),
             ]);
         })
     ]);
+    await fs.writeFile(path.join(DIST_DIR, "light", "index.html"),
+        lightweightIndexPageHtml(writtenClasses), "utf8");
 }
 
 main().catch(err => {
