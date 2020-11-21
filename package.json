@@ -4,8 +4,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "build": "node ./tools/build.mjs",
-    "validate-build": "node ./tools/validate-build.mjs"
+    "build": "node ./tools/build.mjs"
   },
   "license": "GPL",
   "dependencies": {
