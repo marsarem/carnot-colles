@@ -1,6 +1,13 @@
 {
     "name": "Colloscope",
     "description": "Permet de voir une liste des colles à venir.",
+    "icons": [
+        {
+            "src": "icon.svg",
+            "purpose": "any maskable",
+            "sizes": "72x72 96x96 128x128 144x144 152x152 192x192 384x384 512x512"
+        }
+    ],
     "start_url": "/index.html",
     "display": "standalone"
 }

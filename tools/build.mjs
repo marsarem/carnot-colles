@@ -4,7 +4,11 @@
 
 import * as fs from "fs/promises";
 import * as path from "path";
+
 import { minify } from "html-minifier";
+import svg2png from "svg2png";
+import SVGO from "svgo";
+import toIco from "to-ico";
 
 const SRC_DIR = "src";
 const DATA_DIR = "data";
@@ -190,55 +194,81 @@ function lightweightIndexPageHtml(classes) {
 </html>`);
 }
 
-async function main() {
-    const promises = await readClasses();
-
-    // Keep track of what we write so that we can generate an index.html page
-    // for browsers without JavaScript later.
-    const writtenClasses = [];
-
-    await prepareDistDirectory();
-    await Promise.all([
+function buildStaticContent() {
+    return Promise.all([
         fs.copyFile(path.join(SRC_DIR, "robots.txt"), path.join(DIST_DIR, "robots.txt")),
 
         fs.readFile(path.join(SRC_DIR, "viewer.html"), "utf8")
             .then(html => fs.writeFile(path.join(DIST_DIR, "index.html"), minifyHtml(html), "utf8")),
 
+        fs.readFile(path.join(SRC_DIR, "icon.svg"))
+            .then(buf => {
+                const faviconPromises = [];
+                for (const size of [16, 32, 48])
+                    faviconPromises.push(svg2png(buf, { width: size, height: size }));
+
+                return Promise.all([
+                    new SVGO().optimize(buf.toString("utf8"))
+                        .then(s => fs.writeFile(path.join(DIST_DIR, "icon.svg"), s.data, "utf8")),
+
+                    Promise.all(faviconPromises)
+                        .then(bufs => toIco(bufs))
+                        .then(buf => fs.writeFile(path.join(DIST_DIR, "favicon.ico"), buf)),
+
+                    svg2png(buf, { width: 180, height: 180 })
+                        .then(buf => fs.writeFile(path.join(DIST_DIR, "apple-touch-icon.png"), buf)),
+                ]);
+            }),
+
         fs.readFile(path.join(SRC_DIR, "manifest.webmanifest"), "utf8")
             .then(json => fs.writeFile(path.join(DIST_DIR, "manifest.webmanifest"), JSON.stringify(JSON.parse(json)), "utf8")),
-
-        ...promises.map(async promise => {
-            const { id, data } = await promise;
-
-            const writtenGroups = [];
-            writtenClasses.push({ className: data.name, groups: writtenGroups });
-
-            return Promise.all([
-                // A minified version of the data.
-                fs.writeFile(path.join(DIST_DIR, "data", id + ".json"), JSON.stringify(data), "utf8"),
-
-                // Make a lightweight version for each group for extremely old
-                // browsers or for interoperability with arcane platforms.
-                fs.mkdir(path.join(DIST_DIR, "light", id))
-                    .then(() => {
-                        const writes = [];
-                        for (let i = 0; i < data.groups.length; i++) {
-                            const groupNr = i + data.firstGroup;
-                            const file = `groupe-${groupNr}.html`;
-
-                            const html = lightweightGroupPageHtml(data, i);
-                            const dest = path.join(DIST_DIR, "light", id, file);
-                            writes.push(fs.writeFile(dest, html, "utf8"));
-
-                            writtenGroups.push({ groupNr, url: `${id}/${file}` });
-                        }
-                        return Promise.all(writes);
-                    }),
-            ]);
-        })
     ]);
+}
+
+async function buildDynamicContent(classes) {
+    // Keep track of what we write so that we can generate an index.html page
+    // for browsers without JavaScript later.
+    const writtenClasses = [];
+
+    await Promise.all(classes.map(async promise => {
+        const { id, data } = await promise;
+
+        const writtenGroups = [];
+        writtenClasses.push({ className: data.name, groups: writtenGroups });
+
+        return Promise.all([
+            // A minified version of the data.
+            fs.writeFile(path.join(DIST_DIR, "data", id + ".json"), JSON.stringify(data), "utf8"),
+
+            // Make a lightweight version for each group for extremely old
+            // browsers or for interoperability with arcane platforms.
+            fs.mkdir(path.join(DIST_DIR, "light", id))
+                .then(() => {
+                    const writes = [];
+                    for (let i = 0; i < data.groups.length; i++) {
+                        const groupNr = i + data.firstGroup;
+                        const file = `groupe-${groupNr}.html`;
+
+                        const html = lightweightGroupPageHtml(data, i);
+                        const dest = path.join(DIST_DIR, "light", id, file);
+                        writes.push(fs.writeFile(dest, html, "utf8"));
+
+                        writtenGroups.push({ groupNr, url: `${id}/${file}` });
+                    }
+                    return Promise.all(writes);
+                }),
+        ]);
+    }));
     await fs.writeFile(path.join(DIST_DIR, "light", "index.html"),
         lightweightIndexPageHtml(writtenClasses), "utf8");
+}
+
+async function main() {
+    await prepareDistDirectory();
+    return Promise.all([
+        buildStaticContent(),
+        buildDynamicContent(await readClasses()),
+    ]);
 }
 
 main().catch(err => {
