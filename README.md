@@ -1,12 +1,16 @@
-# Colles Carnot
+# Visualiseur de colles CPGE
 
-Ce projet est une simple application web pour voir vos colles. Les données sont
-stockées dans le dossier `data`, avec un fichier par classe.
+Ce projet est une application web pour visualiser les semaines de colles des
+élèves des certaines classes de CPGE au lycée Carnot plus facilement qu'avec
+le colloscope donné par les professeurs (c'est subjectif bien sûr).
 
 ## Format des fichiers par classe
 
-Le fichier est un fichier JSON. À la racine, on trouve un objet avec dans
-l'ordre :
+Chaque classe de CPGE a un fichier JSON correspondant dans le dossier `data`
+où les colles des groupes de la classe sont répertoriées.
+
+Le fichier est un fichier JSON. À la racine, on trouve un objet avec :
+* Le nom de la classe (clé `name`).
 * Les personnes ayant participé à l'importation et la correction des données
   (clé `credits`) sous forme d'un tableau de chaînes de caractères.
 * Les groupes (clé `groups`) sous forme de tableau de groupes, chaque groupe
@@ -48,4 +52,4 @@ plusieurs lignes.
 ## Erreurs ou changements de colles
 
 Si il y a une erreur dans les données ou une mise à jour à faire, merci de créer
-un PR qui modifie les fichiers dans le dossier `data`.
+un Pull Request qui modifie les fichiers dans le dossier `data`.
