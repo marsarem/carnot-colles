@@ -208,7 +208,7 @@
                     <li>
                         Accéder à une version simplifiée de cette application
                         qui ne nécessite pas le JavaScript en cliquant sur
-                        <a href="light/index.html">ce lien</a>.
+                        <a href="light/">ce lien</a>.
                     </li>
                 </ul>
             </noscript>
@@ -860,6 +860,14 @@
 
             loadFontAsync();
             loadPolyfillsAsync(main);
+
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker
+                    .register("/sw.js")
+                    .then(function() {
+                        console.log("successfully registered service worker");
+                    });
+            }
         </script>
     </body>
 </html>

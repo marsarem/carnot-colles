@@ -9,10 +9,21 @@ import { minify } from "html-minifier";
 import svg2png from "svg2png";
 import SVGO from "svgo";
 import toIco from "to-ico";
+import UglifyJS from "uglify-js";
 
 const SRC_DIR = "src";
 const DATA_DIR = "data";
 const DIST_DIR = process.argv[2] ?? "dist";
+
+const UGLIFY_JS_OPTS = {
+    compress: {
+        unsafe: true,
+        unsafe_math: true,
+    },
+    mangle: {
+        toplevel: true,
+    },
+};
 
 /**
  * Reads the data files for each class and returns the parsed JSON.
@@ -92,15 +103,7 @@ function minifyHtml(html) {
         html5: true,
         removeOptionalTags: true,
         minifyCSS: true,
-        minifyJS: {
-            compress: {
-                unsafe: true,
-                unsafe_math: true,
-            },
-            mangle: {
-                toplevel: true,
-            },
-        },
+        minifyJS: UGLIFY_JS_OPTS,
     });
 }
 
@@ -200,6 +203,9 @@ function buildStaticContent() {
 
         fs.readFile(path.join(SRC_DIR, "viewer.html"), "utf8")
             .then(html => fs.writeFile(path.join(DIST_DIR, "index.html"), minifyHtml(html), "utf8")),
+
+        fs.readFile(path.join(SRC_DIR, "sw.js"), "utf8")
+            .then(js => fs.writeFile(path.join(DIST_DIR, "sw.js"), UglifyJS.minify(js, UGLIFY_JS_OPTS).code, "utf8")),
 
         fs.readFile(path.join(SRC_DIR, "icon.svg"))
             .then(buf => {
