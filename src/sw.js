@@ -1,5 +1,7 @@
 "use strict";
 
+var URL_PREFIX = "/carnot-colles";
+
 var VIEWER_CACHE = "colles-viewer-v1";
 var DATA_CACHE = "colles-data-v1";
 
@@ -7,20 +9,20 @@ function precache() {
     return Promise.all([
         caches.open(VIEWER_CACHE).then(function(c) {
             return c.addAll([
-                "/",
-                "/favicon.ico",
-                "/icon.svg",
-                "/manifest.webmanifest",
-                "/apple-touch-icon.png",
+                URL_PREFIX + "/",
+                URL_PREFIX + "/favicon.ico",
+                URL_PREFIX + "/icon.svg",
+                URL_PREFIX + "/manifest.webmanifest",
+                URL_PREFIX + "/apple-touch-icon.png",
             ]);
         }),
         caches.open(DATA_CACHE).then(function(c) {
             return c.addAll([
-                "/data/mp-star.json",
-                "/data/mpsi1.json",
-                "/data/mpsi2.json",
-                "/data/mpsi3.json",
-                "/data/psi-star.json",
+                URL_PREFIX + "/data/mp-star.json",
+                URL_PREFIX + "/data/mpsi1.json",
+                URL_PREFIX + "/data/mpsi2.json",
+                URL_PREFIX + "/data/mpsi3.json",
+                URL_PREFIX + "/data/psi-star.json",
             ]);
         }),
     ]);

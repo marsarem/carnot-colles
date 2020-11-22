@@ -1,3 +1,7 @@
+# Note: this doesn't work currently because the site is being hosted on a
+# subdirectory on my GitHub pages subdomain, but if I migrate to self hosting,
+# this will work again.
+
 # Prevent data from being indexed.
 User-agent: *
 Disallow: /
