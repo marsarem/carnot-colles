@@ -1,15 +1,24 @@
 {
     "name": "Colloscope",
+    "short_name": "Colloscope",
     "description": "Permet de voir une liste des colles à venir.",
     "icons": [
         {
-            "src": "/carnot-colles/icon.svg",
-            "type": "image/svg+xml",
+            "src": "/carnot-colles/icon-192.png",
+            "type": "image/png",
+            "purpose":"any maskable",
+            "sizes": "192x192"
+        },
+        {
+            "src": "/carnot-colles/icon-512.png",
+            "type": "image/png",
             "purpose": "any maskable",
-            "sizes": "72x72 96x96 128x128 144x144 152x152 192x192 384x384 512x512"
+            "sizes": "512x512"
         }
     ],
+    "scope": "/carnot-colles/",
     "start_url": "/carnot-colles/",
     "display": "standalone",
-    "background_color": "#000000"
+    "background_color": "#000000",
+    "theme_color": "#000000"
 }

@@ -5,25 +5,34 @@ var URL_PREFIX = "/carnot-colles";
 var VIEWER_CACHE = "colles-viewer-v1";
 var DATA_CACHE = "colles-data-v1";
 
+function prefixURLs(urls) {
+    return urls.map(function(u) {
+        return URL_PREFIX + u;
+    });
+}
+
 function precache() {
     return Promise.all([
         caches.open(VIEWER_CACHE).then(function(c) {
-            return c.addAll([
-                URL_PREFIX + "/",
-                URL_PREFIX + "/favicon.ico",
-                URL_PREFIX + "/icon.svg",
-                URL_PREFIX + "/manifest.webmanifest",
-                URL_PREFIX + "/apple-touch-icon.png",
-            ]);
+            return c.addAll(prefixURLs([
+                "/",
+                "/apple-touch-icon.png",
+                "/favicon.ico",
+                "/icon-16.png",
+                "/icon-32.png",
+                "/icon-192.png",
+                "/icon-512.png",
+                "/manifest.webmanifest",
+            ]));
         }),
         caches.open(DATA_CACHE).then(function(c) {
-            return c.addAll([
-                URL_PREFIX + "/data/mp-star.json",
-                URL_PREFIX + "/data/mpsi1.json",
-                URL_PREFIX + "/data/mpsi2.json",
-                URL_PREFIX + "/data/mpsi3.json",
-                URL_PREFIX + "/data/psi-star.json",
-            ]);
+            return c.addAll(prefixURLs([
+                "/data/mp-star.json",
+                "/data/mpsi1.json",
+                "/data/mpsi2.json",
+                "/data/mpsi3.json",
+                "/data/psi-star.json",
+            ]));
         }),
     ]);
 }

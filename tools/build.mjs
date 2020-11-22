@@ -7,7 +7,6 @@ import * as path from "path";
 
 import { minify } from "html-minifier";
 import svg2png from "svg2png";
-import SVGO from "svgo";
 import toIco from "to-ico";
 import UglifyJS from "uglify-js";
 
@@ -152,7 +151,7 @@ function lightweightGroupPageHtml(classData, groupIndex) {
 
     const title = `Colloscope ${classData.name}, groupe ${humanGroupNumber}`;
     return minifyHtml(`<!doctype html>
-<html>
+<html lang="fr">
     <head>
         <meta http-equiv="content-type" content="text/html;charset=utf-8">
         <title>${title}</title>
@@ -185,7 +184,7 @@ function lightweightIndexPageHtml(classes) {
 
     const classesHtml = classes.map(classHtml).join("");
     return minifyHtml(`<!doctype html>
-<html>
+<html lang="fr">
     <head>
         <meta http-equiv="content-type" content="text/html;charset=utf-8">
         <title>Liste des colloscopes</title>
@@ -213,16 +212,20 @@ function buildStaticContent() {
                 for (const size of [16, 32, 48])
                     faviconPromises.push(svg2png(buf, { width: size, height: size }));
 
-                return Promise.all([
-                    new SVGO().optimize(buf.toString("utf8"))
-                        .then(s => fs.writeFile(path.join(DIST_DIR, "icon.svg"), s.data, "utf8")),
+                const pngIconsPromises = [];
+                for (const size of [16, 32, 192, 512])
+                    pngIconsPromises.push(svg2png(buf, { width: size, height: size })
+                        .then(buf => fs.writeFile(path.join(DIST_DIR, `icon-${size}.png`), buf)));
 
+                return Promise.all([
                     Promise.all(faviconPromises)
                         .then(bufs => toIco(bufs))
                         .then(buf => fs.writeFile(path.join(DIST_DIR, "favicon.ico"), buf)),
 
                     svg2png(buf, { width: 180, height: 180 })
                         .then(buf => fs.writeFile(path.join(DIST_DIR, "apple-touch-icon.png"), buf)),
+
+                    ...pngIconsPromises,
                 ]);
             }),
 
