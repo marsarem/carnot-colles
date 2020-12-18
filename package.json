@@ -8,8 +8,9 @@
   },
   "license": "GPL",
   "dependencies": {
-    "clean-css": "^4.2.3",
+    "csso": "^4.2.0",
     "dir-compare": "^2.4.0",
+    "handlebars": "^4.7.6",
     "html-minifier": "^4.0.0",
     "svg2png": "^4.1.1",
     "to-ico": "^1.1.5",

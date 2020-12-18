@@ -5,6 +5,8 @@
 import * as fs from "fs/promises";
 import * as path from "path";
 
+import csso from "csso";
+import Handlebars from "handlebars";
 import { minify } from "html-minifier";
 import svg2png from "svg2png";
 import toIco from "to-ico";
@@ -101,7 +103,7 @@ function minifyHtml(html) {
         collapseWhitespace: true,
         html5: true,
         removeOptionalTags: true,
-        minifyCSS: true,
+        minifyCSS: false,
         minifyJS: UGLIFY_JS_OPTS,
     });
 }
@@ -200,8 +202,15 @@ function buildStaticContent() {
     return Promise.all([
         fs.copyFile(path.join(SRC_DIR, "robots.txt"), path.join(DIST_DIR, "robots.txt")),
 
-        fs.readFile(path.join(SRC_DIR, "viewer.html"), "utf8")
-            .then(html => fs.writeFile(path.join(DIST_DIR, "index.html"), minifyHtml(html), "utf8")),
+        Promise.all([
+            fs.readFile(path.join(SRC_DIR, "viewer.html"), "utf8"),
+            fs.readFile(path.join(SRC_DIR, "viewer.css"), "utf8"),
+        ]).then(arr => {
+            const [html, css] = arr;
+            const template = Handlebars.compile(html);
+            const minified = minifyHtml(template({ css: csso.minify(css).css }));
+            return fs.writeFile(path.join(DIST_DIR, "index.html"), minified, "utf8");
+        }),
 
         fs.readFile(path.join(SRC_DIR, "sw.js"), "utf8")
             .then(js => fs.writeFile(path.join(DIST_DIR, "sw.js"), UglifyJS.minify(js, UGLIFY_JS_OPTS).code, "utf8")),
