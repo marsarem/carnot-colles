@@ -117,7 +117,7 @@ function lightweightGroupPageHtml(classData, groupIndex) {
     const humanGroupNumber = groupIndex + classData.firstGroup;
 
     function colleHtml(c) {
-        const DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Samedi", "Dimanche"];
+        const DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
         return `<li>
             <strong>${c.subject}</strong><br>
             ${c.teacher}<br>
