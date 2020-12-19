@@ -36,6 +36,10 @@ p, .name-form, .student-info, .week {
     margin: 0.45em 0 0 0;
     font-size: 1em;
     padding: 0.4em;
+
+    border: none;
+    border-radius: 0.4em;
+    background-color: #cde1f2;
 }
 
 .loading--hidden {
@@ -166,6 +170,11 @@ p, .name-form, .student-info, .week {
 @media (prefers-color-scheme: dark) {
     body {
         background-color: #121314;
+        color: #FFFFFF;
+    }
+
+    .name-input {
+        background-color: #232425;
         color: #FFFFFF;
     }
 }
