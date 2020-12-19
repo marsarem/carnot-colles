@@ -1568,10 +1568,18 @@
     ],
     "firstGroup": 1,
     "subjects": [
-        "Physique",
-        "SI",
-        "Mathématiques",
-        "Anglais"
+        {
+            "name": "Physique"
+        },
+        {
+            "name": "SI"
+        },
+        {
+            "name": "Mathématiques"
+        },
+        {
+            "name": "Anglais"
+        }
     ],
     "teachers": [
         "Mr MAUNY",

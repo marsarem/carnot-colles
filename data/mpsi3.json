@@ -1171,9 +1171,15 @@
     ],
     "firstGroup": 0,
     "subjects": [
-        "Mathématiques",
-        "Physique",
-        "Anglais"
+        {
+            "name": "Mathématiques"
+        },
+        {
+            "name": "Physique"
+        },
+        {
+            "name": "Anglais"
+        }
     ],
     "teachers": [
         "Mr CHENAL",

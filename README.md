@@ -25,8 +25,10 @@ Le fichier est un fichier JSON. À la racine, on trouve un objet avec :
 * Le numéro du premier groupe (clé `firstGroup`) sous forme d'entier. Dans
   certaines classes, les numéros de groupes commencent à 0 alors que dans
   d'autres, ils commencent à 1.
-* Les matières (clé `subjects`) sous forme d'un tableau de chaînes de
-  caractères.
+* Les matières (clé `subjects`) sous forme d'un tableau d'objets avec :
+  * Le nom de la matière (clé `name`) sous forme de chaîne de caractères.
+  * Optionellement une URL vers une site d'information pour les colles de cette
+    matière (clé `url`) sous forme de chaîne de caractères.
 * Les noms des colleurs (clé `teachers`) sous forme d'un tableau de chaînes de
   caractères.
 * Les types de colles (clé `colles`). Chaque type est un object lui-même qui

@@ -2088,10 +2088,19 @@
     ],
     "firstGroup": 1,
     "subjects": [
-        "Mathématiques",
-        "Physique",
-        "Anglais",
-        "Français"
+        {
+            "name": "Mathématiques"
+        },
+        {
+            "name": "Physique",
+            "url": "https://sites.google.com/site/physmpsi1dijon/kholles/programmes-de-kholles"
+        },
+        {
+            "name": "Anglais"
+        },
+        {
+            "name": "Français"
+        }
     ],
     "teachers": [
         "Mr CHENAL",
