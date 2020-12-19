@@ -284,6 +284,8 @@ function registerEventListeners() {
 }
 
 function createColleElement(classData, colle) {
+    var subject = classData.subjects[colle.subject];
+
     var $colle = document.createElement("li");
     $colle.classList.add("colle");
     $colle.classList.add("colle--" + colle.state);
@@ -291,7 +293,26 @@ function createColleElement(classData, colle) {
 
     var $subject = document.createElement("p");
     $subject.classList.add("colle__subject");
-    $subject.textContent = classData.subjects[colle.subject];
+
+    if (subject.url !== undefined) {
+        var $link = document.createElement("a");
+        $link.textContent = "programme";
+        $link.href = subject.url;
+        $link.target = "_blank";
+        // Do not tell the target site that the user is coming from this page for privacy.
+        if ($link.referrerPolicy !== undefined)
+            $link.referrerPolicy = "no-referrer";
+        // Avoid using the window.opener API.
+        if ($link.rel !== undefined)
+            $link.rel = "noreferrer noopener";
+
+        $subject.appendChild(document.createTextNode(subject.name + " ("));
+        $subject.appendChild($link);
+        $subject.appendChild(document.createTextNode(")"));
+    } else {
+        $subject.textContent = subject.name;
+    }
+
     $colle.appendChild($subject);
 
     var DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
@@ -370,10 +391,10 @@ function getWeeksForGroup(classData, groupIndex) {
             var state;
             if (now.valueOf() - startTime.valueOf() > 1000 * 60 * 60) {
                 state = "done";
-            } else if (startTime.valueOf() - now.valueOf() >= 1000 * 60 * 60) {
+            } else if (startTime.valueOf() - now.valueOf() <= 1000 * 60 * 60) {
                 state = "soon";
             } else {
-                state = "waiting";
+                state = "normal";
             }
 
             insert.push({

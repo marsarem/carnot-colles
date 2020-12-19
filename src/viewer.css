@@ -76,41 +76,35 @@ p, .name-form, .student-info, .week {
     border-style: solid;
     border-width: 0.3em;
     border-radius: 0.5em;
-}
 
-.colle--waiting {
-    border-color: #000000;
+    color: #FFFFFF;
 }
 
 .colle--subject-0 {
     background-color: #376A8B;
     border-color: #083757;
-    color: #FFFFFF;
 }
 
 .colle--subject-1 {
     background-color: #34714D;
     border-color: #073D1E;
-    color: #FFFFFF;
 }
 
 .colle--subject-2 {
     background-color: #9B3838;
     border-color: #570808;
-    color: #FFFFFF;
 }
 
 .colle--subject-3 {
     background-color: #AF2FD0;
     border-color: #6C0094;
-    color: #FFFFFF;
 }
 
 .colle--done {
     opacity: 0.7;
 }
 
-.colle--sson {
+.colle--soon {
     border-color: #E5FF00;
 }
 
@@ -120,6 +114,10 @@ p, .name-form, .student-info, .week {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.colle__subject > a {
+    color: #FFFFFF;
 }
 
 .colle__subject {

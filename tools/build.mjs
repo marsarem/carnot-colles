@@ -25,8 +25,8 @@ const TERSER_OPTS = {
         properties: {
             reserved: [
                 "name", "credits", "groups", "students", "weeks", "firstGroup",
-                "subjects", "teachers", "colles", "subject", "teacher", "day",
-                "room", "time", "weeks", "searchIndex"
+                "subjects", "url", "teachers", "colles", "subject", "teacher",
+                "day", "room", "time", "weeks", "searchIndex"
             ],
         },
         toplevel: true,
@@ -127,8 +127,15 @@ function lightweightGroupPageHtml(classData, groupIndex) {
 
     function colleHtml(c) {
         const DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+        let link = "";
+        if (c.subject.url !== undefined) {
+            // Do not tell the target site that the user is coming from this
+            // page by disabling referrer. Also disable the window.opener API.
+            link = ` (<a href="${c.subject.url}" target="_blank" ` +
+                `referrerpolicy="no-referrer" rel="noreferrer noopener">programme</a>)`;
+        }
         return `<li>
-            <strong>${c.subject}</strong><br>
+            <strong>${c.subject.name}</strong>${link}<br>
             ${c.teacher}<br>
             Salle ${c.room}<br>
             ${DAYS[c.day]} à ${c.time}h
