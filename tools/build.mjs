@@ -104,7 +104,7 @@ function minifyHtml(html) {
         html5: true,
         removeOptionalTags: true,
         minifyCSS: false,
-        minifyJS: UGLIFY_JS_OPTS,
+        minifyJS: false,
     });
 }
 
@@ -205,10 +205,14 @@ function buildStaticContent() {
         Promise.all([
             fs.readFile(path.join(SRC_DIR, "viewer.html"), "utf8"),
             fs.readFile(path.join(SRC_DIR, "viewer.css"), "utf8"),
+            fs.readFile(path.join(SRC_DIR, "viewer.js"), "utf8"),
         ]).then(arr => {
-            const [html, css] = arr;
-            const template = Handlebars.compile(html);
-            const minified = minifyHtml(template({ css: csso.minify(css).css }));
+            const [html, css, js] = arr;
+            const template = Handlebars.compile(html, { noEscape: true });
+            const minified = minifyHtml(template({
+                css: csso.minify(css).css,
+                js: UglifyJS.minify(js, UGLIFY_JS_OPTS).code,
+            }));
             return fs.writeFile(path.join(DIST_DIR, "index.html"), minified, "utf8");
         }),
 
