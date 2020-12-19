@@ -603,14 +603,6 @@ function loadPolyfillsAsync(cb) {
         cb();
 }
 
-function loadFontAsync() {
-    var $link = document.createElement("link");
-    $link.rel = "stylesheet";
-    $link.href = "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap";
-    document.head.appendChild($link);
-}
-
-loadFontAsync();
 loadPolyfillsAsync(main);
 
 if ("serviceWorker" in navigator) {
