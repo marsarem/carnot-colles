@@ -9,19 +9,26 @@ import csso from "csso";
 import Handlebars from "handlebars";
 import { minify } from "html-minifier";
 import svg2png from "svg2png";
+import * as terser from "terser";
 import toIco from "to-ico";
-import UglifyJS from "uglify-js";
 
 const SRC_DIR = "src";
 const DATA_DIR = "data";
 const DIST_DIR = process.argv[2] ?? "dist";
 
-const UGLIFY_JS_OPTS = {
+const TERSER_OPTS = {
     compress: {
         unsafe: true,
         unsafe_math: true,
     },
     mangle: {
+        properties: {
+            reserved: [
+                "name", "credits", "groups", "students", "weeks", "firstGroup",
+                "subjects", "teachers", "colles", "subject", "teacher", "day",
+                "room", "time", "weeks", "searchIndex"
+            ],
+        },
         toplevel: true,
     },
 };
@@ -205,19 +212,21 @@ function buildStaticContent() {
         Promise.all([
             fs.readFile(path.join(SRC_DIR, "viewer.html"), "utf8"),
             fs.readFile(path.join(SRC_DIR, "viewer.css"), "utf8"),
-            fs.readFile(path.join(SRC_DIR, "viewer.js"), "utf8"),
+            fs.readFile(path.join(SRC_DIR, "viewer.js"), "utf8")
+                .then(js => terser.minify(js, TERSER_OPTS)),
         ]).then(arr => {
             const [html, css, js] = arr;
             const template = Handlebars.compile(html, { noEscape: true });
             const minified = minifyHtml(template({
                 css: csso.minify(css).css,
-                js: UglifyJS.minify(js, UGLIFY_JS_OPTS).code,
+                js: js.code,
             }));
             return fs.writeFile(path.join(DIST_DIR, "index.html"), minified, "utf8");
         }),
 
         fs.readFile(path.join(SRC_DIR, "sw.js"), "utf8")
-            .then(js => fs.writeFile(path.join(DIST_DIR, "sw.js"), UglifyJS.minify(js, UGLIFY_JS_OPTS).code, "utf8")),
+            .then(js => terser.minify(js, TERSER_OPTS))
+            .then(js => fs.writeFile(path.join(DIST_DIR, "sw.js"), js.code, "utf8")),
 
         fs.readFile(path.join(SRC_DIR, "icon.svg"))
             .then(buf => {
