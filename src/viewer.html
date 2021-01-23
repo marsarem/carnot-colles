@@ -6,73 +6,58 @@
         <meta name="viewport" content="width=device-width,initial-scale=1.0">
         <meta name="theme-color" content="#000000">
         <link rel="canonical" href="https://greg904.github.io/carnot-colles/">
-        <link rel="manifest" href="manifest.webmanifest">
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="icon-16.png">
-        <link rel="shortcut icon" type="image/png" href="favicon.ico">
-        <style>{{css}}</style>
+        <link rel="manifest" href="/carnot-colles/manifest.webmanifest">
+        <link rel="apple-touch-icon" href="/carnot-colles/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/carnot-colles/icon-32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/carnot-colles/icon-16.png">
+        <link rel="shortcut icon" type="image/png" href="/carnot-colles/favicon.ico">
+        <style>{{ css }}</style>
         <title>Colloscope</title>
     </head>
     <body>
-        <div class="container">
-            <h1 class="title">
-                Colloscope
+        <h1 class="page-title margin margin-top-0">Colloscope</h1>
 
-                <select id="class-select" class="class-select" aria-label="Classe">
-                    <option value="mpsi1">MPSI1</option>
-                    <option value="mpsi2">MPSI2</option>
-                    <option value="mpsi3">MPSI3</option>
-                    <option value="mp-star">MP*</option>
-                    <option value="psi-star">PSI*</option>
-                </select>
-            </h1>
+        <noscript>
+            <p class="margin">
+                <strong>Votre navigateur ne supporte pas le JavaScript.</strong><br>
+                Afin d'accéder aux colles, vous pouvez soit :
+            </p>
+            <ul>
+                <li>Activer le JavaScript (si c'est possible).</li>
+                <li>
+                    Accéder à une version simplifiée de cette application
+                    qui ne nécessite pas le JavaScript en cliquant sur
+                    <a href="/carnot-colles/light/">ce lien</a>.
+                </li>
+            </ul>
+        </noscript>
 
-            <noscript>
-                <p>
-                    <strong>Votre navigateur ne supporte pas le JavaScript.</strong><br>
-                    Afin d'accéder aux colles, vous pouvez soit :
-                </p>
-                <ul>
-                    <li>Activer le JavaScript (si c'est possible).</li>
-                    <li>
-                        Accéder à une version simplifiée de cette application
-                        qui ne nécessite pas le JavaScript en cliquant sur
-                        <a href="light/">ce lien</a>.
-                    </li>
-                </ul>
-            </noscript>
+        <div class="margin" role="form">
+            <label for="query">Entrez votre nom :</label>
+            <input id="query" class="query" type="text"
+                placeholder="e.g. Jean Dupont">
+        </div>
 
-            <form class="name-form">
-                <label for="name-input">Entrez votre nom :</label>
-                <br>
-                <input id="name-input" class="name-input" type="text"
-                    placeholder="e.g. Jean Dupont">
-            </form>
+        <strong id="loader" class="js-hide">
+            Chargement des données en cours...
+        </strong>
 
-            <p id="loading" class="loading--hidden">
-                <strong>Chargement des données en cours...</strong>
+        <div id="info" class="margin margin-bottom-0 js-hide">
+            <p class="margin">
+                Nom :
+                <strong id="name"></strong>
+                <br/>
+
+                Classe :
+                <strong id="class"></strong>
+                <br/>
+
+                Groupe de colle :
+                <strong id="group-nr"></strong>
             </p>
 
-            <div id="student-info" class="student-info student-info--hidden">
-                <p class="student-info-fields">
-                    Nom :
-                    <strong id="student-name"></strong>
-                    <br/>
-
-                    Groupe de colle :
-                    <strong id="student-group-number"></strong>
-                </p>
-
-                <div id="student-colles-weeks" class="weeks"
-                    aria-label="Semaines de colles"></div>
-
-                <p class="data-credits--header">
-                    Personne(s) ayant participé à l'importation et la correction
-                    des données :
-                </p>
-                <ul id="data-credits-list" class="data-credits--list"></ul>
-            </div>
+            <div id="program" class="margin"
+                aria-label="Programme de colles"></div>
         </div>
 
         <script>{{ js }}</script>

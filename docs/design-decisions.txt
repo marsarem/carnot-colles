@@ -1,0 +1,67 @@
+WHY USE JAVASCRIPT INSTEAD OF WEBASSEMBLY?
+
+At the time of writing, WebAssembly is too hard to setup and use.
+Additionally, writing code for WebAssembly takes a lot of time which I don't
+currently have. Further more, the application is not very complex so
+WebAssembly does not have very clear benefits.
+
+WHY USE JSON TO STORE THE DATA PARSED BY THE CLIENT?
+
+We need a format that can be parsed quickly and without lagging the UI. The
+only format that JavaScript can parse natively (and therefore quickly) is JSON.
+
+According to a quick test, parsing a 1MB JSON file on Google Chrome and Mozilla
+Firefox results in less than 2MB added memory usage. As the data will probably
+not reach this size, the memory taken by the application when using JSON as a
+file format will not be a problem, even for mobile platforms.
+
+WHY USE THIS WEIRD FORMAT WITH INDICES IN THE JSON FILE?
+
+Using indices allows us to deduplicate the information:
+- This prevents mistakes.
+- This reduces the size of the file that client has to download and the memory
+  usage of the application.
+
+WHY NOT WRITE CLASSES' PROGRAMS IN A LESS REPETITIVE WAY?
+
+Of course we could store a single program for the whole class and rotate it for
+every group by the group number, adding some exceptions for every group. This
+would make the data way less repetitive.
+
+However, one of the biggest goal of the format is that anyone (including me)
+should be able to easily and quickly modify the program of both a single group
+and a single student without having to think too much, and therefore without
+risking doing mistakes.
+
+After multiple iterations, I believe that the current format, with the program
+repeated for every group and a list of overrides per student, even though it is
+very verbose and repetitive, is very simple to edit.
+
+WHY NOT SPLIT AND LAZY LOAD THE DATA BY CLASS/GROUP?
+
+The data for every student of every group of every class is always downloaded
+to everybody's client so that the server cannot know what the user is
+searching for, for privacy reasons.
+
+WHY WRITE THE CODE AND DOCUMENTATION IN ENGLISH?
+
+Because most programming projects are written in English, this can make the
+code and documentation easier to understand for everyone. Furthermore, this
+allows me to improve my English skills. Of course, the UI itself will stay in
+French.
+
+WHY USE VANILLA JS INSTEAD OF A FRAMEWORK FOR THE VIEWER CODE?
+
+Frameworks would make the code easier to write and to understand, but also
+slower, bigger and more dependent on external libraries. The code is short
+enough that the drawbacks of using no framework are not too important.
+
+WHY NOT SPLIT THE JS AND CSS CODE INTO MULTIPLE FILES?
+
+Because it would make the build more complicated and the code is not too big
+for now.
+
+WHY SO MUCH PREMATURE OPTIMIZATION?
+
+There is no practical reason for this, other than the fact that it is just fun
+to do. This project is clearly overengineered!

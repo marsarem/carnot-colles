@@ -2,37 +2,58 @@
     box-sizing: border-box;
 }
 
-html, body {
+html {
     margin: 0;
     padding: 0;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", Helvetica, Arial, sans-serif;
-    line-height: 1.6;
-}
-
-p, .name-form, .student-info, .week {
-    margin: 2em 0;
-}
-
-.container {
+    /* Center horizontally. */
     max-width: 70em;
     margin: 0 auto;
     padding: 4em 1em;
+
+    /* Use system fonts to look more like a native application. */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Open Sans", Helvetica, Arial, sans-serif;
+    line-height: 1.6;
 }
 
-.title {
-    margin: 0 0 1em 0;
+/**
+ * Utility classes
+ */
+
+.margin {
+    margin: 2em 0;
+}
+
+h1.margin {
+    margin: 1em 0;
+}
+
+.margin-top-0, h1.margin-top-0 {
+    margin-top: 0;
+}
+
+.margin-bottom-0, h1.margin-bottom-0 {
+    margin-bottom: 0;
+}
+
+.js-hide {
+    display: none;
+}
+
+/**
+ * Element styling
+ */
+
+.page-title {
     font-size: 2em;
 }
 
-.class-select {
-    font-size: 1em;
-    font-weight: bold;
-}
+.query {
+    display: block;
 
-.name-input {
     margin: 0.45em 0 0 0;
     font-size: 1em;
     padding: 0.4em;
@@ -40,22 +61,6 @@ p, .name-form, .student-info, .week {
     border: none;
     border-radius: 0.4em;
     background-color: #cde1f2;
-}
-
-.loading--hidden {
-    display: none;
-}
-
-.student-info, .weeks .week:last-child {
-    margin-bottom: 0;
-}
-
-.student-info--hidden {
-    display: none;
-}
-
-.weeks {
-    margin: 2em 0;
 }
 
 .week__title {
@@ -128,25 +133,9 @@ p, .name-form, .student-info, .week {
     font-weight: bold;
 }
 
-.data-credits--header {
-    margin: 2.5em 0 0 0;
-}
-
-.data-credits--header, .data-credits--list {
-    font-size: 0.8em;
-}
-
-.data-credits--list {
-    margin: 0;
-}
-
-.data-credits--name {
-    font-style: italic;
-}
-
-.data-credits__hidden {
-    display: none;
-}
+/**
+ * Media queries
+ */
 
 @media (max-width: 30em) {
     body {
@@ -161,10 +150,6 @@ p, .name-form, .student-info, .week {
         width: 100%;
         margin: 0.5em 0;
     }
-
-    .data-credits--list {
-        text-align: left;
-    }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -173,7 +158,7 @@ p, .name-form, .student-info, .week {
         color: #FFFFFF;
     }
 
-    .name-input {
+    .query {
         background-color: #232425;
         color: #FFFFFF;
     }

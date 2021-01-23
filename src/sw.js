@@ -1,43 +1,66 @@
 "use strict";
 
-var URL_PREFIX = "/carnot-colles";
+// This must be incremented whenever a new version of the viewer's code or
+// data is published.
+var VIEWER_VERSION = 2;
+var DATA_VERSION = 2;
 
-var VIEWER_CACHE = "colles-viewer-v1";
-var DATA_CACHE = "colles-data-v1";
+var CACHE_PREFIX = "colles-viewer__";
+var VIEWER_CACHE = CACHE_PREFIX + "viewer-v" + VIEWER_VERSION;
+var DATA_CACHE = CACHE_PREFIX + "data-v" + DATA_VERSION;
 
-function prefixURLs(urls) {
-    return urls.map(function(u) {
-        return URL_PREFIX + u;
-    });
-}
+var URL_PREFIX = "/carnot-colles/";
 
+/**
+ * Precaches the viewer's code and data.
+ * @returns a promise the resolves when done
+ */
 function precache() {
     return Promise.all([
         caches.open(VIEWER_CACHE).then(function(c) {
-            return c.addAll(prefixURLs([
-                "/",
-                "/apple-touch-icon.png",
-                "/favicon.ico",
-                "/icon-16.png",
-                "/icon-32.png",
-                "/icon-192.png",
-                "/icon-512.png",
-                "/manifest.webmanifest",
-            ]));
+            return c.addAll([
+                "",
+                "apple-touch-icon.png",
+                "favicon.ico",
+                "icon-16.png",
+                "icon-32.png",
+                "icon-192.png",
+                "icon-512.png",
+                "manifest.webmanifest",
+            ].map(function(u) {
+                return URL_PREFIX + u;
+            }));
         }),
         caches.open(DATA_CACHE).then(function(c) {
-            return c.addAll(prefixURLs([
-                "/data/mp-star.json",
-                "/data/mpsi1.json",
-                "/data/mpsi2.json",
-                "/data/mpsi3.json",
-                "/data/psi-star.json",
-            ]));
+            return c.add(URL_PREFIX + "data.json");
         }),
     ]);
 }
 
-function fromCache(request) {
+/**
+ * Delete caches from older service workers.
+ * @returns a promise the resolves when done
+ */
+function deleteOldCaches() {
+    return caches.keys()
+        .then(function(keys) {
+            return Promise.all(keys
+                .filter(function(k) {
+                    return k !== VIEWER_CACHE && k !== DATA_CACHE;
+                })
+                .map(function(k) {
+                    return caches.delete(k);
+                }));
+        });
+}
+
+/**
+ * Try to respond to the request with the cache first, and then if the cache
+ * does not have the resource, then fetch it from the network.
+ * @param {RequestInfo} request the request
+ * @returns a promise with the response
+ */
+function tryCacheThenNetwork(request) {
     return caches.match(request)
         .then(function(match) {
             if (match !== undefined)
@@ -51,19 +74,9 @@ self.addEventListener("install", function(e) {
 });
 
 self.addEventListener("activate", function(e) {
-    // Remove old cache.
-    e.waitUntil(caches.keys()
-        .then(function(keys) {
-            return Promise.all(keys
-                .filter(function(n) {
-                    return n !== VIEWER_CACHE && n !== DATA_CACHE;
-                })
-                .map(function(n) {
-                    return caches.delete(n);
-                }));
-        }));
+    e.waitUntil(deleteOldCaches());
 });
 
 self.addEventListener("fetch", function(e) {
-    e.respondWith(fromCache(e.request));
+    e.respondWith(tryCacheThenNetwork(e.request));
 });

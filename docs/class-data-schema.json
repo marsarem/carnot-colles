@@ -1,0 +1,177 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "name": {
+            "title": "The class' name",
+            "type": "string",
+            "examples": ["MPSI1", "PSI*"]
+        },
+        "firstGroup": {
+            "$ref": "#/definitions/Index",
+            "title": "The first group's number",
+            "description": "This is the first group's number. Every other group's number is derived from this number and the group index by adding them together."
+        },
+        "studentGroups": {
+            "title": "The class' groups",
+            "type": "array",
+            "items": { "$ref": "#/definitions/StudentGroup" },
+            "uniqueItems": true
+        },
+        "subjects": {
+            "title": "The possible colle subjects",
+            "type": "array",
+            "items": { "$ref": "#/definitions/Subject" },
+            "uniqueItems": true
+        },
+        "teachers": {
+            "title": "The possible colle teachers",
+            "type": "array",
+            "items": { "title": "The teacher's name", "type": "string" },
+            "uniqueItems": true
+        },
+        "colles": {
+            "title": "The colle templates",
+            "type": "array",
+            "items": { "$ref": "#/definitions/Colle" },
+            "uniqueItems": true
+        },
+        "programWeeks": {
+            "title": "The program weeks",
+            "description": "The program array in every group allows the client to build a list of colles per week. The indices in that list are then matched with those from this list to get the week's starting date.",
+            "type": "array",
+            "items": {
+                "title": "The first day of the week",
+                "type": "string",
+                "pattern": "^\\d{4}-([1-9]|1[0-2])-(\\d|[12]\\d|3[01])$"
+            },
+            "uniqueItems": true
+        }
+    },
+    "required": ["name", "firstGroup", "studentGroups", "subjects", "teachers", "colles", "programWeeks"],
+    "definitions": {
+        "Colle": {
+            "$comment": "Unlike subject and teacher, the room and time are not indices into an array for the following reasons. They are more likely to change over time. There are more possibilities for them, which kind of negates the pros of the indices system. To prevent mistakes: it makes it easier for humans to edit and see the values.",
+            "title": "A colle template",
+            "type": "object",
+            "properties": {
+                "subject": {
+                    "$ref": "#/definitions/Index",
+                    "title": "The index of the subject"
+                },
+                "teacher": {
+                    "$ref": "#/definitions/Index",
+                    "title": "The index of the teacher"
+                },
+                "day": {
+                    "title": "The day of the week for this colle",
+                    "description": "0 is for Monday, 1 is for Tuesday, ...",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 6
+                },
+                "room": {
+                    "title": "The room for this colle",
+                    "type": "string"
+                },
+                "time": {
+                    "title": "The time when the colle starts",
+                    "type": "string",
+                    "pattern": "^(\\d|1\\d|2[0-3]):[0-5]\\d$"
+                }
+            },
+            "required": ["subject", "teacher", "day", "time"],
+            "additionalProperties": false
+        },
+        "ColleProgramWeek": {
+            "title": "Colles for that week",
+            "type": "array",
+            "items": { "$ref": "#/definitions/Index", "title": "The index of the colle" }
+        },
+        "ColleProgramDelta": {
+            "title": "A modification in a colle program",
+            "type": "object",
+            "properties": {
+                "week": {
+                    "$ref": "#/definitions/Index",
+                    "title": "The index of the week to modify"
+                },
+                "index": {
+                    "title": "The index of the element to modify in the week's program, or `null` to add a colle to the week",
+                    "oneOf": [
+                        { "$ref": "#/definitions/Index" },
+                        { "type": "null" }
+                    ]
+                },
+                "newColle": {
+                    "title": "The new index of the colle, or null to remove it",
+                    "oneOf": [
+                        { "$ref": "#/definitions/Index" },
+                        { "type": "null" }
+                    ]
+                }
+            },
+            "required": ["week", "index", "newColle"],
+            "additionalProperties": false
+        },
+        "Index": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "StudentGroup": {
+            "title": "A student group",
+            "type": "object",
+            "properties": {
+                "students": {
+                    "title": "The names of the students in this group",
+                    "type": "array",
+                    "items": {
+                        "title": "The student's name",
+                        "type": "string",
+                        "examples": ["Jane Doe", "John Doe"]
+                    },
+                    "uniqueItems": true
+                },
+                "program": {
+                    "title": "The colle program for this group",
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/ColleProgramWeek" }
+                },
+                "programOverrides": {
+                    "title": "For every student that need it, a list of differences between the student's and group's program",
+                    "description": "Sometimes, a student in the group doesn't have the same colles as the other students (maybe they study different languages). A program override can be added for the student here.",
+                    "type": "object",
+                    "minProperties": 1,
+                    "patternProperties": {
+                        "^[0-9]+$": {
+                            "title": "Differences between the student's and group's program",
+                            "type": "array",
+                            "items": { "$ref": "#/definitions/ColleProgramDelta" }
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "required": ["students", "program"],
+            "additionalProperties": false
+        },
+        "Subject": {
+            "title": "A subject description",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "title": "The subject's name",
+                    "type": "string",
+                    "examples": ["Maths", "Physics", "English"]
+                },
+                "url": {
+                    "title": "A URL with more information about the program",
+                    "type": "string",
+                    "examples": ["https://example.com/subject-s-program"]
+                }
+            },
+            "required": ["name"],
+            "additionalProperties": false
+        }
+    }
+}

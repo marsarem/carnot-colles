@@ -1,7 +1,7 @@
 {
     "name": "Colloscope",
     "short_name": "Colloscope",
-    "description": "Permet de voir une liste des colles à venir.",
+    "description": "Permet de voir une liste des colles à venir de certaines classes CPGE du lycée Carnot.",
     "icons": [
         {
             "src": "/carnot-colles/icon-192.png",

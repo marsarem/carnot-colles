@@ -1,6 +1,179 @@
+(function() {
+
 "use strict";
 
-var dataByClass = {};
+var LOCAL_STORAGE_QUERY = "colles-viewer__query";
+
+/**
+ * Long living DOM elements
+ */
+
+var QUERY = document.getElementById("query");
+var LOADER = document.getElementById("loader");
+var INFO_DIV = document.getElementById("info");
+var STUDENT_NAME = document.getElementById("name");
+var STUDENT_CLASS = document.getElementById("class");
+var GROUP_NR = document.getElementById("group-nr");
+var PROGRAM = document.getElementById("program");
+
+/**
+ * The data.json file's content as an object, or `null` before it is finished
+ * loading.
+ */
+var DATA = null;
+
+var CLASSES = 0;
+var GROUPS = 1;
+var STUDENTS = 2;
+var SUBJECTS = 3;
+var TEACHERS = 4;
+var ROOMS = 5;
+var TIMES = 6;
+var WEEKS = 7;
+var SEARCH_INDEX = 8;
+
+/**
+ * Fetches the data.json file's content.
+ * @returns a promise with the data as an object
+ */
+function fetchData() {
+    return fetch("data.json")
+        .then(function(response) {
+            if (!response.ok)
+                throw new Error("response is not OK");
+            return response.json();
+        })
+}
+
+/**
+ * Decodes a string into an integer array.
+ * @param {string} str the string to decode
+ * @returns the integer array
+ */
+function decodeIntegerArray(str) {
+    var ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&'()*+,-./:;<=>?@[]^_`{|}";
+    var MORE = "~";
+    var result = [];
+    var n = 0;
+    for (var i = 0; i < str.length; i++) {
+        var c = str[i];
+        if (c === MORE) {
+            n += ALPHABET.length;
+            continue;
+        }
+        var index = ALPHABET.indexOf(c);
+        if (index === -1)
+            throw new Error("invalid string");
+        n += index;
+        result.push(n);
+        n = 0;
+    }
+    return result;
+}
+
+/**
+ * @see decodeIntegerArray
+ * @param {string} str the string to decode
+ * @returns the array of integer arrays
+ */
+function decodeArrayOfIntegerArrays(str) {
+    return str.split(" ").map(decodeIntegerArray);
+}
+
+/**
+ * If the user had already visited the site and searched for the program of a
+ * student, then set the value of the name field to the name of that student,
+ * so that they do not have to type it again (the site remembers it).
+ */
+function autoFillQuery() {
+    if (!window.localStorage)
+        return;
+    var query = localStorage.getItem(LOCAL_STORAGE_QUERY);
+    if (!query)
+        return;
+    QUERY.value = query;
+}
+
+/**
+ * Returns the index of the student that best matches the search query, or -1
+ * if there is not any.
+ * @returns the index of the student that best matches the search query
+ */
+function performSearch() {
+    // This code is duplicated in lib/mk-search-index.mjs. For now this is fine
+    // because the amount of code duplicated is low and adding a JS bundler is
+    // not really wanted (it would add more complexity and a dependecy that we
+    // have to track versions of).
+    var tokens = QUERY.value
+        .toLowerCase()
+        // Remove accents
+        .normalize("NFD") 
+        .replace(/[\u0300-\u036f]/g, "")
+        .split(/\W+/g)
+        // Remove things like "D'"
+        .filter(w => w.length >= 2);
+    
+    if (!tokens.length)
+        return -1;
+
+    // Sort the tokens so that the largest one first. It makes more sense to
+    // match the largest one first and then precise the query with smaller
+    // tokens.
+    tokens.sort(function(a, b) {
+        return b.length - a.length;
+    });
+
+    function getMatches(needle) {
+        var matches = [];
+
+        var firstChar = needle[0];
+        var searchIndex = DATA[SEARCH_INDEX][firstChar];
+        for (var haystack in searchIndex) {
+            if (haystack.indexOf(needle) === -1)
+                continue;
+            matches.push(haystack);
+        }
+
+        // Sort the matches so that the first match is the token with the
+        // shortest length. Let's say we have to names "Greg" and "Gregory". If
+        // the user types "greg", we want to match with "Greg" first and then
+        // let them add more characters if that match wasn't correct. If we did
+        // not do this, then it would be impossible to search for "Greg."
+        matches.sort(function(a, b) {
+            return a.length - b.length;
+        });
+
+        var indices = new Set();
+        for (var i = 0; i < matches.length; i++) {
+            var m = searchIndex[matches[i]];
+            for (var j = 0; j < m.length; j++)
+                indices.add(m[j]);
+        }
+
+        return indices;
+    }
+
+    function intersection(set1, set2) {
+        set1.forEach(function(val) {
+            if (!set2.has(val))
+                set1.delete(val);
+        });
+    }
+
+    var candidates = getMatches(tokens[0]);
+    for (var i = 1; i < tokens.length && candidates.size; i++) {
+        intersection(candidates, getMatches(tokens[i]));
+    }
+
+    // IE11 doesn't support Set.prototype.values so we have to iterate the
+    // whole set just to get the first value...
+    var result = -1;
+    candidates.forEach(function(x) {
+        if (result === -1)
+            result = x;
+    });
+    return result;
+}
 
 /**
  * Relative time formatting
@@ -79,225 +252,23 @@ function formatRelativeTime(from, to) {
 }
 
 /**
- * Search functionality
+ * Makes a colle DOM element.
+ * @param {object} colle the colle
+ * @returns the DOM element
  */
-
-var TOKEN_SPLIT_REGEX = /\W/;
-
-/**
- * Remove accents and leading/final spaces from a name and converts
- * it to lower case.
- * @param name {string} the name to convert
- * @returns the new normalized name
- */
-function normalizeName(name) {
-    name = name.trim()
-        .toLowerCase();
-    // Remove accents
-    return name.normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
-}
-
-/**
- * Computes a matching score between the tokens entered by the user
- * and tokens for a particular entry.
- * @param inputTokens {string[]} the tokens entered by the user
- * @param entryTokens {string[]} the tokens for a particular entry
- * @returns the matching score
- */
-function getMatchingScore(inputTokens, entryTokens) {
-    // Make a copy of the arrays because we are going to modify
-    // them.
-    inputTokens = inputTokens.slice();
-    entryTokens = entryTokens.slice();
-
-    var score = 0;
-    while (inputTokens.length > 0) {
-        var inputToken = inputTokens.pop();
-
-        // Remove the closest match (that is, the token that matches
-        // but that has the shortest length) so that the remaining
-        // entry tokens can match with the remaining input tokens.
-        var shortestMatchIndex = -1;
-        var shortestMatchLength = Infinity;
-        for (var i = 0; i < entryTokens.length; i++) {
-            var entryToken = entryTokens[i];
-            if (entryToken.length < shortestMatchLength &&
-                entryToken.indexOf(inputToken) === 0) {
-                shortestMatchIndex = i;
-                shortestMatchLength = entryToken.length;
-            }
-        }
-
-        if (shortestMatchIndex === -1) {
-            // Return zero when at least one input token didn't
-            // match with any of the entry's tokens.
-            return 0;
-        } else {
-            score += inputToken.length;
-            entryTokens.splice(shortestMatchIndex, 1);
-        }
-    }
-
-    return score;
-}
-
-/**
- * Creates a new student object.
- * @param classData {object} the class data
- * @param group {number} the index of the student's group
- * @param index {number} the student's index in its group
- */
-function Student(classData, group, index) {
-    this.classData = classData;
-    this.group = group;
-    this.index = index;
-}
-
-/**
- * Returns the student's name.
- * @returns the student's name
- */
-Student.prototype.getName = function() {
-    return this.classData.groups[this.group].students[this.index];
-};
-
-/**
- * Returns a unique ID for the student.
- * @returns a unique ID for the student.
- */
-Student.prototype.getId = function() {
-    return this.classData.id * 1000000 +
-        this.group * 1000 +
-        this.index;
-};
-
-/**
- * Performs a search given an input from the user and returns the
- * student that was found.
- * @param classData {object} the selected class' data
- * @param input {string} the user input
- * @returns the student or null if none were found
- */
-function searchStudent(classData, input) {
-    var inputTokens = normalizeName(input)
-        .split(TOKEN_SPLIT_REGEX);
-
-    // Put the shortest tokens at the beggining of the array so that
-    // they get matched last with the student name's tokens. Indeed,
-    // if we have a name such as "AB AAAAAA" and the input is
-    // "A AB", then we want to match the "AB" token first so that we
-    // remove it and continue with the "AAAAAA" token. Otherwise,
-    // the search will return no result.
-    inputTokens.sort(function(a, b) {
-        return a.length - b.length;
-    });
-
-    var bestMatchIndex = -1;
-    var bestMatchScore = 0;
-    var sameScoreCount = 0;
-    for (var i = 0; i < classData.searchIndex.length; i++) {
-        var score = getMatchingScore(inputTokens,
-            classData.searchIndex[i].tokens);
-        if (score > bestMatchScore) {
-            bestMatchIndex = i;
-            bestMatchScore = score;
-            sameScoreCount = 0;
-        } else if (score === bestMatchScore) {
-            sameScoreCount++;
-        }
-    }
-
-    // Multiple matches with the same score means that we aren't
-    // sure.
-    if (bestMatchIndex === -1 || sameScoreCount > 0)
-        return null;
-
-    var bestMatch = classData.searchIndex[bestMatchIndex];
-    return new Student(classData, bestMatch.group, bestMatch.index);
-}
-
-/**
- * UI interface
- */
-
-var dom = {
-    // Search form
-    classSelect: document.getElementById("class-select"),
-    nameInput: document.getElementById("name-input"),
-    loading: document.getElementById("loading"),
-
-    // Student information
-    studentInfo: document.getElementById("student-info"),
-    studentName: document.getElementById("student-name"),
-    studentGroupNumber: document.getElementById("student-group-number"),
-    collesWeeks: document.getElementById("student-colles-weeks"),
-    dataCredits: document.getElementById("data-credits-list"),
-};
-
-var uiState = {
-    selectedClass: null,
-    loadingHidden: true,
-    studentInfoHidden: true,
-    studentId: null,
-    dataCreditsDirty: true,
-};
-
-function registerEventListeners() {
-    dom.classSelect.addEventListener("change", function(e) {
-        var classId = dom.classSelect.value;
-
-        // Remember the class so that the user doesn't have to type
-        // it after the page is closed and opened again.
-        if (window.localStorage !== undefined)
-            localStorage.setItem("class", classId);
-        
-        if (uiState.selectedClass === classId)
-            return;
-        uiState.selectedClass = classId;
-
-        loadClassData(classId)
-            .then(function() {
-                // Only refresh the view if the selected class was
-                // not changed in between the load start and end.
-                if (uiState.selectedClass !== classId)
-                    return;
-
-                // Recreate class dependent elements
-                uiState.dataCreditsDirty = true;
-
-                refreshView();
-            });
-        
-        // Show loader
-        refreshView();
-    });
-
-    dom.nameInput.addEventListener("input", function(e) {
-        // Remember the name so that the user doesn't have to type
-        // it after the page is closed and opened again.
-        if (window.localStorage !== undefined)
-            localStorage.setItem("name", dom.nameInput.value);
-
-        refreshView();
-    });
-}
-
-function createColleElement(classData, colle) {
-    var subject = classData.subjects[colle.subject];
-
+function makeColleHtml(colle) {
     var $colle = document.createElement("li");
     $colle.classList.add("colle");
     $colle.classList.add("colle--" + colle.state);
-    $colle.classList.add("colle--subject-" + colle.subject);
+    $colle.classList.add("colle--subject-" + (colle.subjectIndex % 4));
 
     var $subject = document.createElement("p");
     $subject.classList.add("colle__subject");
 
-    if (subject.url !== undefined) {
+    if (colle.subjectUrl !== undefined) {
         var $link = document.createElement("a");
         $link.textContent = "programme";
-        $link.href = subject.url;
+        $link.href = colle.subjectUrl;
         $link.target = "_blank";
         // Do not tell the target site that the user is coming from this page for privacy.
         if ($link.referrerPolicy !== undefined)
@@ -306,11 +277,11 @@ function createColleElement(classData, colle) {
         if ($link.rel !== undefined)
             $link.rel = "noreferrer noopener";
 
-        $subject.appendChild(document.createTextNode(subject.name + " ("));
+        $subject.appendChild(document.createTextNode(colle.subject + " ("));
         $subject.appendChild($link);
         $subject.appendChild(document.createTextNode(")"));
     } else {
-        $subject.textContent = subject.name;
+        $subject.textContent = colle.subject;
     }
 
     $colle.appendChild($subject);
@@ -320,7 +291,7 @@ function createColleElement(classData, colle) {
 
     var $info = document.createElement("p");
     $info.classList.add("colle__info");
-    $info.appendChild(document.createTextNode(classData.teachers[colle.teacher]));
+    $info.appendChild(document.createTextNode(colle.teacher));
 
     if (colle.room !== undefined) {
         $info.appendChild(document.createElement("br"));
@@ -329,14 +300,19 @@ function createColleElement(classData, colle) {
 
     $info.appendChild(document.createElement("br"));
     $info.appendChild(document.createTextNode(day + " à " +
-        colle.startTime.getHours() + " h (" +
-        formatRelativeTime(new Date(), colle.startTime) + ")"));
+        colle.time.replace(":", "h") + " (" +
+        formatRelativeTime(new Date(), colle.dateTime) + ")"));
     $colle.appendChild($info);
 
     return $colle;
 }
 
-function createWeekElement(classData, week) {
+/**
+ * Makes a week DOM element.
+ * @param {object} week the week information
+ * @returns the DOM element
+ */
+function makeWeekHtml(week) {
     var $week = document.createElement("section");
     $week.classList.add("week");
 
@@ -348,288 +324,182 @@ function createWeekElement(classData, week) {
     var $colles = document.createElement("ul");
     $colles.classList.add("week__colles");
     for (var i = 0; i < week.colles.length; i++)
-        $colles.appendChild(createColleElement(classData, week.colles[i]));
+        $colles.appendChild(makeColleHtml(week.colles[i]));
     $week.appendChild($colles);
 
     return $week;
 }
 
-function createCreditsElement(name) {
-    var $item = document.createElement("li");
-    $item.classList.add("data-credits--name");
-    $item.innerText = name;
+/**
+ * Performs a search using the value in the student name field and update the
+ * UI with the results.
+ */
+function updateSearch() {
+    var studentIndex = performSearch();
+    if (studentIndex === -1) {
+        INFO_DIV.classList.add("js-hide");
+        return;
+    }
+    
+    var student = DATA[STUDENTS][studentIndex];
 
-    return $item;
-}
+    STUDENT_NAME.innerText = student[1];
 
-function getWeeksForGroup(classData, groupIndex) {
+    var groupIndex = student[0];
+    var group = DATA[GROUPS][groupIndex];
+
+    GROUP_NR.innerText = group[1];
+
+    var classIndex = group[0];
+    var clazz = DATA[CLASSES][classIndex];
+    var classWeeks = decodeIntegerArray(clazz[2]);
+    var classColles = decodeArrayOfIntegerArrays(clazz[1]);
+    var classSubjectUrls = clazz[3];
+
+    STUDENT_CLASS.innerText = clazz[0];
+
     var result = [];
+
     var now = new Date();
 
-    var weeks = classData.groups[groupIndex].weeks;
-    for (var i = 0; i < weeks.length; i++) {
-        var weekParts = classData.weeks[i].split("-");
+    var groupProgram = decodeArrayOfIntegerArrays(group[2]);
+    for (var weekIndex = 0; weekIndex < groupProgram.length; weekIndex++) {
+        var week = DATA[WEEKS][classWeeks[weekIndex]];
+        var weekParts = week.split("-", 3);
         var year = parseInt(weekParts[0]);
         var month = parseInt(weekParts[1]);
         var day = parseInt(weekParts[2]);
-
-        var insert = [];
         result.push({
-            colles: insert,
-            index: i,
-            day,
+            index: weekIndex,
+            year,
             month,
-        });
-
-        for (var j = 0; j < weeks[i].length; j++) {
-            var colle = weeks[i][j];
-            var colleType = classData.colles[colle];
-
-            var startTime = new Date(year, month - 1, day, colleType.time);
-            startTime.setDate(startTime.getDate() + colleType.day);
-
-            var state;
-            if (now.valueOf() - startTime.valueOf() > 1000 * 60 * 60) {
-                state = "done";
-            } else if (startTime.valueOf() - now.valueOf() <= 1000 * 60 * 60) {
-                state = "soon";
-            } else {
-                state = "normal";
-            }
-
-            insert.push({
-                startTime: startTime,
-                state: state,
-                day: colleType.day,
-                subject: colleType.subject,
-                teacher: colleType.teacher,
-                room: colleType.room,
-            });
-        }
-    }
-
-    return result;
-}
-
-function refreshView() {
-    var classData = dataByClass[uiState.selectedClass];
-
-    var loadingHidden = classData !== undefined ||
-        dom.nameInput.value.trim() === "";
-    if (loadingHidden !== uiState.loadingHidden) {
-        if (loadingHidden) {
-            dom.loading.classList.add("loading--hidden");
-        } else {
-            dom.loading.classList.remove("loading--hidden");
-        }
-        uiState.loadingHidden = loadingHidden;
-    }
-
-    var student = classData === undefined ? null :
-        searchStudent(classData, dom.nameInput.value);
-
-    var studentInfoHidden = student === null;
-    if (studentInfoHidden !== uiState.studentInfoHidden) {
-        if (studentInfoHidden) {
-            dom.studentInfo.classList.add("student-info--hidden");
-        } else {
-            dom.studentInfo.classList.remove("student-info--hidden");
-        }
-        uiState.studentInfoHidden = studentInfoHidden;
-    }
-
-    if (!studentInfoHidden) {
-        var studentId = student.getId();
-        if (studentId !== uiState.studentId) {
-            dom.studentName.textContent = student.getName();
-            dom.studentGroupNumber.textContent = student.group + classData.firstGroup;
-
-            var weeks = getWeeksForGroup(classData, student.group);
-            // Remove weeks where all colles are already done.
-            weeks = weeks.filter(function(w) {
-                return w.colles
-                    .some(function(c) {
-                        return c.state !== "done";
-                    });
-            });
-
-            while (dom.collesWeeks.firstChild !== null)
-                dom.collesWeeks.removeChild(dom.collesWeeks.firstChild);
-            for (var i = 0; i < weeks.length; i++)
-                dom.collesWeeks.appendChild(createWeekElement(classData, weeks[i]));
-
-            uiState.studentId = studentId;
-        }
-
-        if (uiState.dataCreditsDirty) {
-            while (dom.dataCredits.firstChild !== null)
-                dom.dataCredits.removeChild(dom.dataCredits.firstChild);
-            for (var i = 0; i < classData.credits.length; i++)
-                dom.dataCredits.appendChild(createCreditsElement(classData.credits[i]));
-
-            uiState.dataCreditsDirty = false;
-        }
-    }
-}
-
-/**
- * Data loading
- */
-
-var pendingLoad = {};
-var idCounter = 0;
-
-/**
- * Loads the data for a given class ID. A promise is returned that
- * resolves when the data is finished loading.
- * @param classId {string} the id of the class' data to load
- * @returns a promise that resolves on completion
- */
-function loadClassData(classId) {
-    if (dataByClass[classId] !== undefined)
-        return Promise.resolve();
-    
-    // Check if the date is already being loaded (this can happen if
-    // the user switches to another class and then switches back to
-    // this class).
-    if (pendingLoad[classId] !== undefined) {
-        return new Promise(function(resolve, reject) {
-            pendingLoad[classId].push(resolve);
-        });
-    }
-    
-    return new Promise(function(resolve, reject) {
-        var resolveFunctions = [];
-        resolveFunctions.push(resolve);
-
-        pendingLoad[classId] = resolveFunctions;
-
-        fetch("data/" + classId + ".json")
-            .then(function(response) {
-                if (!response.ok)
-                    throw new Error("response is not OK");
-                return response.json();
-            })
-            .then(function(responseJson) {
-                var classData = responseJson;
-
-                classData.id = idCounter++;
-
-                // Tokenize the names right away to make searching
-                // faster.
-                classData.searchIndex = [];
-                for (var i = 0; i < classData.groups.length; i++) {
-                    var groupStudents = classData.groups[i].students;
-                    for (var j = 0; j < groupStudents.length; j++) {
-                        classData.searchIndex.push({
-                            tokens: normalizeName(groupStudents[j])
-                                .split(TOKEN_SPLIT_REGEX),
-                            group: i,
-                            index: j,
-                        });
-                    }
+            day,
+            colles: groupProgram[weekIndex].map(function(index) {
+                var colle = classColles[index];
+                var out = {
+                    subjectIndex: colle[0],
+                    subjectUrl: classSubjectUrls[colle[0]],
+                    subject: DATA[SUBJECTS][colle[0]],
+                    teacher: DATA[TEACHERS][colle[1]],
+                    day: colle[2],
+                    time: DATA[TIMES][colle[3]],
+                };
+                var timeParts = out.time.split(":", 2);
+                var hour = timeParts[0];
+                var minutes = timeParts[1];
+                out.dateTime = new Date(year, month - 1, day + out.day, hour, minutes);
+                if (now.valueOf() - out.dateTime.valueOf() > 1000 * 60 * 60) {
+                    out.state = "done";
+                } else if (out.dateTime.valueOf() - now.valueOf() <= 1000 * 60 * 60) {
+                    out.state = "soon";
+                } else {
+                    out.state = "normal";
                 }
+                if (colle.length > 4)
+                    out.room = DATA[ROOMS][colle[4]];
+                return out;
+            }),
+        });
+    }
 
-                dataByClass[classId] = classData;
-                
-                // Call the resolve functions for every promise.
-                for (var i = 0; i < resolveFunctions.length; i++)
-                    resolveFunctions[i]();
-                
-                pendingLoad[classId] = null;
-            })
-            .catch(function(err) {
-                console.error("failed to load data", err);
+    // Remove weeks where all colles are already done.
+    result = result.filter(function(week) {
+        return week.colles
+            .some(function(colle) {
+                return colle.state !== "done";
             });
+    });
+
+    while (PROGRAM.firstChild)
+        PROGRAM.removeChild(PROGRAM.firstChild);
+    for (var i = 0; i < result.length; i++)
+        PROGRAM.appendChild(makeWeekHtml(result[i]));
+
+    INFO_DIV.classList.remove("js-hide");
+}
+
+/**
+ * This function is the first function that is called after polyfills have
+ * been loaded. All code should be put inside of it, except for function and
+ * constant definitions.
+ */
+function main() {
+    autoFillQuery();
+    LOADER.classList.remove("js-hide");
+    fetchData()
+        .then(function(data) {
+            DATA = data;
+            LOADER.classList.add("js-hide");
+            updateSearch();
+        })
+        .catch(function(err) {
+            console.log("failed to load data", err);
+        });
+    QUERY.addEventListener("input", function() {
+        // Remember the name for when the page is opened again.
+        if (window.localStorage)
+            localStorage.setItem(LOCAL_STORAGE_QUERY, QUERY.value);
+
+        if (DATA)
+            updateSearch();
     });
 }
 
 /**
- * Entry point and resource loading
+ * Loads polyfills for JS features that are required and that the browser does
+ * not support.
+ * @param {function} cb function that will be called when polyfills are loaded
  */
-
-function loadPreviousValues() {
-    // Fill the inputs with the values that were entered previously
-    // before the page was closed.
-    if (window.localStorage !== undefined) {
-        var previousClass = localStorage.getItem("class");
-        if (previousClass !== null) {
-            dom.classSelect.value = previousClass;
-            uiState.selectedClass = previousClass;
-        }
-
-        var previousName = localStorage.getItem("name");
-        if (previousName !== null) {
-            dom.nameInput.value = previousName;
-
-            // Initial search
-            refreshView();
-        }
-    }
-
-    if (uiState.selectedClass === null)
-        uiState.selectedClass = dom.classSelect.value;
-}
-
-function main() {
-    loadPreviousValues();
-
-    var classId = uiState.selectedClass;
-    loadClassData(classId)
-        .then(function() {
-            if (uiState.selectedClass !== classId)
-                return;
-            refreshView();
-        });
-    
-    registerEventListeners();
-}
-
-function loadPolyfillsAsync(cb) {
-    if (Math.trunc === undefined) {
+function loadPolyfills(cb) {
+    if (!Math.trunc) {
         Math.trunc = function(v) {
             return v < 0 ? Math.ceil(v) : Math.floor(v);
         };
     }
 
-    var POLYFILLS = [
-        { check: window.Promise, url: "https://cdn.jsdelivr.net/npm/promise-polyfill@8.1.3/dist/polyfill.min.js" },
-        { check: window.fetch, url: "https://cdn.jsdelivr.net/npm/whatwg-fetch@3.4.1/dist/fetch.umd.js" },
-        { check: String.prototype.normalize, url: "https://cdn.jsdelivr.net/npm/unorm@1.6.0/lib/unorm.js" }
-    ];
+    var polyfills = [];
+    if (!window.Promise)
+        polyfills.push("https://cdn.jsdelivr.net/npm/promise-polyfill@8.2.0/dist/polyfill.min.js");
+    if (!window.fetch)
+        polyfills.push("https://cdn.jsdelivr.net/npm/whatwg-fetch@3.5.0/dist/fetch.umd.js");
+    if (!String.prototype.normalize)
+        polyfills.push("https://cdn.jsdelivr.net/npm/unorm@1.6.0/lib/unorm.js");
 
-    var pending = 0;
+    var remaining = polyfills.length;
+    if (remaining === 0) {
+        cb();
+        return;
+    }
 
-    for (var i = 0; i < POLYFILLS.length; i++) {
-        var polyfill = POLYFILLS[i];
-        if (polyfill.check !== undefined)
-            continue;
-
+    for (var i = 0; i < remaining; i++) {
         var $script = document.createElement("script");
-        $script.src = polyfill.url;
+        $script.src = polyfills[i];
         $script.onload = function(e) {
-            pending--;
-            if (pending === 0)
+            remaining--;
+            if (remaining === 0)
                 cb();
         };
         $script.onerror = function(e) {
             console.error("failed to load polyfill", e);
         };
         document.head.appendChild($script);
-        
-        pending++;
     }
-
-    if (pending === 0)
-        cb();
 }
 
-loadPolyfillsAsync(main);
-
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-        .register("sw.js")
-        .then(function() {
-            console.log("successfully registered service worker");
-        });
+/**
+ * Tries to register the service worker that makes the site available offline.
+ */
+function tryRegisterServiceWorker() {
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+            .register("/carnot-colles/sw.js")
+            .then(function() {
+                console.log("successfully registered service worker");
+            });
+    }
 }
+
+loadPolyfills(main);
+tryRegisterServiceWorker();
+
+})();

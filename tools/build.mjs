@@ -12,6 +12,8 @@ import svg2png from "svg2png";
 import * as terser from "terser";
 import toIco from "to-ico";
 
+import makeViewerData from "../lib/mk-viewer-data.mjs";
+
 const SRC_DIR = "src";
 const DATA_DIR = "data";
 const DIST_DIR = process.argv[2] ?? "dist";
@@ -22,15 +24,13 @@ const TERSER_OPTS = {
         unsafe_math: true,
     },
     mangle: {
-        properties: {
-            reserved: [
-                "name", "credits", "groups", "students", "weeks", "firstGroup",
-                "subjects", "url", "teachers", "colles", "subject", "teacher",
-                "day", "room", "time", "weeks", "searchIndex"
-            ],
-        },
         toplevel: true,
+        properties: true,
     },
+    format: {
+        // This improve JS parsing performance.
+        wrap_iife: true,
+    }
 };
 
 /**
@@ -60,9 +60,9 @@ async function readClasses() {
  * @returns the weeks with the colles with the fields
  */
 function getWeeksForGroup(classData, groupIndex) {
-    return classData.groups[groupIndex].weeks
+    return classData.studentGroups[groupIndex].program
         .map((w, i) => {
-            const [year, month, day] = classData.weeks[i]
+            const [year, month, day] = classData.programWeeks[i]
                 .split("-", 3)
                 .map(s => parseInt(s));
             return {
@@ -143,27 +143,19 @@ function lightweightGroupPageHtml(classData, groupIndex) {
     }
 
     function weekHtml(w) {
-        return `<h2>Semaine ${w.day}/${w.month}/${w.year}</h2>
+        return `<h3>Semaine ${w.day}/${w.month}/${w.year}</h3>
             <ul>
                 ${w.colles.map(colleHtml).join("")}
             </ul>`;
     }
 
-    const studentsHtml = `<h2>Membres du groupe</h2>
+    const studentsHtml = `<h2>Élèves</h2>
         <ul>
-            ${classData.groups[groupIndex].students.map(s => `<li>${s}</li>`).join("")}
+            ${classData.studentGroups[groupIndex].students.map(s => `<li>${s}</li>`).join("")}
         </ul>`;
 
     const weeks = getWeeksForGroup(classData, groupIndex);
-    const weeksHtml = weeks.map(weekHtml).join("");
-
-    const creditsHtml = `<p>
-            Personne(s) ayant participé à l'importation et la correction des
-            données :
-        </p>
-        <ul>
-            ${classData.credits.map(c => `<li>${c}</li>`).join("")}
-        </ul>`;
+    const weeksHtml = "<h2>Programme</h2>" + weeks.map(weekHtml).join("");
 
     const title = `Colloscope ${classData.name}, groupe ${humanGroupNumber}`;
     return minifyHtml(`<!doctype html>
@@ -176,7 +168,6 @@ function lightweightGroupPageHtml(classData, groupIndex) {
         <h1>${title}</h1>
         ${studentsHtml}
         ${weeksHtml}
-        ${creditsHtml}
     </body>
 </html>`);
 }
@@ -194,8 +185,8 @@ function lightweightIndexPageHtml(classes) {
     }
 
     function classHtml(c) {
-        return `<h2>${c.className}</h2>
-<ul>${c.groups.map(groupHtml).join("")}</ul>`;
+        return `<h2>${c.name}</h2>
+<ul>${c.writtenGroups.map(groupHtml).join("")}</ul>`;
     }
 
     const classesHtml = classes.map(classHtml).join("");
@@ -272,18 +263,15 @@ async function buildDynamicContent(classes) {
         const { id, data } = await promise;
 
         const writtenGroups = [];
-        writtenClasses.push({ className: data.name, groups: writtenGroups });
+        writtenClasses.push({ ...data, writtenGroups });
 
         return Promise.all([
-            // A minified version of the data.
-            fs.writeFile(path.join(DIST_DIR, "data", id + ".json"), JSON.stringify(data), "utf8"),
-
             // Make a lightweight version for each group for extremely old
             // browsers or for interoperability with arcane platforms.
             fs.mkdir(path.join(DIST_DIR, "light", id))
                 .then(() => {
                     const writes = [];
-                    for (let i = 0; i < data.groups.length; i++) {
+                    for (let i = 0; i < data.studentGroups.length; i++) {
                         const groupNr = i + data.firstGroup;
                         const file = `groupe-${groupNr}.html`;
 
@@ -297,8 +285,11 @@ async function buildDynamicContent(classes) {
                 }),
         ]);
     }));
-    await fs.writeFile(path.join(DIST_DIR, "light", "index.html"),
-        lightweightIndexPageHtml(writtenClasses), "utf8");
+    await Promise.all([
+        fs.writeFile(path.join(DIST_DIR, "light", "index.html"),
+            lightweightIndexPageHtml(writtenClasses), "utf8"),
+        fs.writeFile(path.join(DIST_DIR, "data.json"), JSON.stringify(makeViewerData(writtenClasses)), "utf8"),
+    ]);
 }
 
 async function main() {
