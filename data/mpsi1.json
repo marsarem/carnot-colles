@@ -157,7 +157,15 @@
                 [15, 27],
                 [5, 18],
                 [16, 29]
-            ]
+            ],
+            "programOverrides": {
+                "0": [
+                    { "week": 15, "index": 0, "newColle": 10 }
+                ],
+                "2": [
+                    { "week": 15, "index": 0, "newColle": 10 }
+                ]
+            }
         },
         {
             "students": [

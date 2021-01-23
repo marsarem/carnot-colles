@@ -60,7 +60,8 @@ async function readClasses() {
  * @returns the weeks with the colles with the fields
  */
 function getWeeksForGroup(classData, groupIndex) {
-    return classData.studentGroups[groupIndex].program
+    const group = classData.studentGroups[groupIndex];
+    return group.program
         .map((w, i) => {
             const [year, month, day] = classData.programWeeks[i]
                 .split("-", 3)
@@ -77,6 +78,11 @@ function getWeeksForGroup(classData, groupIndex) {
                         teacher: classData.teachers[c.teacher],
                     };
                 }),
+                studentProgramOverrides: group.programOverrides === undefined ? {} :
+                    Object.fromEntries(
+                        Object.entries(group.programOverrides)
+                            .map(entry => [entry[0], entry[1].filter(o => o.week === i)])
+                            .filter(entry => entry[1].length)),
             };
         });
 }
@@ -123,6 +129,7 @@ function minifyHtml(html) {
  * @returns HTML code that has information about colles for that group
  */
 function lightweightGroupPageHtml(classData, groupIndex) {
+    const students = classData.studentGroups[groupIndex].students;
     const humanGroupNumber = groupIndex + classData.firstGroup;
 
     function colleHtml(c) {
@@ -143,16 +150,41 @@ function lightweightGroupPageHtml(classData, groupIndex) {
     }
 
     function weekHtml(w) {
-        return `<h3>Semaine ${w.day}/${w.month}/${w.year}</h3>
-            <ul>
-                ${w.colles.map(colleHtml).join("")}
-            </ul>`;
+        let html = `<h3>Semaine ${w.day}/${w.month}/${w.year}</h3>`;
+        if (Object.keys(w.studentProgramOverrides).length) {
+            for (let i = 0; i < students.length; i++) {
+                const student = students[i];
+                const colles = [...w.colles];
+                if (w.studentProgramOverrides[i] !== undefined) {
+                    for (const o of w.studentProgramOverrides[i]) {
+                        if (o.newColle === -1) {
+                            colles.splice(o.index, 1);
+                        } else {
+                            let c = classData.colles[o.newColle];
+                            c = {
+                                ...c,
+                                subject: classData.subjects[c.subject],
+                                teacher: classData.teachers[c.teacher],
+                            };
+                            if (o.index === -1) {
+                                colles.push(c);
+                            } else {
+                                colles[o.index] = c;
+                            }
+                        }
+                    }
+                }
+                html += `<p>Pour ${student} :</p>
+                    <ul>${colles.map(colleHtml).join("")}</ul>`;
+            }
+        } else {
+            html += `<ul>${w.colles.map(colleHtml).join("")}</ul>`;
+        }
+        return html;
     }
 
     const studentsHtml = `<h2>Élèves</h2>
-        <ul>
-            ${classData.studentGroups[groupIndex].students.map(s => `<li>${s}</li>`).join("")}
-        </ul>`;
+        <ul>${students.map(s => `<li>${s}</li>`).join("")}</ul>`;
 
     const weeks = getWeeksForGroup(classData, groupIndex);
     const weeksHtml = "<h2>Programme</h2>" + weeks.map(weekHtml).join("");

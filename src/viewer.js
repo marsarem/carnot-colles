@@ -331,6 +331,116 @@ function makeWeekHtml(week) {
 }
 
 /**
+ * Creates an intermediate representation of the student's program for a given
+ * student, that will be used later to create DOM elements.
+ * @param {number} studentIndex the student's index in the data file
+ * @returns the student's program as an array of weeks
+ */
+function getColleProgramForStudent(studentIndex) {
+    var now = new Date().valueOf();
+
+    var student = DATA[STUDENTS][studentIndex];
+    var groupIndex = student[0];
+    var group = DATA[GROUPS][groupIndex];
+    var classIndex = group[0];
+    var clazz = DATA[CLASSES][classIndex];
+    var classWeeks = decodeIntegerArray(clazz[2]);
+    var classColles = decodeArrayOfIntegerArrays(clazz[1]);
+    var classSubjectUrls = clazz[3];
+
+    var studentProgramOverrides = null;
+    if (student.length >= 3) {
+        studentProgramOverrides = student[2]
+            .map(function(o) {
+                // Deserialize
+                return {
+                    week: o[0],
+                    index: o[1],
+                    newColle: o[2],
+                };
+            });
+    }
+
+    var result = [];
+
+    var groupProgram = decodeArrayOfIntegerArrays(group[2]);
+    for (var weekIndex = 0; weekIndex < groupProgram.length; weekIndex++) {
+        var week = DATA[WEEKS][classWeeks[weekIndex]];
+        var weekParts = week.split("-", 3);
+        var year = parseInt(weekParts[0]);
+        var month = parseInt(weekParts[1]);
+        var day = parseInt(weekParts[2]);
+
+        var weekProgram;
+        if (studentProgramOverrides) {
+            var weekOverrides = studentProgramOverrides
+                .filter(function(o) { return o.week === weekIndex; });
+            if (weekOverrides.length) {
+                weekProgram = groupProgram[weekIndex].slice();
+                for (var i = 0; i < weekOverrides.length; i++) {
+                    var o = weekOverrides[i];
+                    if (o.index === -1) {
+                        weekProgram.push(o.newColle);
+                    } else if (o.newColle !== -1) {
+                        weekProgram[o.index] = o.newColle;
+                    } else {
+                        weekProgram.splice(o.index, 1);
+                    }
+                }
+            } else {
+                weekProgram = groupProgram[weekIndex];
+            }
+        } else {
+            weekProgram = groupProgram[weekIndex];
+        }
+
+        result.push({
+            index: weekIndex,
+
+            year,
+            month,
+            day,
+
+            colles: weekProgram
+                .map(function(index) {
+                    var colle = classColles[index];
+
+                    var tmp = {
+                        subjectIndex: colle[0],
+                        teacher: DATA[TEACHERS][colle[1]],
+                        day: colle[2],
+                        time: DATA[TIMES][colle[3]],
+                    };
+                    if (classSubjectUrls)
+                        tmp.subjectUrl = classSubjectUrls[tmp.subjectIndex];
+                    tmp.subject = DATA[SUBJECTS][tmp.subjectIndex];
+
+                    var timeParts = tmp.time.split(":", 2);
+                    var hour = timeParts[0];
+                    var minutes = timeParts[1];
+                    tmp.dateTime = new Date(year, month - 1, day + tmp.day, hour, minutes);
+
+                    var dateTime = tmp.dateTime.valueOf();
+                    if (now - dateTime > 1000 * 60 * 60) {
+                        tmp.state = "done";
+                    } else if (dateTime - now <= 1000 * 60 * 60) {
+                        tmp.state = "soon";
+                    } else {
+                        tmp.state = "normal";
+                    }
+
+                    if (colle.length >= 5)
+                        tmp.room = DATA[ROOMS][colle[4]];
+
+                    return tmp;
+                }),
+        });
+    }
+
+    return result;
+}
+
+/**
  * Performs a search using the value in the student name field and update the
  * UI with the results.
  */
@@ -340,80 +450,29 @@ function updateSearch() {
         INFO_DIV.classList.add("js-hide");
         return;
     }
-    
+
     var student = DATA[STUDENTS][studentIndex];
-
-    STUDENT_NAME.innerText = student[1];
-
     var groupIndex = student[0];
     var group = DATA[GROUPS][groupIndex];
-
-    GROUP_NR.innerText = group[1];
-
     var classIndex = group[0];
     var clazz = DATA[CLASSES][classIndex];
-    var classWeeks = decodeIntegerArray(clazz[2]);
-    var classColles = decodeArrayOfIntegerArrays(clazz[1]);
-    var classSubjectUrls = clazz[3];
 
+    STUDENT_NAME.innerText = student[1];
     STUDENT_CLASS.innerText = clazz[0];
+    GROUP_NR.innerText = group[1];
 
-    var result = [];
-
-    var now = new Date();
-
-    var groupProgram = decodeArrayOfIntegerArrays(group[2]);
-    for (var weekIndex = 0; weekIndex < groupProgram.length; weekIndex++) {
-        var week = DATA[WEEKS][classWeeks[weekIndex]];
-        var weekParts = week.split("-", 3);
-        var year = parseInt(weekParts[0]);
-        var month = parseInt(weekParts[1]);
-        var day = parseInt(weekParts[2]);
-        result.push({
-            index: weekIndex,
-            year,
-            month,
-            day,
-            colles: groupProgram[weekIndex].map(function(index) {
-                var colle = classColles[index];
-                var out = {
-                    subjectIndex: colle[0],
-                    subjectUrl: classSubjectUrls[colle[0]],
-                    subject: DATA[SUBJECTS][colle[0]],
-                    teacher: DATA[TEACHERS][colle[1]],
-                    day: colle[2],
-                    time: DATA[TIMES][colle[3]],
-                };
-                var timeParts = out.time.split(":", 2);
-                var hour = timeParts[0];
-                var minutes = timeParts[1];
-                out.dateTime = new Date(year, month - 1, day + out.day, hour, minutes);
-                if (now.valueOf() - out.dateTime.valueOf() > 1000 * 60 * 60) {
-                    out.state = "done";
-                } else if (out.dateTime.valueOf() - now.valueOf() <= 1000 * 60 * 60) {
-                    out.state = "soon";
-                } else {
-                    out.state = "normal";
-                }
-                if (colle.length > 4)
-                    out.room = DATA[ROOMS][colle[4]];
-                return out;
-            }),
-        });
-    }
-
+    var program = getColleProgramForStudent(studentIndex);
     // Remove weeks where all colles are already done.
-    result = result.filter(function(week) {
+    program = program.filter(function(week) {
         return week.colles
             .some(function(colle) {
                 return colle.state !== "done";
             });
     });
-
     while (PROGRAM.firstChild)
         PROGRAM.removeChild(PROGRAM.firstChild);
-    for (var i = 0; i < result.length; i++)
-        PROGRAM.appendChild(makeWeekHtml(result[i]));
+    for (var i = 0; i < program.length; i++)
+        PROGRAM.appendChild(makeWeekHtml(program[i]));
 
     INFO_DIV.classList.remove("js-hide");
 }
