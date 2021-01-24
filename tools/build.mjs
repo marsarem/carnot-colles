@@ -102,11 +102,7 @@ async function prepareDistDirectory() {
     await fs.rm(DIST_DIR, { recursive: true, force: true });
     await fs.mkdir(DIST_DIR);
 
-    // Create directories before putting the files in them.
-    await Promise.all([
-        fs.mkdir(path.join(DIST_DIR, "data")),
-        fs.mkdir(path.join(DIST_DIR, "light")),
-    ]);
+    await fs.mkdir(path.join(DIST_DIR, "light"));
 }
 
 /**
