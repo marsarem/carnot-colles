@@ -195,6 +195,8 @@ function lightweightGroupPageHtml(classData, groupIndex) {
 <html lang="fr">
     <head>
         <meta http-equiv="content-type" content="text/html;charset=utf-8">
+        <meta name="description" content="${title}">
+        <meta name="robots" content="noindex,nofollow">
         <title>${title}</title>
     </head>
     <body>
