@@ -33,6 +33,14 @@ var WEEKS = 7;
 var SEARCH_INDEX = 8;
 
 /**
+ * The index of the student's whose information is currently being displayed.
+ * If the user edits the query and the search result is unchanged (the same
+ * student is being shown), then we will know it and we will not recompute the
+ * DOM.
+ */
+var currStudentIndex = -1;
+
+/**
  * Fetches the data.json file's content.
  * @returns a promise with the data as an object
  */
@@ -451,6 +459,12 @@ function updateSearch() {
         return;
     }
 
+    // Do not recompute everything if possible.
+    if (currStudentIndex === studentIndex) {
+        INFO_DIV.classList.remove("js-hide");
+        return;
+    }
+
     var student = DATA[STUDENTS][studentIndex];
     var groupIndex = student[0];
     var group = DATA[GROUPS][groupIndex];
@@ -475,6 +489,7 @@ function updateSearch() {
         PROGRAM.appendChild(makeWeekHtml(program[i]));
 
     INFO_DIV.classList.remove("js-hide");
+    currStudentIndex = studentIndex;
 }
 
 /**
