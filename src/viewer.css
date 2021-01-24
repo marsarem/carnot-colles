@@ -56,12 +56,14 @@ h1.margin {
 
     margin: 0.45em 0 0 0;
     font-size: 1em;
-    padding: 0.4em;
+    padding: 0.5em 0.6em;
 
     border: none;
     border-radius: 0.4em;
     background-color: #cde1f2;
+}
 
+.query:focus {
     outline: none;
 }
 
