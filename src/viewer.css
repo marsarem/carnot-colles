@@ -23,23 +23,23 @@ body {
  * Utility classes
  */
 
-.margin {
+.c-margin {
     margin: 2em 0;
 }
 
-h1.margin {
+h1.c-margin {
     margin: 1em 0;
 }
 
-.margin-top-0, h1.margin-top-0 {
+.c-margin-top-0, h1.c-margin-top-0 {
     margin-top: 0;
 }
 
-.margin-bottom-0, h1.margin-bottom-0 {
+.c-margin-bottom-0, h1.c-margin-bottom-0 {
     margin-bottom: 0;
 }
 
-.js-hide {
+.c-js-hide {
     display: none;
 }
 
@@ -47,11 +47,11 @@ h1.margin {
  * Element styling
  */
 
-.page-title {
+.c-page-title {
     font-size: 2em;
 }
 
-.query {
+.c-query {
     display: block;
 
     margin: 0.45em 0 0 0;
@@ -63,15 +63,15 @@ h1.margin {
     background-color: #cde1f2;
 }
 
-.query:focus {
+.c-query:focus {
     outline: none;
 }
 
-.week__title {
+.c-week__title {
     margin: 1em 0;
 }
 
-.week__colles {
+.c-week__colles {
     list-style-type: none;
 
     /* Remove the margin on the sides. */
@@ -79,7 +79,7 @@ h1.margin {
     padding: 0;
 }
 
-.colle {
+.c-colle {
     margin: 0.5em;
 
     display: inline-block;
@@ -121,7 +121,7 @@ h1.margin {
     border-color: #E5FF00;
 }
 
-.colle__subject, .colle__info {
+.c-colle__subject, .c-colle__info {
     margin: 0;
 
     white-space: nowrap;
@@ -129,11 +129,11 @@ h1.margin {
     text-overflow: ellipsis;
 }
 
-.colle__subject > a {
+.c-colle__subject > a {
     color: #FFFFFF;
 }
 
-.colle__subject {
+.c-colle__subject {
     font-weight: bold;
 }
 
@@ -146,15 +146,15 @@ h1.margin {
         text-align: center;
     }
 
-    .query {
+    .c-query {
         margin: 0.45em auto 0 auto;
     }
 
-    .week__colles {
+    .c-week__colles {
         margin: -0.5em 0;
     }
 
-    .colle {
+    .c-colle {
         width: 100%;
         margin: 0.5em 0;
     }
@@ -166,7 +166,7 @@ h1.margin {
         color: #FFFFFF;
     }
 
-    .query {
+    .c-query {
         background-color: #232425;
         color: #FFFFFF;
     }

@@ -123,6 +123,41 @@ function minifyHtml(html) {
 }
 
 /**
+ * Replace c-* and i-* strings in the HTML by shorter names to make the file
+ * smaller.
+ * @param html the input HTML
+ * @returns the HTML with shorter IDs and classes
+ */
+function compressIdsAndClasses(html) {
+    function compress(input, prefix) {
+        // Use base64 alphabet because we don't want weird characters in class names or IDs.
+        const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+        const map = new Map();
+        let counter = 0;
+        return input.replaceAll(new RegExp(`${prefix}-([a-z-_0-9]+)`, "g"),
+            function(_match, key) {
+                if (!map.has(key)) {
+                    // Build a small string to replace the key with.
+                    let tmp = "";
+                    let remaining = counter;
+                    do {
+                        tmp += ALPHABET[remaining % ALPHABET.length];
+                        remaining = Math.trunc(remaining / ALPHABET.length);
+                    } while (remaining > 0);
+
+                    // Increment the counter for next time.
+                    counter++;
+
+                    map.set(key, tmp);
+                }
+                return map.get(key);
+            });
+    }
+    
+    return compress(compress(html, "i"), "c");
+}
+
+/**
  * Generates very lightweight and simple HTML code with all of the information
  * needed for a particular group of a particular class.
  * @param classData the class' data
@@ -229,6 +264,8 @@ function lightweightIndexPageHtml(classes) {
 <html lang="fr">
     <head>
         <meta http-equiv="content-type" content="text/html;charset=utf-8">
+        <meta name="description" content="Liste des colloscopes">
+        <meta name="robots" content="noindex,nofollow">
         <title>Liste des colloscopes</title>
     </head>
     <body>
@@ -250,10 +287,11 @@ function buildStaticContent() {
         ]).then(arr => {
             const [html, css, js] = arr;
             const template = Handlebars.compile(html, { noEscape: true });
-            const minified = minifyHtml(template({
+            const templateOut = template({
                 css: csso.minify(css).css,
                 js: js.code,
-            }));
+            });
+            const minified = minifyHtml(compressIdsAndClasses(templateOut));
             return fs.writeFile(path.join(DIST_DIR, "index.html"), minified, "utf8");
         }),
 

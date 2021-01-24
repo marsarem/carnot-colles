@@ -8,14 +8,14 @@ var LOCAL_STORAGE_QUERY = "colles-viewer__query";
  * Long living DOM elements
  */
 
-var QUERY = document.getElementById("query");
-var FORM = document.getElementById("form");
-var LOADER = document.getElementById("loader");
-var INFO_DIV = document.getElementById("info");
-var STUDENT_NAME = document.getElementById("name");
-var STUDENT_CLASS = document.getElementById("class");
-var GROUP_NR = document.getElementById("group-nr");
-var PROGRAM = document.getElementById("program");
+var QUERY = document.getElementById("i-query");
+var FORM = document.getElementById("i-form");
+var LOADER = document.getElementById("i-loader");
+var INFO_DIV = document.getElementById("i-info");
+var STUDENT_NAME = document.getElementById("i-name");
+var STUDENT_CLASS = document.getElementById("i-class");
+var GROUP_NR = document.getElementById("i-group-nr");
+var PROGRAM = document.getElementById("i-program");
 
 /**
  * The data.json file's content as an object, or `null` before it is finished
@@ -267,12 +267,12 @@ function formatRelativeTime(from, to) {
  */
 function makeColleHtml(colle) {
     var $colle = document.createElement("li");
-    $colle.classList.add("colle");
+    $colle.classList.add("c-colle");
     $colle.classList.add("colle--" + colle.state);
     $colle.classList.add("colle--subject-" + (colle.subjectIndex % 4));
 
     var $subject = document.createElement("p");
-    $subject.classList.add("colle__subject");
+    $subject.classList.add("c-colle__subject");
 
     if (colle.subjectUrl !== undefined) {
         var $link = document.createElement("a");
@@ -299,7 +299,7 @@ function makeColleHtml(colle) {
     var day = DAYS[colle.day];
 
     var $info = document.createElement("p");
-    $info.classList.add("colle__info");
+    $info.classList.add("c-colle__info");
     $info.appendChild(document.createTextNode(colle.teacher));
 
     if (colle.room !== undefined) {
@@ -323,15 +323,15 @@ function makeColleHtml(colle) {
  */
 function makeWeekHtml(week) {
     var $week = document.createElement("section");
-    $week.classList.add("week");
+    $week.classList.add("c-week");
 
     var $weekTitle = document.createElement("h1");
-    $weekTitle.classList.add("week__title");
+    $weekTitle.classList.add("c-week__title");
     $weekTitle.textContent = "Semaine " + (week.index + 1) + " (" + week.day + "/" + week.month + ")";
     $week.appendChild($weekTitle);
 
     var $colles = document.createElement("ul");
-    $colles.classList.add("week__colles");
+    $colles.classList.add("c-week__colles");
     for (var i = 0; i < week.colles.length; i++)
         $colles.appendChild(makeColleHtml(week.colles[i]));
     $week.appendChild($colles);
@@ -456,13 +456,13 @@ function getColleProgramForStudent(studentIndex) {
 function updateSearch() {
     var studentIndex = performSearch();
     if (studentIndex === -1) {
-        INFO_DIV.classList.add("js-hide");
+        INFO_DIV.classList.add("c-js-hide");
         return;
     }
 
     // Do not recompute everything if possible.
     if (currStudentIndex === studentIndex) {
-        INFO_DIV.classList.remove("js-hide");
+        INFO_DIV.classList.remove("c-js-hide");
         return;
     }
 
@@ -489,7 +489,7 @@ function updateSearch() {
     for (var i = 0; i < program.length; i++)
         PROGRAM.appendChild(makeWeekHtml(program[i]));
 
-    INFO_DIV.classList.remove("js-hide");
+    INFO_DIV.classList.remove("c-js-hide");
     currStudentIndex = studentIndex;
 }
 
@@ -500,12 +500,12 @@ function updateSearch() {
  */
 function main() {
     autoFillQuery();
-    FORM.classList.remove("js-hide");
-    LOADER.classList.remove("js-hide");
+    FORM.classList.remove("c-js-hide");
+    LOADER.classList.remove("c-js-hide");
     fetchData()
         .then(function(data) {
             DATA = data;
-            LOADER.classList.add("js-hide");
+            LOADER.classList.add("c-js-hide");
             updateSearch();
         })
         .catch(function(err) {
