@@ -142,6 +142,10 @@ h1.margin {
         text-align: center;
     }
 
+    .query {
+        margin: 0.45em auto 0 auto;
+    }
+
     .week__colles {
         margin: -0.5em 0;
     }
