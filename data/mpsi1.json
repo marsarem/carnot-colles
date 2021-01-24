@@ -477,7 +477,12 @@
                 [13, 32],
                 [4, 24],
                 [8, 26]
-            ]
+            ],
+            "programOverrides": {
+                "0": [
+                    { "week": 15, "index": 0, "newColle": 10 }
+                ]
+            }
         },
         {
             "students": [
