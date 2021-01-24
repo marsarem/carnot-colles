@@ -9,6 +9,7 @@ var LOCAL_STORAGE_QUERY = "colles-viewer__query";
  */
 
 var QUERY = document.getElementById("query");
+var FORM = document.getElementById("form");
 var LOADER = document.getElementById("loader");
 var INFO_DIV = document.getElementById("info");
 var STUDENT_NAME = document.getElementById("name");
@@ -499,6 +500,7 @@ function updateSearch() {
  */
 function main() {
     autoFillQuery();
+    FORM.classList.remove("js-hide");
     LOADER.classList.remove("js-hide");
     fetchData()
         .then(function(data) {
