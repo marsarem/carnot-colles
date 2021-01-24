@@ -25,11 +25,16 @@ const TERSER_OPTS = {
     },
     mangle: {
         toplevel: true,
-        properties: true,
+        properties: {
+            // TerserJS's DOM properties list is missing these properties, so
+            // we have to add them here or else the code breaks.
+            reserved: ["waitUntil", "respondWith"],
+        },
     },
     format: {
         // This improve JS parsing performance.
         wrap_iife: true,
+        wrap_func_args: false,
     }
 };
 
