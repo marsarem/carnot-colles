@@ -3,7 +3,7 @@
 // This must be incremented whenever a new version of the viewer's code or
 // data is published.
 var VIEWER_VERSION = 5;
-var DATA_VERSION = 4;
+var DATA_VERSION = 5;
 
 var CACHE_PREFIX = "colles-viewer__";
 var VIEWER_CACHE = CACHE_PREFIX + "viewer-v" + VIEWER_VERSION;
