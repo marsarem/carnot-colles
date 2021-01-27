@@ -134,7 +134,7 @@ function compressIdsAndClasses(html) {
         const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
         const map = new Map();
         let counter = 0;
-        return input.replaceAll(new RegExp(`${prefix}-([a-z-_0-9]+)`, "g"),
+        return input.replaceAll(new RegExp(`${prefix}-([a-z][a-z-_0-9]+)`, "g"),
             function(_match, key) {
                 if (!map.has(key)) {
                     // Build a small string to replace the key with.
