@@ -70,7 +70,13 @@ function tryCacheThenNetwork(request) {
 }
 
 self.addEventListener("install", function(e) {
-    e.waitUntil(precache());
+    e.waitUntil(precache()
+        .then(function() {
+            // Force the update right now (do not wait until all tabs are closed). This
+            // is fine as the tabs tabs themselves will reload the page so there is no
+            // risk of mixing old and new assets.
+            self.skipWaiting();
+        }));
 });
 
 self.addEventListener("activate", function(e) {

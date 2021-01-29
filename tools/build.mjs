@@ -28,7 +28,7 @@ const TERSER_OPTS = {
         properties: {
             // TerserJS's DOM properties list is missing these properties, so
             // we have to add them here or else the code breaks.
-            reserved: ["waitUntil", "respondWith"],
+            reserved: ["waitUntil", "respondWith", "skipWaiting"],
         },
     },
     format: {

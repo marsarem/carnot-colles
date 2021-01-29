@@ -567,10 +567,36 @@ function loadPolyfills(cb) {
  */
 function tryRegisterServiceWorker() {
     if ("serviceWorker" in navigator) {
+        // Immediatly reload the page when the service worker is updated.
+        // This is fine since the query is stored in localStorage and therefore
+        // after the refresh the page will still show the same information (no
+        // user interruption).
+        var refreshing = false;
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+            if (!refreshing) {
+                window.location.reload();
+                refreshing = true;
+            }
+        });
+
         navigator.serviceWorker
             .register("/carnot-colles/sw.js")
-            .then(function() {
-                console.log("successfully registered service worker");
+            .then(function(sw) {
+                // Force check for updates when the page is loaded or when the
+                // PWA is brought to foreground. We really don't want to show
+                // stale information or else a student might miss a schedule
+                // update!
+                var lastUpdate = new Date().valueOf();
+                sw.update();
+                document.addEventListener("visibilitychange", function() {
+                    var now = new Date().valueOf();
+                    var UPDATE_THROTTLE = 1000 * 60 * 60;
+                    if (document.visibilityState === "visible" &&
+                        now - lastUpdate >= UPDATE_THROTTLE) {
+                        sw.update();
+                        lastUpdate = now;
+                    }
+                });
             });
     }
 }
