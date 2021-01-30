@@ -277,11 +277,10 @@ function makeColleHtml(colle, now) {
     var STATE_CLASSES = ["c-colle--subject-0", "c-colle--subject-1", "c-colle--subject-2", "c-colle--subject-3"];
     $colle.classList.add(STATE_CLASSES[colle.subjectIndex % STATE_CLASSES.length]);
 
-    var $subject = document.createElement("p");
-    $subject.classList.add("c-colle__subject");
-
+    var $subject = document.createElement("strong");
     if (colle.subjectUrl !== undefined) {
         var $link = document.createElement("a");
+        $link.classList.add("c-colle__link");
         $link.textContent = "programme";
         $link.href = colle.subjectUrl;
         $link.target = "_blank";
@@ -298,27 +297,24 @@ function makeColleHtml(colle, now) {
     } else {
         $subject.textContent = colle.subject;
     }
-
     $colle.appendChild($subject);
 
     var DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
     var day = DAYS[colle.day];
 
-    var $info = document.createElement("p");
-    $info.classList.add("c-colle__info");
-    $info.appendChild(document.createTextNode(colle.teacher));
+    $colle.appendChild(document.createElement("br"));
+    $colle.appendChild(document.createTextNode(colle.teacher));
 
     if (colle.room !== undefined) {
-        $info.appendChild(document.createElement("br"));
-        $info.appendChild(document.createTextNode("Salle " + colle.room));
+        $colle.appendChild(document.createElement("br"));
+        $colle.appendChild(document.createTextNode("Salle " + colle.room));
     }
 
-    $info.appendChild(document.createElement("br"));
-    $info.appendChild(document.createTextNode(day + " à " +
+    $colle.appendChild(document.createElement("br"));
+    $colle.appendChild(document.createTextNode(day + " à " +
         colle.hours + "h" +
         (colle.minutes < 10 ? "0" + colle.minutes : colle.minutes) +
         " (" + formatRelativeTime(now, colle.startingTime) + ")"));
-    $colle.appendChild($info);
 
     return $colle;
 }
@@ -344,6 +340,10 @@ function makeWeekHtml(week, now) {
     for (var i = 0; i < week.program.length; i++)
         $colles.appendChild(makeColleHtml(week.program[i], now));
     $week.appendChild($colles);
+
+    // By hardcoding the height, we allow using CSS size containment on mobile
+    // which improves layout performance.
+    $week.style.height = (92 + 140 * week.program.length) + "px";
 
     return $week;
 }
