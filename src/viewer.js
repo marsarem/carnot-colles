@@ -11,6 +11,7 @@ var LOCAL_STORAGE_QUERY = "colles-viewer__query";
 var QUERY = document.getElementById("i-query");
 var FORM = document.getElementById("i-form");
 var LOADER = document.getElementById("i-loader");
+var ERROR = document.getElementById("i-error");
 var INFO_DIV = document.getElementById("i-info");
 var STUDENT_NAME = document.getElementById("i-name");
 var STUDENT_CLASS = document.getElementById("i-class");
@@ -519,9 +520,19 @@ function main() {
             DATA = data;
             LOADER.classList.add("c-js-hide");
             updateSearch();
+
+            // Catch exceptions that are not in a try catch block.
+            window.addEventListener("error", function() {
+                FORM.classList.add("c-js-hide");
+                INFO_DIV.classList.add("c-js-hide");
+                ERROR.classList.remove("c-js-hide");
+            });
         })
         .catch(function(err) {
-            console.log("failed to load data", err);
+            console.log("Failed to load data!", err);
+            FORM.classList.add("c-js-hide");
+            LOADER.classList.add("c-js-hide");
+            ERROR.classList.remove("c-js-hide");
         });
     QUERY.addEventListener("input", function() {
         // Remember the name for when the page is opened again.
