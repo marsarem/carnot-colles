@@ -2,16 +2,15 @@
     box-sizing: border-box;
 }
 
-html {
+html, h1, h2, p {
     margin: 0;
-    padding: 0;
 }
 
 body {
     /* Center horizontally. */
-    max-width: 70em;
+    max-width: 70rem;
     margin: 0 auto;
-    padding: 4em 1em;
+    padding: 4rem 1rem;
 
     /* Use system fonts to look more like a native application. */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
@@ -23,20 +22,8 @@ body {
  * Utility classes
  */
 
-.c-margin {
-    margin: 2em 0;
-}
-
-h1.c-margin {
-    margin: 1em 0;
-}
-
-.c-margin-top-0, h1.c-margin-top-0 {
-    margin-top: 0;
-}
-
-.c-margin-bottom-0, h1.c-margin-bottom-0 {
-    margin-bottom: 0;
+.c-padding-top, .c-week__colles.c-padding-top {
+    padding-top: 2rem;
 }
 
 .c-js-hide {
@@ -48,18 +35,18 @@ h1.c-margin {
  */
 
 .c-page-title {
-    font-size: 2em;
+    font-size: 2rem;
 }
 
 .c-query {
     display: block;
 
-    margin: 0.45em 0 0 0;
-    font-size: 1em;
-    padding: 0.5em 0.6em;
+    margin: 0.45rem 0 0 0;
+    font-size: 1rem;
+    padding: 0.5rem 0.6rem;
 
     border: none;
-    border-radius: 0.4em;
+    border-radius: 0.4rem;
     background-color: #cde1f2;
 }
 
@@ -67,57 +54,53 @@ h1.c-margin {
     outline: none;
 }
 
-.c-week__title {
-    margin: 1em 0;
-}
-
 .c-week__colles {
     list-style-type: none;
 
     /* Remove the margin on the sides. */
-    margin: -0.5em;
+    margin: -0.5rem;
     padding: 0;
 }
 
 .c-colle {
-    margin: 0.5em;
+    margin: 0.5rem;
 
     display: inline-block;
-    width: 18em;
-    padding: 1em;
+    width: 18rem;
+    padding: 1rem;
 
     border-style: solid;
-    border-width: 0.3em;
-    border-radius: 0.5em;
+    border-width: 0.3rem;
+    border-radius: 0.5rem;
 
     color: #FFFFFF;
 }
 
-.colle--subject-0 {
+.c-colle--subject-0 {
     background-color: #376A8B;
     border-color: #083757;
 }
 
-.colle--subject-1 {
+.c-colle--subject-1 {
     background-color: #34714D;
     border-color: #073D1E;
 }
 
-.colle--subject-2 {
+.c-colle--subject-2 {
     background-color: #9B3838;
     border-color: #570808;
 }
 
-.colle--subject-3 {
+.c-colle--subject-3 {
     background-color: #AF2FD0;
     border-color: #6C0094;
 }
 
-.colle--done {
+.c-colle--done {
     opacity: 0.7;
 }
 
-.colle--soon {
+.c-colle--soon {
     border-color: #E5FF00;
 }
 
@@ -141,22 +124,22 @@ h1.c-margin {
  * Media queries
  */
 
-@media (max-width: 30em) {
+@media (max-width: 30rem) {
     body {
         text-align: center;
     }
 
     .c-query {
-        margin: 0.45em auto 0 auto;
+        margin: 0.45rem auto 0 auto;
     }
 
     .c-week__colles {
-        margin: -0.5em 0;
+        margin: -0.5rem 0;
     }
 
     .c-colle {
         width: 100%;
-        margin: 0.5em 0;
+        margin: 0.5rem 0;
     }
 }
 

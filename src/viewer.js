@@ -46,7 +46,7 @@ var currStudentIndex = -1;
  * @returns a promise with the data as an object
  */
 function fetchData() {
-    return fetch("data.json")
+    return fetch("data.json", { credentials: "same-origin", mode: "cors" })
         .then(function(response) {
             if (!response.ok)
                 throw new Error("response is not OK");
@@ -60,20 +60,34 @@ function fetchData() {
  * @returns the integer array
  */
 function decodeIntegerArray(str) {
-    var ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&'()*+,-./:;<=>?@[]^_`{|}";
-    var MORE = "~";
     var result = [];
     var n = 0;
     for (var i = 0; i < str.length; i++) {
-        var c = str[i];
-        if (c === MORE) {
-            n += ALPHABET.length;
+        var c = str.charCodeAt(i);
+        if (c >= 48 && c <= 57) {
+            n += c - 48;
+        } else if (c >= 97 && c <= 122) {
+            n += c - 97 + 10;
+        } else if (c >= 65 && c <= 90) {
+            n += c - 65 + 36;
+        } else if (c === 33) {
+            n += 62;
+        } else if (c >= 35 && c <= 47) {
+            n += c - 35 + 63;
+        } else if (c >= 58 && c <= 64) {
+            n += c - 58 + 76;
+        } else if (c === 91) {
+            n += 83;
+        } else if (c >= 93 && c <= 96) {
+            n += c - 93 + 84;
+        } else if (c >= 123 && c <= 125) {
+            n += c - 123 + 88;
+        } else if (c === 126) {
+            n += 91;
             continue;
-        }
-        var index = ALPHABET.indexOf(c);
-        if (index === -1)
+        } else {
             throw new Error("invalid string");
-        n += index;
+        }
         result.push(n);
         n = 0;
     }
@@ -95,10 +109,10 @@ function decodeArrayOfIntegerArrays(str) {
  * so that they do not have to type it again (the site remembers it).
  */
 function autoFillQuery() {
-    if (!window.localStorage)
+    if (!("localStorage" in window))
         return;
     var query = localStorage.getItem(LOCAL_STORAGE_QUERY);
-    if (!query)
+    if (query === null)
         return;
     QUERY.value = query;
 }
@@ -111,7 +125,7 @@ function autoFillQuery() {
 function performSearch() {
     // This code is duplicated in lib/mk-search-index.mjs. For now this is fine
     // because the amount of code duplicated is low and adding a JS bundler is
-    // not really wanted (it would add more complexity and a dependecy that we
+    // not really wanted (it would add more complexity and a dependency that we
     // have to track versions of).
     var tokens = QUERY.value
         .toLowerCase()
@@ -120,7 +134,9 @@ function performSearch() {
         .replace(/[\u0300-\u036f]/g, "")
         .split(/\W+/g)
         // Remove things like "D'"
-        .filter(w => w.length >= 2);
+        .filter(function(w) {
+            return w.length >= 2;
+        });
     
     if (!tokens.length)
         return -1;
@@ -138,9 +154,8 @@ function performSearch() {
         var firstChar = needle[0];
         var searchIndex = DATA[SEARCH_INDEX][firstChar];
         for (var haystack in searchIndex) {
-            if (haystack.indexOf(needle) === -1)
-                continue;
-            matches.push(haystack);
+            if (haystack.startsWith(needle))
+                matches.push(haystack);
         }
 
         // Sort the matches so that the first match is the token with the
@@ -152,36 +167,28 @@ function performSearch() {
             return a.length - b.length;
         });
 
-        var indices = new Set();
+        var indices = [];
         for (var i = 0; i < matches.length; i++) {
             var m = searchIndex[matches[i]];
             for (var j = 0; j < m.length; j++)
-                indices.add(m[j]);
+                indices.push(m[j]);
         }
-
         return indices;
     }
 
-    function intersection(set1, set2) {
-        set1.forEach(function(val) {
-            if (!set2.has(val))
-                set1.delete(val);
-        });
+    function intersection(arr1, arr2) {
+        for (var i = 0; i < arr1.length; i++) {
+            if (arr2.indexOf(arr1[i]) === -1)
+                arr1.splice(i, 1);
+        }
     }
 
     var candidates = getMatches(tokens[0]);
-    for (var i = 1; i < tokens.length && candidates.size; i++) {
+    for (var i = 1; i < tokens.length && candidates.length; i++) {
         intersection(candidates, getMatches(tokens[i]));
     }
 
-    // IE11 doesn't support Set.prototype.values so we have to iterate the
-    // whole set just to get the first value...
-    var result = -1;
-    candidates.forEach(function(x) {
-        if (result === -1)
-            result = x;
-    });
-    return result;
+    return candidates.length > 0 ? candidates[0] : -1;
 }
 
 /**
@@ -193,34 +200,19 @@ var HOUR_MS = MINUTE_MS * 60;
 var DAY_MS = HOUR_MS * 24;
 
 /**
- * For a given date, returns the amount of seconds from the
- * start of the day of the date.
- * @param date {Date} the date
- * @returns the amount of seconds from the start of the day
- */
-function getTimeOfDay(date) {
-    return date.getHours() * HOUR_MS +
-        date.getMinutes() * MINUTE_MS +
-        date.getSeconds();
-}
-
-/**
  * Converts a difference between two {@code Date}s into a human
  * readable string in French.
- * @param from {Date} the starting date
- * @param to {Date} the target date
+ * @param {number} from the starting date as a UNIX timestamp in milliseconds
+ * @param {number} to the target date as a UNIX timestamp in milliseconds
  */
 function formatRelativeTime(from, to) {
-    var diffMs = to.valueOf() - from.valueOf();
+    var diffMs = to - from;
     var diffAbsMs = Math.abs(diffMs);
 
-    function formatHelper(value, label) {
-        var result = "";
-        result += value > 0 ? "dans " : "il y a ";
-        result += Math.abs(value);
-        result += " ";
-        result += label;
-        if (Math.abs(value) > 1)
+    function doNumeric(value, label) {
+        var n = Math.abs(value);
+        var result = (value > 0 ? "dans " : "il y a ") + n + " " + label;
+        if (n > 1)
             result += "s";
         return result;
     }
@@ -228,7 +220,7 @@ function formatRelativeTime(from, to) {
     if (diffAbsMs < MINUTE_MS) {
         return "maintenant";
     } else if (diffAbsMs < 2 * HOUR_MS) {
-        return formatHelper(Math.round(diffMs / MINUTE_MS), "minute");
+        return doNumeric(Math.round(diffMs / MINUTE_MS), "minute");
     } else {
         // First take the difference in actual days between the two
         // time points.
@@ -238,15 +230,15 @@ function formatRelativeTime(from, to) {
         // a difference in days, we are actually talking about the
         // count of midnights between the two times. This code will
         // correct for this.
-        var timeOfDayFrom = getTimeOfDay(from);
-        var timeOfDayTo = getTimeOfDay(to);
+        var timeOfDayFrom = from % DAY_MS;
+        var timeOfDayTo = to % DAY_MS;
         if (diffMs > 0 && timeOfDayTo < timeOfDayFrom) {
             diffDays++;
         } else if (diffMs < 0 && timeOfDayFrom < timeOfDayTo) {
             diffDays--;
         }
         if (diffDays === 0) {
-            return formatHelper(Math.round(diffMs / HOUR_MS), "heure");
+            return doNumeric(Math.round(diffMs / HOUR_MS), "heure");
         } else if (diffDays === -2) {
             return "avant-hier";
         } else if (diffDays === -1) {
@@ -256,20 +248,34 @@ function formatRelativeTime(from, to) {
         } else if (diffDays === 2) {
             return "après-demain";
         }
-        return formatHelper(diffDays, "jour");
+        return doNumeric(diffDays, "jour");
     }
 }
 
 /**
+ * Colle states.
+ */
+var STATE_DONE = 0;
+var STATE_SOON = 1;
+var STATE_NORMAL = 2;
+
+/**
  * Makes a colle DOM element.
  * @param {object} colle the colle
+ * @param {number} now the current date as a UNIX timestamp in milliseconds
  * @returns the DOM element
  */
-function makeColleHtml(colle) {
+function makeColleHtml(colle, now) {
     var $colle = document.createElement("li");
     $colle.classList.add("c-colle");
-    $colle.classList.add("colle--" + colle.state);
-    $colle.classList.add("colle--subject-" + (colle.subjectIndex % 4));
+    $colle.classList.add("c-padding-top");
+    $colle.classList.add(["c-colle--done", "c-colle--soon", "c-colle--normal"][colle.state]);
+
+    // This is done this way instead of constructing a string with the number
+    // since we are going to text replace the classes so they need to be
+    // hardcoded.
+    var STATE_CLASSES = ["c-colle--subject-0", "c-colle--subject-1", "c-colle--subject-2", "c-colle--subject-3"];
+    $colle.classList.add(STATE_CLASSES[colle.subjectIndex % STATE_CLASSES.length]);
 
     var $subject = document.createElement("p");
     $subject.classList.add("c-colle__subject");
@@ -309,8 +315,9 @@ function makeColleHtml(colle) {
 
     $info.appendChild(document.createElement("br"));
     $info.appendChild(document.createTextNode(day + " à " +
-        colle.time.replace(":", "h") + " (" +
-        formatRelativeTime(new Date(), colle.dateTime) + ")"));
+        colle.hours + "h" +
+        (colle.minutes < 10 ? "0" + colle.minutes : colle.minutes) +
+        " (" + formatRelativeTime(now, colle.startingTime) + ")"));
     $colle.appendChild($info);
 
     return $colle;
@@ -319,21 +326,23 @@ function makeColleHtml(colle) {
 /**
  * Makes a week DOM element.
  * @param {object} week the week information
+ * @param {number} now the current date as a UNIX timestamp in milliseconds
  * @returns the DOM element
  */
-function makeWeekHtml(week) {
+function makeWeekHtml(week, now) {
     var $week = document.createElement("section");
     $week.classList.add("c-week");
+    $week.classList.add("c-padding-top");
 
-    var $weekTitle = document.createElement("h1");
-    $weekTitle.classList.add("c-week__title");
+    var $weekTitle = document.createElement("h2");
     $weekTitle.textContent = "Semaine " + (week.index + 1) + " (" + week.day + "/" + week.month + ")";
     $week.appendChild($weekTitle);
 
     var $colles = document.createElement("ul");
     $colles.classList.add("c-week__colles");
-    for (var i = 0; i < week.colles.length; i++)
-        $colles.appendChild(makeColleHtml(week.colles[i]));
+    $colles.classList.add("c-padding-top");
+    for (var i = 0; i < week.program.length; i++)
+        $colles.appendChild(makeColleHtml(week.program[i], now));
     $week.appendChild($colles);
 
     return $week;
@@ -343,11 +352,10 @@ function makeWeekHtml(week) {
  * Creates an intermediate representation of the student's program for a given
  * student, that will be used later to create DOM elements.
  * @param {number} studentIndex the student's index in the data file
+ * @param {number} now the current date as a UNIX timestamp in milliseconds
  * @returns the student's program as an array of weeks
  */
-function getColleProgramForStudent(studentIndex) {
-    var now = new Date().valueOf();
-
+function getColleProgramForStudent(studentIndex, now) {
     var student = DATA[STUDENTS][studentIndex];
     var groupIndex = student[0];
     var group = DATA[GROUPS][groupIndex];
@@ -357,92 +365,97 @@ function getColleProgramForStudent(studentIndex) {
     var classColles = decodeArrayOfIntegerArrays(clazz[1]);
     var classSubjectUrls = clazz[3];
 
-    var studentProgramOverrides = null;
-    if (student.length >= 3) {
-        studentProgramOverrides = student[2]
-            .map(function(o) {
-                // Deserialize
-                return {
-                    week: o[0],
-                    index: o[1],
-                    newColle: o[2],
-                };
-            });
-    }
-
     var result = [];
 
     var groupProgram = decodeArrayOfIntegerArrays(group[2]);
     for (var weekIndex = 0; weekIndex < groupProgram.length; weekIndex++) {
         var week = DATA[WEEKS][classWeeks[weekIndex]];
-        var weekParts = week.split("-", 3);
-        var year = parseInt(weekParts[0]);
-        var month = parseInt(weekParts[1]);
-        var day = parseInt(weekParts[2]);
 
-        var weekProgram;
-        if (studentProgramOverrides) {
-            var weekOverrides = studentProgramOverrides
-                .filter(function(o) { return o.week === weekIndex; });
-            if (weekOverrides.length) {
-                weekProgram = groupProgram[weekIndex].slice();
-                for (var i = 0; i < weekOverrides.length; i++) {
-                    var o = weekOverrides[i];
-                    if (o.index === -1) {
-                        weekProgram.push(o.newColle);
-                    } else if (o.newColle !== -1) {
-                        weekProgram[o.index] = o.newColle;
-                    } else {
-                        weekProgram.splice(o.index, 1);
-                    }
+        var weekParts = week.split("-", 3);
+        var weekYear = parseInt(weekParts[0]);
+        var weekMonth = parseInt(weekParts[1]);
+        var weekDay = parseInt(weekParts[2]);
+
+        var program = groupProgram[weekIndex];
+        if (student.length >= 3) {
+            var weekOverrides = student[2];
+            var copied = false;
+            for (var i = 0; i < weekOverrides.length; i++) {
+                var o = weekOverrides[i];
+
+                var week = o[0];
+                if (week !== weekIndex)
+                    continue;
+
+                var index = o[1];
+                var newColle = o[2];
+
+                if (!copied) {
+                    program = program.slice();
+                    copied = true;
                 }
-            } else {
-                weekProgram = groupProgram[weekIndex];
+
+                if (index === -1) {
+                    program.push(newColle);
+                } else if (newColle !== -1) {
+                    program[index] = newColle;
+                } else {
+                    program.splice(index, 1);
+                }
             }
-        } else {
-            weekProgram = groupProgram[weekIndex];
         }
+
+        var programFormatted = [];
+
+        var isAllDone = true;
+        for (var i = 0; i < program.length; i++) {
+            var index = program[i];
+            var colle = classColles[index];
+
+            var subjectIndex = colle[0];
+
+            var day = colle[2];
+            var time = DATA[TIMES][colle[3]];
+            var timeParts = time.split(":", 2);
+            var hours = parseInt(timeParts[0]);
+            var minutes = parseInt(timeParts[1]);
+            var startingTime = new Date(weekYear, weekMonth - 1, weekDay + day, hours, minutes).valueOf();
+
+            var state;
+            if (now - startingTime >= 1000 * 60 * 60) {
+                state = STATE_DONE;
+            } else if (startingTime - now <= 1000 * 60 * 60) {
+                state = STATE_SOON;
+                isAllDone = false;
+            } else {
+                state = STATE_NORMAL;
+                isAllDone = false;
+            }
+
+            programFormatted.push({
+                subjectIndex: subjectIndex,
+                subject: DATA[SUBJECTS][subjectIndex],
+                subjectUrl: classSubjectUrls ? classSubjectUrls[subjectIndex] : undefined,
+                teacher: DATA[TEACHERS][colle[1]],
+                room: colle.length >= 5 ? DATA[ROOMS][colle[4]] : undefined,
+                day: day,
+                hours: hours,
+                minutes: minutes,
+                startingTime: startingTime,
+                state: state,
+            });
+        }
+
+        // Do not show weeks that have already ended.
+        if (isAllDone)
+            continue;
 
         result.push({
             index: weekIndex,
-
-            year,
-            month,
-            day,
-
-            colles: weekProgram
-                .map(function(index) {
-                    var colle = classColles[index];
-
-                    var tmp = {
-                        subjectIndex: colle[0],
-                        teacher: DATA[TEACHERS][colle[1]],
-                        day: colle[2],
-                        time: DATA[TIMES][colle[3]],
-                    };
-                    if (classSubjectUrls)
-                        tmp.subjectUrl = classSubjectUrls[tmp.subjectIndex];
-                    tmp.subject = DATA[SUBJECTS][tmp.subjectIndex];
-
-                    var timeParts = tmp.time.split(":", 2);
-                    var hour = timeParts[0];
-                    var minutes = timeParts[1];
-                    tmp.dateTime = new Date(year, month - 1, day + tmp.day, hour, minutes);
-
-                    var dateTime = tmp.dateTime.valueOf();
-                    if (now - dateTime > 1000 * 60 * 60) {
-                        tmp.state = "done";
-                    } else if (dateTime - now <= 1000 * 60 * 60) {
-                        tmp.state = "soon";
-                    } else {
-                        tmp.state = "normal";
-                    }
-
-                    if (colle.length >= 5)
-                        tmp.room = DATA[ROOMS][colle[4]];
-
-                    return tmp;
-                }),
+            year: weekYear,
+            month: weekMonth,
+            day: weekDay,
+            program: programFormatted,
         });
     }
 
@@ -472,22 +485,21 @@ function updateSearch() {
     var classIndex = group[0];
     var clazz = DATA[CLASSES][classIndex];
 
-    STUDENT_NAME.innerText = student[1];
-    STUDENT_CLASS.innerText = clazz[0];
-    GROUP_NR.innerText = group[1];
+    STUDENT_NAME.textContent = student[1];
+    STUDENT_CLASS.textContent = clazz[0];
+    GROUP_NR.textContent = group[1];
 
-    var program = getColleProgramForStudent(studentIndex);
-    // Remove weeks where all colles are already done.
-    program = program.filter(function(week) {
-        return week.colles
-            .some(function(colle) {
-                return colle.state !== "done";
-            });
-    });
-    while (PROGRAM.firstChild)
-        PROGRAM.removeChild(PROGRAM.firstChild);
+    var now = new Date().valueOf();
+    var program = getColleProgramForStudent(studentIndex, now);
+
+    // Remove all children
+    PROGRAM.innerHTML = "";
+
+    // Append new children
+    var fragment = document.createDocumentFragment();
     for (var i = 0; i < program.length; i++)
-        PROGRAM.appendChild(makeWeekHtml(program[i]));
+        PROGRAM.appendChild(makeWeekHtml(program[i], now));
+    PROGRAM.appendChild(fragment);
 
     INFO_DIV.classList.remove("c-js-hide");
     currStudentIndex = studentIndex;
@@ -527,18 +539,29 @@ function main() {
  * @param {function} cb function that will be called when polyfills are loaded
  */
 function loadPolyfills(cb) {
-    if (!Math.trunc) {
-        Math.trunc = function(v) {
-            return v < 0 ? Math.ceil(v) : Math.floor(v);
-        };
+    if (!("trunc" in Math)) {
+        Object.defineProperty(Math, "trunc", {
+            value: function(v) {
+                return v < 0 ? Math.ceil(v) : Math.floor(v);
+            },
+        });
+    }
+
+    if (!("startsWith" in String.prototype)) {
+        Object.defineProperty(String.prototype, "startsWith", {
+            value: function(search, rawPos) {
+                var pos = rawPos > 0 ? rawPos|0 : 0;
+                return this.substring(pos, pos + search.length) === search;
+            },
+        });
     }
 
     var polyfills = [];
-    if (!window.Promise)
+    if (!("Promise" in window))
         polyfills.push("https://cdn.jsdelivr.net/npm/promise-polyfill@8.2.0/dist/polyfill.min.js");
-    if (!window.fetch)
+    if (!("fetch" in window))
         polyfills.push("https://cdn.jsdelivr.net/npm/whatwg-fetch@3.5.0/dist/fetch.umd.js");
-    if (!String.prototype.normalize)
+    if (!("normalize" in String.prototype))
         polyfills.push("https://cdn.jsdelivr.net/npm/unorm@1.6.0/lib/unorm.js");
 
     var remaining = polyfills.length;
