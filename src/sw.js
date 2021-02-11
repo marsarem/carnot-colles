@@ -57,7 +57,7 @@ async function tryCacheThenNetwork(request) {
  */
 async function savePreRenderedViewer(html) {
     const cache = await caches.open(CACHE_NAME);
-    const page = "<!doctype html>" + html;
+    const page = "<!doctype html><html>" + html + "</html>";
     await cache.put(URL_PREFIX, new Response(page, {
         headers: { "content-type": "text/html" },
     }));
