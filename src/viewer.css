@@ -66,6 +66,7 @@ body {
 
 .c-query:focus {
     outline: none;
+    border-color: #008cfd;
 }
 
 .c-week {
@@ -161,6 +162,10 @@ body {
         background-color: #232425;
         border-color: #404040;
         color: #FFFFFF;
+    }
+
+    .c-query:focus {
+        border-color: #008cfd;
     }
 
     .c-link {
