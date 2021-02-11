@@ -3,7 +3,7 @@
 // This must be incremented whenever a new version of the viewer's code or
 // data is published.
 var VERSION = 6;
-var CACHE_NAME = CACHE_PREFIX + "colles-viewer-" + VERSION;
+var CACHE_NAME = "colles-viewer-" + VERSION;
 
 var URL_PREFIX = "/carnot-colles/";
 
