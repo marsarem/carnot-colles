@@ -564,8 +564,6 @@ function main() {
         ERROR.classList.remove("c-js-hide");
     });
 
-    autoFillQuery();
-
     var studentIndex = INFO_DIV.getAttribute(STUDENT_INDEX_ATTR);
     if (studentIndex !== null) {
         // Search results have been pre-rendered.
@@ -573,6 +571,7 @@ function main() {
         fetchData().then(function(data) { DATA = data; });
     } else {
         LOADER.classList.remove("c-js-hide");
+        autoFillQuery();
         fetchData()
             .then(function(data) {
                 DATA = data;
