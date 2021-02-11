@@ -513,6 +513,10 @@ function updateSearch() {
 
     INFO_DIV.classList.remove("c-js-hide");
     currStudentIndex = studentIndex;
+
+    // Save the prerendered page.
+    if ("serviceWorker" in navigator && navigator.serviceWorker.controller !== null)
+        navigator.serviceWorker.controller.postMessage(document.documentElement.innerHTML);
 }
 
 /**

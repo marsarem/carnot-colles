@@ -69,6 +69,19 @@ function tryCacheThenNetwork(request) {
         });
 }
 
+/**
+ * Replaces the cache for the viewer HTML with the given HTML.
+ * @param {string} html the document's innerHTML
+ */
+function savePreRenderedViewer(html) {
+    caches.open(VIEWER_CACHE).then(function(c) {
+        var page = "<!doctype html>" + html;
+        return c.put(URL_PREFIX, new Response(page, {
+            headers: { "content-type": "text/html" },
+        }));
+    });
+}
+
 self.addEventListener("install", function(e) {
     e.waitUntil(precache()
         .then(function() {
@@ -85,4 +98,8 @@ self.addEventListener("activate", function(e) {
 
 self.addEventListener("fetch", function(e) {
     e.respondWith(tryCacheThenNetwork(e.request));
+});
+
+self.addEventListener("message", function(e) {
+    savePreRenderedViewer(e.data);
 });

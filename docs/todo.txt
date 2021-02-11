@@ -1,1 +1,2 @@
-Add CSP headers.
+Add CSP headers (both in the responses from the Service Worker and from the
+actual HTTP server).
