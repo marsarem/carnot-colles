@@ -16,6 +16,10 @@
         <link rel="shortcut icon" type="image/png" href="/carnot-colles/favicon.ico">
         <style>{{ css }}</style>
         <title>Colloscope</title>
+        <noscript>
+            <!-- This class will only apply when JS is disabled. -->
+            <style>.c-js-only{display:none}</style>
+        </noscript>
     </head>
     <body>
         <h1 class="c-page-title">Colloscope</h1>
@@ -37,7 +41,7 @@
             </ul>
         </noscript>
 
-        <div id="i-form" class="c-padding-top c-js-hide" role="form">
+        <div id="i-form" class="c-padding-top c-js-only" role="form">
             <label for="i-query" class="c-query__label">Entrez votre nom :</label>
             <input id="i-query" class="c-query" type="text"
                 placeholder="e.g. Jean Dupont">

@@ -565,7 +565,6 @@ function main() {
     });
 
     autoFillQuery();
-    FORM.classList.remove("c-js-hide");
 
     var studentIndex = INFO_DIV.getAttribute(STUDENT_INDEX_ATTR);
     if (studentIndex !== null) {
