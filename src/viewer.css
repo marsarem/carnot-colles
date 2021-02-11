@@ -70,7 +70,7 @@ body {
 }
 
 .c-week {
-    contain: layout paint style size;
+    contain: strict;
 }
 
 .c-week__colles {
@@ -144,7 +144,7 @@ body {
 
     .c-week {
         height: auto !important;
-        contain: layout paint style;
+        contain: content;
     }
 
     .c-week__colles {
