@@ -69,10 +69,6 @@ body {
     border-color: #008cfd;
 }
 
-.c-week {
-    contain: strict;
-}
-
 .c-week__colles {
     display: grid;
     grid-template-columns: 100%;
@@ -140,11 +136,6 @@ body {
 
     .c-query {
         margin: 0;
-    }
-
-    .c-week {
-        height: auto !important;
-        contain: content;
     }
 
     .c-week__colles {

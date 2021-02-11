@@ -284,7 +284,7 @@ function buildStaticContent() {
             fs.readFile(path.join(SRC_DIR, "viewer.html"), "utf8"),
             fs.readFile(path.join(SRC_DIR, "viewer.css"), "utf8"),
             fs.readFile(path.join(SRC_DIR, "viewer.js"), "utf8")
-                .then(js => terser.minify(js, TERSER_OPTS)),
+                .then(js => terser.minify(`(function(){${js}})()`, TERSER_OPTS)),
         ]).then(arr => {
             const [html, css, js] = arr;
             const template = Handlebars.compile(html, { noEscape: true });
