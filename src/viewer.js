@@ -3,6 +3,7 @@
 "use strict";
 
 var LOCAL_STORAGE_QUERY = "colles-viewer__query";
+var DATA_TIMESTAMP_ATTR = "a";
 
 /**
  * Long living DOM elements
@@ -315,7 +316,15 @@ function makeColleHtml(colle, now) {
     $colle.appendChild(document.createTextNode(day + " à " +
         colle.hours + "h" +
         (colle.minutes < 10 ? "0" + colle.minutes : colle.minutes) +
-        " (" + formatRelativeTime(now, colle.startingTime) + ")"));
+        " ("));
+
+    var $relativeTime = document.createElement("span");
+    $relativeTime.classList.add("c-relative-time");
+    $relativeTime.textContent = formatRelativeTime(now, colle.startingTime);
+    $relativeTime.setAttribute(DATA_TIMESTAMP_ATTR, colle.startingTime);
+    $colle.appendChild($relativeTime);
+
+    $colle.appendChild(document.createTextNode(")"));
 
     return $colle;
 }
@@ -504,6 +513,19 @@ function updateSearch() {
 
     INFO_DIV.classList.remove("c-js-hide");
     currStudentIndex = studentIndex;
+}
+
+/**
+ * Update relative times on DOM elements on the page.
+ */
+function updateRelativeTimes() {
+    var elements = document.getElementsByClassName("c-relative-time");
+    var now = new Date().valueOf();
+    for (var i = 0; i < elements.length; i++) {
+        var element = elements[i];
+        var timestamp = parseInt(element.getAttribute(DATA_TIMESTAMP_ATTR));
+        element.textContent = formatRelativeTime(now, timestamp);
+    }
 }
 
 /**
