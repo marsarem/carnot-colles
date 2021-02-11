@@ -668,6 +668,8 @@ function tryRegisterServiceWorker() {
         navigator.serviceWorker
             .register("/carnot-colles/sw.js")
             .then(function(sw) {
+                cacheDocumentHtml();
+
                 // Force check for updates when the page is loaded or when the
                 // PWA is brought to foreground. We really don't want to show
                 // stale information or else a student might miss a schedule

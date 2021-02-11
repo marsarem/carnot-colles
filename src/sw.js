@@ -74,6 +74,11 @@ self.addEventListener("install", function(e) {
 });
 
 self.addEventListener("activate", function(e) {
+    // Take control of all clients. Although self.skipWaiting() forces an
+    // update from an old version to a new one, it would only apply to new page
+    // loads without this.
+    self.clients.claim();
+
     e.waitUntil(deleteOldCaches());
 });
 
