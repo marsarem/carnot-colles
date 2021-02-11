@@ -2,12 +2,8 @@
 
 // This must be incremented whenever a new version of the viewer's code or
 // data is published.
-var VIEWER_VERSION = 6;
-var DATA_VERSION = 6;
-
-var CACHE_PREFIX = "colles-viewer__";
-var VIEWER_CACHE = CACHE_PREFIX + "viewer-v" + VIEWER_VERSION;
-var DATA_CACHE = CACHE_PREFIX + "data-v" + DATA_VERSION;
+var VERSION = 6;
+var CACHE_NAME = CACHE_PREFIX + "colles-viewer-" + VERSION;
 
 var URL_PREFIX = "/carnot-colles/";
 
@@ -16,11 +12,12 @@ var URL_PREFIX = "/carnot-colles/";
  * @returns a promise the resolves when done
  */
 function precache() {
-    return Promise.all([
-        caches.open(VIEWER_CACHE).then(function(c) {
+    return caches.open(CACHE_NAME)
+        .then(function(c) {
             return c.addAll([
                 "",
                 "apple-touch-icon.png",
+                "data.json",
                 "favicon.ico",
                 "icon-16.png",
                 "icon-32.png",
@@ -30,11 +27,7 @@ function precache() {
             ].map(function(u) {
                 return URL_PREFIX + u;
             }));
-        }),
-        caches.open(DATA_CACHE).then(function(c) {
-            return c.add(URL_PREFIX + "data.json");
-        }),
-    ]);
+        });
 }
 
 /**
@@ -46,7 +39,7 @@ function deleteOldCaches() {
         .then(function(keys) {
             return Promise.all(keys
                 .filter(function(k) {
-                    return k !== VIEWER_CACHE && k !== DATA_CACHE;
+                    return k !== CACHE_NAME;
                 })
                 .map(function(k) {
                     return caches.delete(k);
@@ -74,12 +67,13 @@ function tryCacheThenNetwork(request) {
  * @param {string} html the document's innerHTML
  */
 function savePreRenderedViewer(html) {
-    caches.open(VIEWER_CACHE).then(function(c) {
-        var page = "<!doctype html>" + html;
-        return c.put(URL_PREFIX, new Response(page, {
-            headers: { "content-type": "text/html" },
-        }));
-    });
+    caches.open(CACHE_NAME)
+        .then(function(c) {
+            var page = "<!doctype html>" + html;
+            return c.put(URL_PREFIX, new Response(page, {
+                headers: { "content-type": "text/html" },
+            }));
+        });
 }
 
 self.addEventListener("install", function(e) {
