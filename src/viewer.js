@@ -3,7 +3,8 @@
 "use strict";
 
 var LOCAL_STORAGE_QUERY = "colles-viewer__query";
-var DATA_TIMESTAMP_ATTR = "a";
+var TIMESTAMP_ATTR = "a";
+var STUDENT_INDEX_ATTR = "a";
 
 /**
  * Long living DOM elements
@@ -321,7 +322,7 @@ function makeColleHtml(colle, now) {
     var $relativeTime = document.createElement("span");
     $relativeTime.classList.add("c-relative-time");
     $relativeTime.textContent = formatRelativeTime(now, colle.startingTime);
-    $relativeTime.setAttribute(DATA_TIMESTAMP_ATTR, colle.startingTime);
+    $relativeTime.setAttribute(TIMESTAMP_ATTR, colle.startingTime);
     $colle.appendChild($relativeTime);
 
     $colle.appendChild(document.createTextNode(")"));
@@ -473,19 +474,38 @@ function getColleProgramForStudent(studentIndex, now) {
 }
 
 /**
+ * Sends the current document's innerHTML to the Service Worker so that the
+ * next time the client sends a request with the viewer page, we send this
+ * HTML.
+ */
+function cacheDocumentHtml() {
+    if ("serviceWorker" in navigator) {
+        var controller = navigator.serviceWorker.controller;
+        if (controller !== null)
+            controller.postMessage(document.documentElement.innerHTML);
+    }
+}
+
+/**
  * Performs a search using the value in the student name field and update the
  * UI with the results.
  */
 function updateSearch() {
     var studentIndex = performSearch();
     if (studentIndex === -1) {
-        INFO_DIV.classList.add("c-js-hide");
+        if (!INFO_DIV.classList.contains("c-js-hide")) {
+            INFO_DIV.classList.add("c-js-hide");
+            cacheDocumentHtml();
+        }
         return;
     }
 
     // Do not recompute everything if possible.
     if (currStudentIndex === studentIndex) {
-        INFO_DIV.classList.remove("c-js-hide");
+        if (INFO_DIV.classList.contains("c-js-hide")) {
+            INFO_DIV.classList.remove("c-js-hide");
+            cacheDocumentHtml();
+        }
         return;
     }
 
@@ -512,11 +532,10 @@ function updateSearch() {
     PROGRAM.appendChild(fragment);
 
     INFO_DIV.classList.remove("c-js-hide");
+    INFO_DIV.setAttribute(STUDENT_INDEX_ATTR, studentIndex);
     currStudentIndex = studentIndex;
 
-    // Save the prerendered page.
-    if ("serviceWorker" in navigator && navigator.serviceWorker.controller !== null)
-        navigator.serviceWorker.controller.postMessage(document.documentElement.innerHTML);
+    cacheDocumentHtml();
 }
 
 /**
@@ -527,7 +546,7 @@ function updateRelativeTimes() {
     var now = new Date().valueOf();
     for (var i = 0; i < elements.length; i++) {
         var element = elements[i];
-        var timestamp = parseInt(element.getAttribute(DATA_TIMESTAMP_ATTR));
+        var timestamp = parseInt(element.getAttribute(TIMESTAMP_ATTR));
         element.textContent = formatRelativeTime(now, timestamp);
     }
 }
@@ -538,28 +557,37 @@ function updateRelativeTimes() {
  * constant definitions.
  */
 function main() {
+    // Catch exceptions that are not in a try catch block.
+    window.addEventListener("error", function() {
+        FORM.classList.add("c-js-hide");
+        INFO_DIV.classList.add("c-js-hide");
+        ERROR.classList.remove("c-js-hide");
+    });
+
     autoFillQuery();
     FORM.classList.remove("c-js-hide");
-    LOADER.classList.remove("c-js-hide");
-    fetchData()
-        .then(function(data) {
-            DATA = data;
-            LOADER.classList.add("c-js-hide");
-            updateSearch();
 
-            // Catch exceptions that are not in a try catch block.
-            window.addEventListener("error", function() {
+    var studentIndex = INFO_DIV.getAttribute(STUDENT_INDEX_ATTR);
+    if (studentIndex !== null) {
+        // Search results have been pre-rendered.
+        currStudentIndex = parseInt(studentIndex);
+        fetchData().then(function(data) { DATA = data; });
+    } else {
+        LOADER.classList.remove("c-js-hide");
+        fetchData()
+            .then(function(data) {
+                DATA = data;
+                LOADER.classList.add("c-js-hide");
+                updateSearch();
+            })
+            .catch(function(err) {
+                console.log("Failed to load data!", err);
                 FORM.classList.add("c-js-hide");
-                INFO_DIV.classList.add("c-js-hide");
+                LOADER.classList.add("c-js-hide");
                 ERROR.classList.remove("c-js-hide");
             });
-        })
-        .catch(function(err) {
-            console.log("Failed to load data!", err);
-            FORM.classList.add("c-js-hide");
-            LOADER.classList.add("c-js-hide");
-            ERROR.classList.remove("c-js-hide");
-        });
+    }
+
     QUERY.addEventListener("input", function() {
         // Remember the name for when the page is opened again.
         if (window.localStorage)
