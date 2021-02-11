@@ -253,16 +253,15 @@ function performSearch(query, globalData) {
     }
 
     function intersection(arr1, arr2) {
-        for (var i = 0; i < arr1.length; i++) {
+        for (var i = arr1.length - 1; i >= 0; i--) {
             if (arr2.indexOf(arr1[i]) === -1)
                 arr1.splice(i, 1);
         }
     }
 
     var candidates = getMatches(tokens[0]);
-    for (var i = 1; i < tokens.length && candidates.length; i++) {
+    for (var i = 1; i < tokens.length && candidates.length; i++)
         intersection(candidates, getMatches(tokens[i]));
-    }
 
     return candidates.length > 0 ? candidates[0] : -1;
 }
