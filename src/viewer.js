@@ -481,8 +481,12 @@ function getColleProgramForStudent(studentIndex, now) {
 function cacheDocumentHtml() {
     if ("serviceWorker" in navigator) {
         var controller = navigator.serviceWorker.controller;
-        if (controller !== null)
+        if (controller !== null) {
+            // Make sure to save the state of the input.
+            QUERY.setAttribute("value", QUERY.value);
+
             controller.postMessage(document.documentElement.innerHTML);
+        }
     }
 }
 
@@ -493,19 +497,15 @@ function cacheDocumentHtml() {
 function updateSearch() {
     var studentIndex = performSearch();
     if (studentIndex === -1) {
-        if (!INFO_DIV.classList.contains("c-js-hide")) {
-            INFO_DIV.classList.add("c-js-hide");
-            cacheDocumentHtml();
-        }
+        INFO_DIV.classList.add("c-js-hide");
+        cacheDocumentHtml();
         return;
     }
 
     // Do not recompute everything if possible.
     if (currStudentIndex === studentIndex) {
-        if (INFO_DIV.classList.contains("c-js-hide")) {
-            INFO_DIV.classList.remove("c-js-hide");
-            cacheDocumentHtml();
-        }
+        INFO_DIV.classList.remove("c-js-hide");
+        cacheDocumentHtml();
         return;
     }
 
