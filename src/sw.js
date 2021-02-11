@@ -2,49 +2,39 @@
 
 // This must be incremented whenever a new version of the viewer's code or
 // data is published.
-var VERSION = 6;
-var CACHE_NAME = "colles-viewer-" + VERSION;
+const VERSION = 6;
+const CACHE_NAME = "colles-viewer-" + VERSION;
 
-var URL_PREFIX = "/carnot-colles/";
+const URL_PREFIX = "/carnot-colles/";
 
 /**
  * Precaches the viewer's code and data.
- * @returns a promise the resolves when done
+ * @returns {Promise} a promise that resolves when it's done
  */
-function precache() {
-    return caches.open(CACHE_NAME)
-        .then(function(c) {
-            return c.addAll([
-                "",
-                "apple-touch-icon.png",
-                "data.json",
-                "favicon.ico",
-                "icon-16.png",
-                "icon-32.png",
-                "icon-192.png",
-                "icon-512.png",
-                "manifest.webmanifest",
-            ].map(function(u) {
-                return URL_PREFIX + u;
-            }));
-        });
+async function precache() {
+    const cache = await caches.open(CACHE_NAME);
+    const URLS = [
+        "",
+        "apple-touch-icon.png",
+        "data.json",
+        "favicon.ico",
+        "icon-16.png",
+        "icon-32.png",
+        "icon-192.png",
+        "icon-512.png",
+        "manifest.webmanifest",
+    ].map(u => URL_PREFIX + u);
+    await cache.addAll(URLS);
 }
 
 /**
  * Delete caches from older service workers.
- * @returns a promise the resolves when done
+ * @returns {Promise} a promise that resolves when it's done
  */
-function deleteOldCaches() {
-    return caches.keys()
-        .then(function(keys) {
-            return Promise.all(keys
-                .filter(function(k) {
-                    return k !== CACHE_NAME;
-                })
-                .map(function(k) {
-                    return caches.delete(k);
-                }));
-        });
+async function deleteOldCaches() {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(k => k !== CACHE_NAME)
+        .map(k => caches.delete(k)));
 }
 
 /**
@@ -53,27 +43,24 @@ function deleteOldCaches() {
  * @param {RequestInfo} request the request
  * @returns a promise with the response
  */
-function tryCacheThenNetwork(request) {
-    return caches.match(request)
-        .then(function(match) {
-            if (match !== undefined)
-                return match;
-            return fetch(request);
-        });
+async function tryCacheThenNetwork(request) {
+    const match = await caches.match(request);
+    if (match !== undefined)
+        return match;
+    return await fetch(request);
 }
 
 /**
  * Replaces the cache for the viewer HTML with the given HTML.
  * @param {string} html the document's innerHTML
+ * @returns {Promise} a promise that resolves when it's done
  */
-function savePreRenderedViewer(html) {
-    caches.open(CACHE_NAME)
-        .then(function(c) {
-            var page = "<!doctype html>" + html;
-            return c.put(URL_PREFIX, new Response(page, {
-                headers: { "content-type": "text/html" },
-            }));
-        });
+async function savePreRenderedViewer(html) {
+    const cache = await caches.open(CACHE_NAME);
+    const page = "<!doctype html>" + html;
+    await cache.put(URL_PREFIX, new Response(page, {
+        headers: { "content-type": "text/html" },
+    }));
 }
 
 self.addEventListener("install", function(e) {
