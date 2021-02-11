@@ -497,14 +497,14 @@ function cacheDocumentHtml() {
 function updateSearch() {
     var studentIndex = performSearch();
     if (studentIndex === -1) {
-        INFO_DIV.classList.add("c-js-hide");
+        INFO_DIV.classList.add("c-hide");
         cacheDocumentHtml();
         return;
     }
 
     // Do not recompute everything if possible.
     if (currStudentIndex === studentIndex) {
-        INFO_DIV.classList.remove("c-js-hide");
+        INFO_DIV.classList.remove("c-hide");
         cacheDocumentHtml();
         return;
     }
@@ -531,7 +531,7 @@ function updateSearch() {
         PROGRAM.appendChild(makeWeekHtml(program[i], now));
     PROGRAM.appendChild(fragment);
 
-    INFO_DIV.classList.remove("c-js-hide");
+    INFO_DIV.classList.remove("c-hide");
     INFO_DIV.setAttribute(STUDENT_INDEX_ATTR, studentIndex);
     currStudentIndex = studentIndex;
 
@@ -559,9 +559,9 @@ function updateRelativeTimes() {
 function main() {
     // Catch exceptions that are not in a try catch block.
     window.addEventListener("error", function() {
-        FORM.classList.add("c-js-hide");
-        INFO_DIV.classList.add("c-js-hide");
-        ERROR.classList.remove("c-js-hide");
+        FORM.classList.add("c-hide");
+        INFO_DIV.classList.add("c-hide");
+        ERROR.classList.remove("c-hide");
     });
 
     var studentIndex = INFO_DIV.getAttribute(STUDENT_INDEX_ATTR);
@@ -570,19 +570,19 @@ function main() {
         currStudentIndex = parseInt(studentIndex);
         fetchData().then(function(data) { DATA = data; });
     } else {
-        LOADER.classList.remove("c-js-hide");
+        LOADER.classList.remove("c-hide");
         autoFillQuery();
         fetchData()
             .then(function(data) {
                 DATA = data;
-                LOADER.classList.add("c-js-hide");
+                LOADER.classList.add("c-hide");
                 updateSearch();
             })
             .catch(function(err) {
                 console.log("Failed to load data!", err);
-                FORM.classList.add("c-js-hide");
-                LOADER.classList.add("c-js-hide");
-                ERROR.classList.remove("c-js-hide");
+                FORM.classList.add("c-hide");
+                LOADER.classList.add("c-hide");
+                ERROR.classList.remove("c-hide");
             });
     }
 
