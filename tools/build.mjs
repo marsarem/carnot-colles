@@ -116,6 +116,7 @@ function minifyHtml(html) {
         collapseInlineTagWhitespace: false,
         collapseWhitespace: true,
         html5: true,
+        removeComments: true,
         removeOptionalTags: true,
         minifyCSS: false,
         minifyJS: false,

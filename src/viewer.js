@@ -44,18 +44,7 @@ var SEARCH_INDEX = 8;
  */
 var currStudentIndex = -1;
 
-/**
- * Fetches the data.json file's content.
- * @returns a promise with the data as an object
- */
-function fetchData() {
-    return fetch("data.json", { credentials: "same-origin", mode: "cors" })
-        .then(function(response) {
-            if (!response.ok)
-                throw new Error("response is not OK");
-            return response.json();
-        })
-}
+var currQuery = null;
 
 /**
  * Decodes a string into an integer array.
@@ -495,6 +484,16 @@ function cacheDocumentHtml() {
  * UI with the results.
  */
 function updateSearch() {
+    if  (currQuery === QUERY.value)
+        return;
+
+    if (DATA === null) {
+        showStatus("Chargement des données en cours...");
+        return;
+    } else {
+        showStatus(null);
+    }
+
     var studentIndex = performSearch();
     if (studentIndex === -1) {
         INFO_DIV.classList.add("c-hide");
@@ -539,7 +538,7 @@ function updateSearch() {
 }
 
 /**
- * Update relative times on DOM elements on the page.
+ * Updates relative times on DOM elements on the page.
  */
 function updateRelativeTimes() {
     var elements = document.getElementsByClassName("c-relative-time");
@@ -552,48 +551,70 @@ function updateRelativeTimes() {
 }
 
 /**
- * This function is the first function that is called after polyfills have
- * been loaded. All code should be put inside of it, except for function and
- * constant definitions.
+ * Displays the specified message at the top of the page, or removes the
+ * message if `null` is given as an argument.
+ * @param {string|null} msg the status message to show
  */
-function main() {
+function showStatus(msg) {
+    var $status = document.getElementById("i-status");
+    if (msg === null) {
+        $status.textContent = "";
+        $status.classList.add("c-hide");
+    } else {
+        $status.textContent = msg;
+        $status.classList.remove("c-hide");
+    }
+}
+
+function registerErrorHandler() {
     // Catch exceptions that are not in a try catch block.
     window.addEventListener("error", function() {
         FORM.classList.add("c-hide");
         INFO_DIV.classList.add("c-hide");
-        ERROR.classList.remove("c-hide");
+        showStatus("Une erreur est survenue !");
     });
+}
 
+function earlyInit() {
     var studentIndex = INFO_DIV.getAttribute(STUDENT_INDEX_ATTR);
     if (studentIndex !== null) {
         // Search results have been pre-rendered.
         currStudentIndex = parseInt(studentIndex);
-        fetchData().then(function(data) { DATA = data; });
+        currQuery = QUERY.value;
+        updateRelativeTimes();
     } else {
-        LOADER.classList.remove("c-hide");
         autoFillQuery();
-        fetchData()
-            .then(function(data) {
-                DATA = data;
-                LOADER.classList.add("c-hide");
-                updateSearch();
-            })
-            .catch(function(err) {
-                console.log("Failed to load data!", err);
-                FORM.classList.add("c-hide");
-                LOADER.classList.add("c-hide");
-                ERROR.classList.remove("c-hide");
-            });
+        updateSearch();
     }
+}
+
+function laterInit() {
+    fetch("data.json", { credentials: "same-origin", mode: "cors" })
+        .then(function(response) {
+            if (!response.ok)
+                throw new Error("response is not OK");
+            return response.json();
+        })
+        .then(function(data) {
+            DATA = data;
+            updateSearch();
+        });
 
     QUERY.addEventListener("input", function() {
         // Remember the name for when the page is opened again.
         if (window.localStorage)
             localStorage.setItem(LOCAL_STORAGE_QUERY, QUERY.value);
 
-        if (DATA)
-            updateSearch();
+        updateSearch();
     });
+}
+
+function runLowPriority(cb) {
+    if (!("requestIdleCallback" in window)) {
+        cb();
+        return;
+    }
+    requestIdleCallback(cb, { timeout: 200 });
 }
 
 /**
@@ -651,45 +672,49 @@ function loadPolyfills(cb) {
 /**
  * Tries to register the service worker that makes the site available offline.
  */
-function tryRegisterServiceWorker() {
-    if ("serviceWorker" in navigator) {
-        // Immediatly reload the page when the service worker is updated.
-        // This is fine since the query is stored in localStorage and therefore
-        // after the refresh the page will still show the same information (no
-        // user interruption).
-        var refreshing = false;
-        navigator.serviceWorker.addEventListener("controllerchange", () => {
-            if (!refreshing) {
-                window.location.reload();
-                refreshing = true;
-            }
-        });
+function registerServiceWorker() {
+    if (!("serviceWorker" in navigator))
+        return;
 
-        navigator.serviceWorker
-            .register("/carnot-colles/sw.js")
-            .then(function(sw) {
-                cacheDocumentHtml();
+    // Immediatly reload the page when the service worker is updated.
+    // This is fine since the query is stored in localStorage and therefore
+    // after the refresh the page will still show the same information (no
+    // user interruption).
+    var refreshing = false;
+    navigator.serviceWorker.addEventListener("controllerchange", function() {
+        if (!refreshing) {
+            window.location.reload();
+            refreshing = true;
+        }
+    });
 
-                // Force check for updates when the page is loaded or when the
-                // PWA is brought to foreground. We really don't want to show
-                // stale information or else a student might miss a schedule
-                // update!
-                var lastUpdate = new Date().valueOf();
-                sw.update();
-                document.addEventListener("visibilitychange", function() {
-                    var now = new Date().valueOf();
-                    var UPDATE_THROTTLE = 1000 * 60 * 60;
-                    if (document.visibilityState === "visible" &&
-                        now - lastUpdate >= UPDATE_THROTTLE) {
-                        sw.update();
-                        lastUpdate = now;
-                    }
-                });
+    navigator.serviceWorker.register("/carnot-colles/sw.js")
+        .then(function(sw) {
+            cacheDocumentHtml();
+
+            // Force check for updates when the page is loaded or when the
+            // PWA is brought to foreground. We really don't want to show
+            // stale information or else a student might miss a schedule
+            // update!
+            var lastUpdate = new Date().valueOf();
+            sw.update();
+            document.addEventListener("visibilitychange", function() {
+                var now = new Date().valueOf();
+                var UPDATE_THROTTLE = 1000 * 60 * 60;
+                if (document.visibilityState === "visible" &&
+                    now - lastUpdate >= UPDATE_THROTTLE) {
+                    sw.update();
+                    lastUpdate = now;
+                }
             });
-    }
+        });
 }
 
-loadPolyfills(main);
-tryRegisterServiceWorker();
+registerErrorHandler();
+earlyInit();
+runLowPriority(function() {
+    loadPolyfills(laterInit);
+    registerServiceWorker();
+});
 
 })();
