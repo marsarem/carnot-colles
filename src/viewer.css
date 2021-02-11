@@ -1,6 +1,6 @@
 * {
     box-sizing: border-box;
-    contain: layout paint style;
+    contain: content;
 }
 
 html, h1, h2, p, ul {
