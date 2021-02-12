@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "build": "node ./tools/build.mjs",
-    "local-server": "node ./tools/local-server.mjs"
+    "local-server": "node ./tools/local-server.mjs",
+    "format-json": "node ./tools/format-json.mjs"
   },
   "license": "GPL",
   "dependencies": {
