@@ -278,8 +278,6 @@ function lightweightIndexPageHtml(classes) {
 
 function buildStaticContent() {
     return Promise.all([
-        fs.copyFile(path.join(SRC_DIR, "robots.txt"), path.join(DIST_DIR, "robots.txt")),
-
         Promise.all([
             fs.readFile(path.join(SRC_DIR, "viewer.html"), "utf8"),
             fs.readFile(path.join(SRC_DIR, "viewer.css"), "utf8"),
