@@ -4,13 +4,16 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "build": "node ./tools/build.mjs"
+    "build": "node ./tools/build.mjs",
+    "local-server": "node ./tools/local-server.mjs"
   },
   "license": "GPL",
   "dependencies": {
+    "chokidar": "^3.5.1",
     "csso": "^4.2.0",
     "handlebars": "^4.7.6",
     "html-minifier": "^4.0.0",
+    "node-static": "^0.7.11",
     "svg2png": "^4.1.1",
     "terser": "^5.5.1",
     "to-ico": "^1.1.5"
