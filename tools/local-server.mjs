@@ -78,7 +78,10 @@ class Builder {
 class HttpServer {
     constructor() {
         const distDir = path.join(root, "dist");
-        this._files = new nodeStatic.Server(distDir);
+        this._files = new nodeStatic.Server(distDir, {
+            // Disable the cache for development.
+            cache: false,
+        });
         this._http = http.createServer(this._onRequest.bind(this));
     }
 
