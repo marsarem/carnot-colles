@@ -2,8 +2,9 @@
 
 "use strict";
 
-import * as fs from "fs/promises";
-import * as path from "path";
+import crypto from "crypto";
+import fs from "fs/promises";
+import path from "path";
 
 import csso from "csso";
 import Handlebars from "handlebars";
@@ -17,26 +18,6 @@ import makeViewerData from "../lib/mk-viewer-data.mjs";
 const SRC_DIR = "src";
 const DATA_DIR = "data";
 const DIST_DIR = process.argv[2] ?? "dist";
-
-const TERSER_OPTS = {
-    compress: {
-        unsafe: true,
-        unsafe_math: true,
-    },
-    mangle: {
-        toplevel: true,
-        properties: {
-            // TerserJS's DOM properties list is missing these properties, so
-            // we have to add them here or else the code breaks.
-            reserved: ["waitUntil", "respondWith", "skipWaiting", "content-type"],
-        },
-    },
-    format: {
-        // This improve JS parsing performance.
-        wrap_iife: true,
-        wrap_func_args: false,
-    }
-};
 
 /**
  * Reads the data files for each class and returns the parsed JSON.
@@ -107,11 +88,11 @@ async function prepareDistDirectory() {
 
 /**
  * Minifies HTML code.
- * @param html the original HTML code 
- * @returns the minifed HTML code
+ * @param {string} html the original HTML code 
+ * @returns {string} the minifed HTML code
  */
 function minifyHtml(html) {
-    return minify(html, {
+    const MINIFIER_OPTS = {
         caseSensitive: false,
         collapseInlineTagWhitespace: false,
         collapseWhitespace: true,
@@ -120,7 +101,43 @@ function minifyHtml(html) {
         removeOptionalTags: true,
         minifyCSS: false,
         minifyJS: false,
-    });
+    };
+    return minify(html, MINIFIER_OPTS);
+}
+
+/**
+ * Minifies JS code.
+ * @param {string} js the original JS code 
+ * @returns {Promise<string>} a promise with the minifed JS code
+ */
+async function minifyJs(js) {
+    const TERSER_OPTS = {
+        compress: {
+            unsafe: true,
+            unsafe_math: true,
+        },
+        mangle: {
+            toplevel: true,
+            properties: {
+                // TerserJS's DOM properties list is missing these properties,
+                // so we have to add them here or else the code breaks.
+                reserved: [
+                    "waitUntil",
+                    "respondWith",
+                    "skipWaiting",
+                    "content-type",
+                ],
+            },
+        },
+        format: {
+            // This improves JS parsing performance.
+            wrap_iife: true,
+            wrap_func_args: false,
+        }
+    };
+
+    const out = await terser.minify(js, TERSER_OPTS);
+    return out.code;
 }
 
 /**
@@ -129,7 +146,7 @@ function minifyHtml(html) {
  * @param html the input HTML
  * @returns the HTML with shorter IDs and classes
  */
-function compressIdsAndClasses(html) {
+function minifyIdsAndClasses(html) {
     function compress(input, prefix) {
         // Use base64 alphabet because we don't want weird characters in class names or IDs.
         const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
@@ -276,99 +293,139 @@ function lightweightIndexPageHtml(classes) {
 </html>`);
 }
 
-function buildStaticContent() {
-    return Promise.all([
-        Promise.all([
-            fs.readFile(path.join(SRC_DIR, "viewer.html"), "utf8"),
-            fs.readFile(path.join(SRC_DIR, "viewer.css"), "utf8"),
-            fs.readFile(path.join(SRC_DIR, "viewer.js"), "utf8")
-                .then(js => terser.minify(`(function(){${js}})()`, TERSER_OPTS)),
-        ]).then(arr => {
-            const [html, css, js] = arr;
-            const template = Handlebars.compile(html, { noEscape: true });
-            const templateOut = template({
-                css: csso.minify(css).css,
-                js: js.code,
-            });
-            const minified = minifyHtml(compressIdsAndClasses(templateOut));
-            return fs.writeFile(path.join(DIST_DIR, "index.html"), minified, "utf8");
-        }),
+async function main() {
+    await prepareDistDirectory();
 
-        fs.readFile(path.join(SRC_DIR, "sw.js"), "utf8")
-            .then(js => terser.minify(js, TERSER_OPTS))
-            .then(js => fs.writeFile(path.join(DIST_DIR, "sw.js"), js.code, "utf8")),
+    // We will compute a digest the depends on the resources that the Service
+    // Worker caches so that when this digest changes, we know that we have to
+    // evict the cache. Note that the order of the resources given to the hash
+    // needs to be deterministic, which is why we use this map to store them
+    // instead of directly adding one to the hash when it's finished building.
+    const resourceMap = new Map();
+    const resourcePromises = [];
 
-        fs.readFile(path.join(SRC_DIR, "icon.svg"))
-            .then(buf => {
-                const faviconPromises = [];
-                for (const size of [16, 32, 48])
-                    faviconPromises.push(svg2png(buf, { width: size, height: size }));
+    // index.html
+    resourcePromises.push(Promise.all([
+        fs.readFile(path.join(SRC_DIR, "viewer.html"), "utf8"),
+        fs.readFile(path.join(SRC_DIR, "viewer.css"), "utf8"),
+        fs.readFile(path.join(SRC_DIR, "viewer.js"), "utf8")
+            .then(js => minifyJs(`(function(){${js}})()`)),
+    ]).then(arr => {
+        const [html, css, js] = arr;
+        const template = Handlebars.compile(html, { noEscape: true });
+        const templateOut = template({
+            css: csso.minify(css).css,
+            js: js,
+        });
+        const minified = minifyHtml(minifyIdsAndClasses(templateOut));
+        resourceMap.set("index.html", Buffer.from(minified, "utf8"));
+        return fs.writeFile(path.join(DIST_DIR, "index.html"), minified, "utf8");
+    }));
+    
+    // Icons
+    resourcePromises.push(fs.readFile(path.join(SRC_DIR, "icon.svg")).then(buf => {
+        const faviconPromises = [];
+        for (const size of [16, 32, 48])
+            faviconPromises.push(svg2png(buf, { width: size, height: size }));
 
-                const pngIconsPromises = [];
-                for (const size of [16, 32, 192, 512])
-                    pngIconsPromises.push(svg2png(buf, { width: size, height: size })
-                        .then(buf => fs.writeFile(path.join(DIST_DIR, `icon-${size}.png`), buf)));
+        const pngIconsPromises = [];
+        for (const size of [16, 32, 192, 512]) {
+            pngIconsPromises.push(svg2png(buf, { width: size, height: size })
+                .then(buf => {
+                    const name = `icon-${size}.png`;
+                    resourceMap.set(name, buf);
+                    return fs.writeFile(path.join(DIST_DIR, name), buf);
+                }));
+        }
 
-                return Promise.all([
-                    Promise.all(faviconPromises)
-                        .then(bufs => toIco(bufs))
-                        .then(buf => fs.writeFile(path.join(DIST_DIR, "favicon.ico"), buf)),
+        return Promise.all([
+            Promise.all(faviconPromises)
+                .then(bufs => toIco(bufs))
+                .then(buf => {
+                    resourceMap.set("favicon.ico", buf);
+                    return fs.writeFile(path.join(DIST_DIR, "favicon.ico"), buf);
+                }),
 
-                    svg2png(buf, { width: 180, height: 180 })
-                        .then(buf => fs.writeFile(path.join(DIST_DIR, "apple-touch-icon.png"), buf)),
+            svg2png(buf, { width: 180, height: 180 })
+                .then(buf => {
+                    resourceMap.set("apple-touch-icon.png", buf);
+                    return fs.writeFile(path.join(DIST_DIR, "apple-touch-icon.png"), buf);
+                }),
 
-                    ...pngIconsPromises,
-                ]);
-            }),
+            ...pngIconsPromises,
+        ]);
+    }));
 
-        fs.readFile(path.join(SRC_DIR, "manifest.webmanifest"), "utf8")
-            .then(json => fs.writeFile(path.join(DIST_DIR, "manifest.webmanifest"), JSON.stringify(JSON.parse(json)), "utf8")),
-    ]);
-}
+    // PWA manifest
+    resourcePromises.push(fs.readFile(path.join(SRC_DIR, "manifest.webmanifest"), "utf8")
+        .then(json => {
+            const str = JSON.stringify(JSON.parse(json));
+            resourceMap.set("manifest.webmanifest", Buffer.from(str, "utf8"));
+            fs.writeFile(path.join(DIST_DIR, "manifest.webmanifest"), str, "utf8")
+        }));
 
-async function buildDynamicContent(classes) {
     // Keep track of what we write so that we can generate an index.html page
     // for browsers without JavaScript later.
     const writtenClasses = [];
+    const lightweightPagePromises = [];
 
-    await Promise.all(classes.map(async promise => {
-        const { id, data } = await promise;
+    resourcePromises.push(readClasses().then(classes => {
+        return Promise.all(classes.map(async promise => {
+            const { id, data } = await promise;
 
-        const writtenGroups = [];
-        writtenClasses.push({ ...data, writtenGroups });
-
-        return Promise.all([
-            // Make a lightweight version for each group for extremely old
-            // browsers or for interoperability with arcane platforms.
-            fs.mkdir(path.join(DIST_DIR, "light", id))
-                .then(() => {
-                    const writes = [];
-                    for (let i = 0; i < data.studentGroups.length; i++) {
-                        const groupNr = i + data.firstGroup;
-                        const file = `groupe-${groupNr}.html`;
-
-                        const html = lightweightGroupPageHtml(data, i);
-                        const dest = path.join(DIST_DIR, "light", id, file);
-                        writes.push(fs.writeFile(dest, html, "utf8"));
-
-                        writtenGroups.push({ groupNr, url: `${id}/${file}` });
-                    }
-                    return Promise.all(writes);
-                }),
-        ]);
+            const writtenGroups = [];
+            writtenClasses.push({ ...data, writtenGroups });
+    
+            lightweightPagePromises.push(Promise.all([
+                // Make a lightweight version for each group for extremely old
+                // browsers or for interoperability with arcane platforms.
+                fs.mkdir(path.join(DIST_DIR, "light", id))
+                    .then(() => {
+                        const writes = [];
+                        for (let i = 0; i < data.studentGroups.length; i++) {
+                            const groupNr = i + data.firstGroup;
+                            const file = `groupe-${groupNr}.html`;
+    
+                            const html = lightweightGroupPageHtml(data, i);
+                            const dest = path.join(DIST_DIR, "light", id, file);
+                            writes.push(fs.writeFile(dest, html, "utf8"));
+    
+                            writtenGroups.push({ groupNr, url: `${id}/${file}` });
+                        }
+                        return Promise.all(writes);
+                    }),
+            ]));
+        }));
+    }).then(() => {
+        const str = JSON.stringify(makeViewerData(writtenClasses));
+        resourceMap.set("data.json", Buffer.from(str, "utf8"));
+        return fs.writeFile(path.join(DIST_DIR, "data.json"), str, "utf8");
     }));
-    await Promise.all([
-        fs.writeFile(path.join(DIST_DIR, "light", "index.html"),
-            lightweightIndexPageHtml(writtenClasses), "utf8"),
-        fs.writeFile(path.join(DIST_DIR, "data.json"), JSON.stringify(makeViewerData(writtenClasses)), "utf8"),
-    ]);
-}
 
-async function main() {
-    await prepareDistDirectory();
-    return Promise.all([
-        buildStaticContent(),
-        buildDynamicContent(await readClasses()),
+    await Promise.all(resourcePromises);
+
+    const resourceHash = crypto.createHash("sha256");
+    const keys = [...resourceMap.keys()];
+    keys.sort(); // Deterministic hash.
+    for (const key of keys)
+        resourceHash.update(resourceMap.get(key));
+    const resourceDigest = resourceHash.digest("base64");
+
+    await Promise.all([
+        // Service Worker
+        fs.readFile(path.join(SRC_DIR, "sw.js"), "utf8")
+            .then(js => {
+                const template = Handlebars.compile(js, { noEscape: true });
+                return template({ resourceDigest });
+            })
+            .then(minifyJs)
+            .then(js => fs.writeFile(path.join(DIST_DIR, "sw.js"), js, "utf8")),
+
+        // Index page for lightweight pages
+        Promise.all(lightweightPagePromises).then(() => {
+            return fs.writeFile(path.join(DIST_DIR, "light", "index.html"),
+                lightweightIndexPageHtml(writtenClasses), "utf8");
+        }),
     ]);
 }
 

@@ -1,9 +1,11 @@
 "use strict";
 
-// This must be incremented whenever a new version of the viewer's code or
-// data is published.
-const VERSION = 7;
-const CACHE_NAME = "colles-viewer-" + VERSION;
+// Including a disgest of the resources in the cache key makes the Service
+// Worker script change every time the resources change, which tells the
+// browser to update it. Upon installation, the new Service Worker will delete
+// all caches whose key doesn't match this one so it will effectively replace
+// the old cache with the new one.
+const CACHE_KEY = "colles-viewer-{{ resourceDigest }}";
 
 const URL_PREFIX = "/carnot-colles/";
 
@@ -12,7 +14,7 @@ const URL_PREFIX = "/carnot-colles/";
  * @returns {Promise} a promise that resolves when it's done
  */
 async function precache() {
-    const cache = await caches.open(CACHE_NAME);
+    const cache = await caches.open(CACHE_KEY);
     const URLS = [
         "",
         "apple-touch-icon.png",
@@ -33,7 +35,7 @@ async function precache() {
  */
 async function deleteOldCaches() {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k !== CACHE_NAME)
+    await Promise.all(keys.filter(k => k !== CACHE_KEY)
         .map(k => caches.delete(k)));
 }
 
@@ -56,7 +58,7 @@ async function tryCacheThenNetwork(request) {
  * @returns {Promise} a promise that resolves when it's done
  */
 async function savePreRenderedViewer(html) {
-    const cache = await caches.open(CACHE_NAME);
+    const cache = await caches.open(CACHE_KEY);
     const page = "<!doctype html><html>" + html + "</html>";
     await cache.put(URL_PREFIX, new Response(page, {
         headers: { "content-type": "text/html" },

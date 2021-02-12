@@ -1,2 +1,4 @@
 Add CSP headers (both in the responses from the Service Worker and from the
 actual HTTP server).
+
+Clean up the build script: make it easier to read, understand and modify.
