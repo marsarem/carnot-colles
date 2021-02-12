@@ -654,10 +654,7 @@
     ],
     "subjects": [
         { "name": "Mathématiques" },
-        {
-            "name": "Physique",
-            "url": "https://sites.google.com/site/physmpsi1dijon/kholles/programmes-de-kholles"
-        },
+        { "name": "Physique", "url": "https://sites.google.com/site/physmpsi1dijon/kholles/programmes-de-kholles" },
         { "name": "Anglais" },
         { "name": "Français" }
     ],
