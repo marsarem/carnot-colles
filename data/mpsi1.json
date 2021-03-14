@@ -29,7 +29,7 @@
                 [15, 34],
                 [4, 26],
                 [8, 28],
-                [1, 19],
+                [1, 19, 38],
                 [11, 30],
                 [13, 24],
                 [14, 33],
@@ -69,7 +69,7 @@
                 [15, 34],
                 [4, 26],
                 [8, 28],
-                [1, 19],
+                [1, 19, 36],
                 [11, 30],
                 [13, 24],
                 [14, 33],
@@ -118,7 +118,18 @@
                 [5, 20],
                 [18, 31],
                 [2, 25]
-            ]
+            ],
+            "programOverrides": {
+                "0": [
+                    { "week": 19, "index": null, "newColle": 36 }
+                ],
+                "1": [
+                    { "week": 19, "index": null, "newColle": 38 }
+                ],
+                "2": [
+                    { "week": 19, "index": null, "newColle": 36 }
+                ]
+            }
         },
         {
             "students": [
@@ -161,6 +172,9 @@
             "programOverrides": {
                 "0": [
                     { "week": 15, "index": 0, "newColle": 10 }
+                ],
+                "1": [
+                    { "week": 20, "index": null, "newColle": 38 }
                 ],
                 "2": [
                     { "week": 15, "index": 0, "newColle": 10 }
@@ -208,6 +222,9 @@
             "programOverrides": {
                 "0": [
                     { "week": 16, "index": 0, "newColle": 12 }
+                ],
+                "2": [
+                    { "week": 20, "index": null, "newColle": 38 }
                 ]
             }
         },
@@ -287,7 +304,15 @@
                 [13, 24],
                 [14, 33],
                 [0, 22]
-            ]
+            ],
+            "programOverrides": {
+                "0": [
+                    { "week": 19, "index": null, "newColle": 36 }
+                ],
+                "2": [
+                    { "week": 19, "index": null, "newColle": 38 }
+                ]
+            }
         },
         {
             "students": [
@@ -326,7 +351,12 @@
                 [11, 30],
                 [13, 24],
                 [14, 33]
-            ]
+            ],
+            "programOverrides": {
+                "0": [
+                    { "week": 20, "index": null, "newColle": 38 }
+                ]
+            }
         },
         {
             "students": [
@@ -365,7 +395,12 @@
                 [1, 19],
                 [11, 30],
                 [13, 24]
-            ]
+            ],
+            "programOverrides": {
+                "1": [
+                    { "week": 21, "index": null, "newColle": 36 }
+                ]
+            }
         },
         {
             "students": [
@@ -404,7 +439,18 @@
                 [8, 28],
                 [1, 19],
                 [11, 30]
-            ]
+            ],
+            "programOverrides": {
+                "0": [
+                    { "week": 21, "index": null, "newColle": 36 }
+                ],
+                "1": [
+                    { "week": 21, "index": null, "newColle": 38 }
+                ],
+                "2": [
+                    { "week": 21, "index": null, "newColle": 38 }
+                ]
+            }
         },
         {
             "students": [
@@ -443,7 +489,15 @@
                 [4, 26],
                 [8, 28],
                 [1, 19]
-            ]
+            ],
+            "programOverrides": {
+                "0": [
+                    { "week": 20, "index": null, "newColle": 38 }
+                ],
+                "1": [
+                    { "week": 20, "index": null, "newColle": 38 }
+                ]
+            }
         },
         {
             "students": [
@@ -485,7 +539,14 @@
             ],
             "programOverrides": {
                 "0": [
-                    { "week": 15, "index": 0, "newColle": 10 }
+                    { "week": 15, "index": 0, "newColle": 10 },
+                    { "week": 21, "index": null, "newColle": 36 }
+                ],
+                "1": [
+                    { "week": 21, "index": null, "newColle": 38 }
+                ],
+                "2": [
+                    { "week": 21, "index": null, "newColle": 38 }
                 ]
             }
         },
@@ -529,7 +590,8 @@
             ],
             "programOverrides": {
                 "2": [
-                    { "week": 16, "index": 0, "newColle": 37 }
+                    { "week": 16, "index": 0, "newColle": 37 },
+                    { "week": 21, "index": null, "newColle": 38 }
                 ]
             }
         },
@@ -955,6 +1017,13 @@
             "day": 1,
             "room": "207",
             "time": "17:00"
+        },
+        {
+            "subject": 3,
+            "teacher": 27,
+            "day": 0,
+            "room": "C24",
+            "time": "14:00"
         }
     ],
     "programWeeks": [
