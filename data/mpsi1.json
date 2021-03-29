@@ -171,13 +171,15 @@
             ],
             "programOverrides": {
                 "0": [
-                    { "week": 15, "index": 0, "newColle": 10 }
+                    { "week": 15, "index": 0, "newColle": 10 },
+                    { "week": 23, "index": 0, "newColle": 40 }
                 ],
                 "1": [
                     { "week": 20, "index": null, "newColle": 38 }
                 ],
                 "2": [
-                    { "week": 15, "index": 0, "newColle": 10 }
+                    { "week": 15, "index": 0, "newColle": 10 },
+                    { "week": 23, "index": 0, "newColle": 40 }
                 ]
             }
         },
@@ -559,7 +561,8 @@
             "programOverrides": {
                 "0": [
                     { "week": 15, "index": 0, "newColle": 10 },
-                    { "week": 21, "index": null, "newColle": 36 }
+                    { "week": 21, "index": null, "newColle": 36 },
+                    { "week": 23, "index": 0, "newColle": 37 }
                 ],
                 "1": [
                     { "week": 21, "index": null, "newColle": 38 },
@@ -1056,6 +1059,13 @@
             "teacher": 27,
             "day": 3,
             "room": "C25",
+            "time": "17:55"
+        },
+        {
+            "subject": 0,
+            "teacher": 8,
+            "day": 1,
+            "room": "207",
             "time": "17:55"
         }
     ],
