@@ -3,6 +3,12 @@
     contain: content;
 }
 
+li {
+    /* We cannot set contain: content for li because it paints the marker
+       ouside of the element. */
+    contain: layout;
+}
+
 html, h1, h2, p, ul {
     margin: 0;
 }
