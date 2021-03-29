@@ -221,7 +221,11 @@
             ],
             "programOverrides": {
                 "0": [
-                    { "week": 16, "index": 0, "newColle": 12 }
+                    { "week": 16, "index": 0, "newColle": 12 },
+                    { "week": 23, "index": null, "newColle": 36 }
+                ],
+                "1": [
+                    { "week": 23, "index": null, "newColle": 36 }
                 ],
                 "2": [
                     { "week": 20, "index": null, "newColle": 38 }
@@ -257,7 +261,7 @@
                 [16, 27],
                 [6, 21],
                 [15, 34],
-                [4, 26],
+                [4, 26, 36],
                 [8, 28],
                 [1, 19],
                 [11, 30],
@@ -309,6 +313,9 @@
                 "0": [
                     { "week": 19, "index": null, "newColle": 36 }
                 ],
+                "1": [
+                    { "week": 23, "index": null, "newColle": 39 }
+                ],
                 "2": [
                     { "week": 19, "index": null, "newColle": 38 }
                 ]
@@ -355,6 +362,12 @@
             "programOverrides": {
                 "0": [
                     { "week": 20, "index": null, "newColle": 38 }
+                ],
+                "1": [
+                    { "week": 24, "index": null, "newColle": 36 }
+                ],
+                "2": [
+                    { "week": 24, "index": null, "newColle": 36 }
                 ]
             }
         },
@@ -397,8 +410,14 @@
                 [13, 24]
             ],
             "programOverrides": {
+                "0": [
+                    { "week": 22, "index": null, "newColle": 39 }
+                ],
                 "1": [
                     { "week": 21, "index": null, "newColle": 36 }
+                ],
+                "2": [
+                    { "week": 22, "index": null, "newColle": 39 }
                 ]
             }
         },
@@ -543,7 +562,8 @@
                     { "week": 21, "index": null, "newColle": 36 }
                 ],
                 "1": [
-                    { "week": 21, "index": null, "newColle": 38 }
+                    { "week": 21, "index": null, "newColle": 38 },
+                    { "week": 24, "index": null, "newColle": 36 }
                 ],
                 "2": [
                     { "week": 21, "index": null, "newColle": 38 }
@@ -589,6 +609,12 @@
                 [4, 26]
             ],
             "programOverrides": {
+                "0": [
+                    { "week": 23, "index": null, "newColle": 39 }
+                ],
+                "1": [
+                    { "week": 23, "index": null, "newColle": 39 }
+                ],
                 "2": [
                     { "week": 16, "index": 0, "newColle": 37 },
                     { "week": 21, "index": null, "newColle": 38 }
@@ -626,7 +652,7 @@
                 [17, 29],
                 [5, 20],
                 [18, 31],
-                [2, 25],
+                [2, 25, 39],
                 [12, 32],
                 [3, 23],
                 [16, 27],
@@ -667,7 +693,7 @@
                 [17, 29],
                 [5, 20],
                 [18, 31],
-                [2, 25],
+                [2, 25, 36],
                 [12, 32],
                 [3, 23],
                 [16, 27],
@@ -706,7 +732,7 @@
                 [0, 22],
                 [17, 29],
                 [5, 20],
-                [18, 31],
+                [18, 31, 39],
                 [2, 25],
                 [12, 32],
                 [3, 23],
@@ -1024,6 +1050,13 @@
             "day": 0,
             "room": "C24",
             "time": "14:00"
+        },
+        {
+            "subject": 3,
+            "teacher": 27,
+            "day": 3,
+            "room": "C25",
+            "time": "17:55"
         }
     ],
     "programWeeks": [
