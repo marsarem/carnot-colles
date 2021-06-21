@@ -36,7 +36,7 @@
             "items": { "$ref": "#/definitions/Colle" },
             "uniqueItems": true
         },
-        "programWeeks": {
+        "weeks": {
             "title": "The program weeks",
             "description": "The program array in every group allows the client to build a list of colles per week. The indices in that list are then matched with those from this list to get the week's starting date.",
             "type": "array",
@@ -48,7 +48,7 @@
             "uniqueItems": true
         }
     },
-    "required": ["name", "firstGroup", "studentGroups", "subjects", "teachers", "colles", "programWeeks"],
+    "required": ["name", "firstGroup", "studentGroups", "subjects", "teachers", "colles", "weeks"],
     "definitions": {
         "Colle": {
             "$comment": "Unlike subject and teacher, the room and time are not indices into an array for the following reasons. They are more likely to change over time. There are more possibilities for them, which kind of negates the pros of the indices system. To prevent mistakes: it makes it easier for humans to edit and see the values.",

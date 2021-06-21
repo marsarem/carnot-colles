@@ -49,7 +49,7 @@ function getWeeksForGroup (classData, groupIndex) {
   const group = classData.studentGroups[groupIndex]
   return group.program
     .map((w, i) => {
-      const [year, month, day] = classData.programWeeks[i]
+      const [year, month, day] = classData.weeks[i]
         .split('-', 3)
         .map(s => parseInt(s))
       return {
@@ -64,7 +64,8 @@ function getWeeksForGroup (classData, groupIndex) {
             teacher: classData.teachers[c.teacher]
           }
         }),
-        studentProgramOverrides: group.perStudentProgram === undefined ? {}
+        studentProgramOverrides: group.perStudentProgram === undefined
+          ? {}
           : Object.fromEntries(
             Object.entries(group.perStudentProgram)
               .map(entry => [entry[0], entry[1].filter(o => o.week === i)])

@@ -117,8 +117,8 @@ function computeStudentProgram (globalData, studentIndex, now) {
       for (var i = 0; i < weekOverrides.length; i++) {
         var o = weekOverrides[i]
 
-        var week = o[0]
-        if (week !== weekIndex) { continue }
+        var thisWeek = o[0]
+        if (thisWeek !== weekIndex) { continue }
 
         var index = o[1]
         var newColle = o[2]
@@ -141,8 +141,8 @@ function computeStudentProgram (globalData, studentIndex, now) {
     var programFormatted = []
 
     var isAllDone = true
-    for (var i = 0; i < program.length; i++) {
-      var index = program[i]
+    for (i = 0; i < program.length; i++) {
+      index = program[i]
       var colle = classColles[index]
 
       var subjectIndex = colle[0]
