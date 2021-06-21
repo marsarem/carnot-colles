@@ -2,7 +2,7 @@
   "$schema": "../docs/class-data-schema.json",
   "name": "MPSI1",
   "firstGroup": 1,
-  "studentGroups": [
+  "groups": [
     {
       "students": [
         "ANTOINE Cybélia",

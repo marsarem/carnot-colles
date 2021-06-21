@@ -16,7 +16,7 @@ import toIco from 'to-ico'
 import makeViewerData from '../lib/mk-viewer-data.mjs'
 
 const SRC_DIR = 'src'
-const DATA_DIR = 'data'
+const CLASSES_DIR = 'classes'
 const DIST_DIR = process.argv[2] ?? 'dist'
 
 /**
@@ -24,12 +24,12 @@ const DIST_DIR = process.argv[2] ?? 'dist'
  * @returns an array with promises that resolve to data and ID for each class
  */
 async function readClasses () {
-  const files = await fs.readdir(DATA_DIR)
+  const files = await fs.readdir(CLASSES_DIR)
   return files
     .filter(f => f.endsWith('.json'))
     .map(async f => {
       const id = f.substring(0, f.length - '.json'.length)
-      const content = await fs.readFile(path.join(DATA_DIR, f), { encoding: 'utf8' })
+      const content = await fs.readFile(path.join(CLASSES_DIR, f), { encoding: 'utf8' })
       return { id, data: JSON.parse(content) }
     })
 }
@@ -46,7 +46,7 @@ async function readClasses () {
  * @returns the weeks with the colles with the fields
  */
 function getWeeksForGroup (classData, groupIndex) {
-  const group = classData.studentGroups[groupIndex]
+  const group = classData.groups[groupIndex]
   return group.program
     .map((w, i) => {
       const [year, month, day] = classData.weeks[i]
@@ -184,7 +184,7 @@ function minifyIdsAndClasses (html) {
  * @returns HTML code that has information about colles for that group
  */
 function lightweightGroupPageHtml (classData, groupIndex) {
-  const students = classData.studentGroups[groupIndex].students
+  const students = classData.groups[groupIndex].students
   const humanGroupNumber = groupIndex + classData.firstGroup
 
   function colleHtml (c) {
@@ -389,7 +389,7 @@ async function main () {
         fs.mkdir(path.join(DIST_DIR, 'light', id))
           .then(() => {
             const writes = []
-            for (let i = 0; i < data.studentGroups.length; i++) {
+            for (let i = 0; i < data.groups.length; i++) {
               const groupNr = i + data.firstGroup
               const file = `groupe-${groupNr}.html`
 
@@ -405,8 +405,8 @@ async function main () {
     }))
   }).then(() => {
     const str = JSON.stringify(makeViewerData(writtenClasses))
-    resourceMap.set('data.json', Buffer.from(str, 'utf8'))
-    return fs.writeFile(path.join(DIST_DIR, 'data.json'), str, 'utf8')
+    resourceMap.set('classes.json', Buffer.from(str, 'utf8'))
+    return fs.writeFile(path.join(DIST_DIR, 'classes.json'), str, 'utf8')
   }))
 
   await Promise.all(resourcePromises)

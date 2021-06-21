@@ -9,8 +9,8 @@ import { fileURLToPath } from 'url'
 const INDENTATION_ADD = 2
 
 const INLINE_PATHS = [
-  /^\.studentGroups\.[0-9]+\.program\.[0-9]+$/,
-  /^\.studentGroups\.[0-9]+\.perStudentProgram\.[0-9]+\.[0-9]+$/,
+  /^\.groups\.[0-9]+\.program\.[0-9]+$/,
+  /^\.groups\.[0-9]+\.perStudentProgram\.[0-9]+\.[0-9]+$/,
   /^\.subjects\.[0-9]+$/
 ]
 
@@ -92,11 +92,11 @@ async function formatFile (file) {
 
 async function main () {
   const scriptLocation = path.dirname(fileURLToPath(import.meta.url))
-  const dataDir = path.join(path.dirname(scriptLocation), 'data')
-  const files = await fs.readdir(dataDir)
+  const directory = path.join(path.dirname(scriptLocation), 'classes')
+  const files = await fs.readdir(directory)
 
   const promises = []
-  for (const file of files) { promises.push(formatFile(path.join(dataDir, file))) }
+  for (const file of files) { promises.push(formatFile(path.join(directory, file))) }
   await Promise.all(promises)
 }
 

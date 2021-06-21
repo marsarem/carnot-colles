@@ -2,7 +2,7 @@
   "$schema": "../docs/class-data-schema.json",
   "name": "PSI*",
   "firstGroup": 1,
-  "studentGroups": [
+  "groups": [
     {
       "students": [
         "BARBERGER Julie",

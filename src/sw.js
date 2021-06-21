@@ -20,7 +20,7 @@ async function precache () {
   const URLS = [
     '',
     'apple-touch-icon.png',
-    'data.json',
+    'classes.json',
     'favicon.ico',
     'icon-16.png',
     'icon-32.png',

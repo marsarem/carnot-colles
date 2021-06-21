@@ -15,7 +15,7 @@
       "title": "The first group's number",
       "description": "This is the first group's number. Every other group's number is derived from this number and the group index by adding them together."
     },
-    "studentGroups": {
+    "groups": {
       "title": "The class' groups",
       "type": "array",
       "items": {
@@ -63,7 +63,7 @@
   "required": [
     "name",
     "firstGroup",
-    "studentGroups",
+    "groups",
     "subjects",
     "teachers",
     "colles",

@@ -602,7 +602,7 @@ function laterInit () {
   var globalData = null
   var alreadyLoaded = $infoDiv.getAttribute(DATA_ATTRS.studentIndex) !== null
 
-  fetch('{{ urlPrefix }}data.json', { credentials: 'same-origin', mode: 'cors' })
+  fetch('{{ urlPrefix }}classes.json', { credentials: 'same-origin', mode: 'cors' })
     .then(function (response) {
       if (!response.ok) { throw new Error('response is not OK') }
       return response.json()

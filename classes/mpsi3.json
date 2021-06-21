@@ -2,7 +2,7 @@
   "$schema": "../docs/class-data-schema.json",
   "name": "MPSI3",
   "firstGroup": 1,
-  "studentGroups": [
+  "groups": [
     {
       "students": [
         "BAZEROLLE François",
