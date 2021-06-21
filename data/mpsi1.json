@@ -121,25 +121,13 @@
       ],
       "perStudentProgram": {
         "0": [
-          {
-            "week": 19,
-            "index": null,
-            "newColle": 36
-          }
+          { "week": 19, "index": null, "newColle": 36 }
         ],
         "1": [
-          {
-            "week": 19,
-            "index": null,
-            "newColle": 38
-          }
+          { "week": 19, "index": null, "newColle": 38 }
         ],
         "2": [
-          {
-            "week": 19,
-            "index": null,
-            "newColle": 36
-          }
+          { "week": 19, "index": null, "newColle": 36 }
         ]
       }
     },
@@ -183,35 +171,15 @@
       ],
       "perStudentProgram": {
         "0": [
-          {
-            "week": 15,
-            "index": 0,
-            "newColle": 10
-          },
-          {
-            "week": 23,
-            "index": 0,
-            "newColle": 40
-          }
+          { "week": 15, "index": 0, "newColle": 10 },
+          { "week": 23, "index": 0, "newColle": 40 }
         ],
         "1": [
-          {
-            "week": 20,
-            "index": null,
-            "newColle": 38
-          }
+          { "week": 20, "index": null, "newColle": 38 }
         ],
         "2": [
-          {
-            "week": 15,
-            "index": 0,
-            "newColle": 10
-          },
-          {
-            "week": 23,
-            "index": 0,
-            "newColle": 40
-          }
+          { "week": 15, "index": 0, "newColle": 10 },
+          { "week": 23, "index": 0, "newColle": 40 }
         ]
       }
     },
@@ -255,30 +223,14 @@
       ],
       "perStudentProgram": {
         "0": [
-          {
-            "week": 16,
-            "index": 0,
-            "newColle": 12
-          },
-          {
-            "week": 23,
-            "index": null,
-            "newColle": 36
-          }
+          { "week": 16, "index": 0, "newColle": 12 },
+          { "week": 23, "index": null, "newColle": 36 }
         ],
         "1": [
-          {
-            "week": 23,
-            "index": null,
-            "newColle": 36
-          }
+          { "week": 23, "index": null, "newColle": 36 }
         ],
         "2": [
-          {
-            "week": 20,
-            "index": null,
-            "newColle": 38
-          }
+          { "week": 20, "index": null, "newColle": 38 }
         ]
       }
     },
@@ -361,25 +313,13 @@
       ],
       "perStudentProgram": {
         "0": [
-          {
-            "week": 19,
-            "index": null,
-            "newColle": 36
-          }
+          { "week": 19, "index": null, "newColle": 36 }
         ],
         "1": [
-          {
-            "week": 23,
-            "index": null,
-            "newColle": 39
-          }
+          { "week": 23, "index": null, "newColle": 39 }
         ],
         "2": [
-          {
-            "week": 19,
-            "index": null,
-            "newColle": 38
-          }
+          { "week": 19, "index": null, "newColle": 38 }
         ]
       }
     },
@@ -423,25 +363,13 @@
       ],
       "perStudentProgram": {
         "0": [
-          {
-            "week": 20,
-            "index": null,
-            "newColle": 38
-          }
+          { "week": 20, "index": null, "newColle": 38 }
         ],
         "1": [
-          {
-            "week": 24,
-            "index": null,
-            "newColle": 36
-          }
+          { "week": 24, "index": null, "newColle": 36 }
         ],
         "2": [
-          {
-            "week": 24,
-            "index": null,
-            "newColle": 36
-          }
+          { "week": 24, "index": null, "newColle": 36 }
         ]
       }
     },
@@ -485,25 +413,13 @@
       ],
       "perStudentProgram": {
         "0": [
-          {
-            "week": 22,
-            "index": null,
-            "newColle": 39
-          }
+          { "week": 22, "index": null, "newColle": 39 }
         ],
         "1": [
-          {
-            "week": 21,
-            "index": null,
-            "newColle": 36
-          }
+          { "week": 21, "index": null, "newColle": 36 }
         ],
         "2": [
-          {
-            "week": 22,
-            "index": null,
-            "newColle": 39
-          }
+          { "week": 22, "index": null, "newColle": 39 }
         ]
       }
     },
@@ -547,25 +463,13 @@
       ],
       "perStudentProgram": {
         "0": [
-          {
-            "week": 21,
-            "index": null,
-            "newColle": 36
-          }
+          { "week": 21, "index": null, "newColle": 36 }
         ],
         "1": [
-          {
-            "week": 21,
-            "index": null,
-            "newColle": 38
-          }
+          { "week": 21, "index": null, "newColle": 38 }
         ],
         "2": [
-          {
-            "week": 21,
-            "index": null,
-            "newColle": 38
-          }
+          { "week": 21, "index": null, "newColle": 38 }
         ]
       }
     },
@@ -609,18 +513,10 @@
       ],
       "perStudentProgram": {
         "0": [
-          {
-            "week": 20,
-            "index": null,
-            "newColle": 38
-          }
+          { "week": 20, "index": null, "newColle": 38 }
         ],
         "1": [
-          {
-            "week": 20,
-            "index": null,
-            "newColle": 38
-          }
+          { "week": 20, "index": null, "newColle": 38 }
         ]
       }
     },
@@ -664,40 +560,16 @@
       ],
       "perStudentProgram": {
         "0": [
-          {
-            "week": 15,
-            "index": 0,
-            "newColle": 10
-          },
-          {
-            "week": 21,
-            "index": null,
-            "newColle": 36
-          },
-          {
-            "week": 23,
-            "index": 0,
-            "newColle": 37
-          }
+          { "week": 15, "index": 0, "newColle": 10 },
+          { "week": 21, "index": null, "newColle": 36 },
+          { "week": 23, "index": 0, "newColle": 37 }
         ],
         "1": [
-          {
-            "week": 21,
-            "index": null,
-            "newColle": 38
-          },
-          {
-            "week": 24,
-            "index": null,
-            "newColle": 36
-          }
+          { "week": 21, "index": null, "newColle": 38 },
+          { "week": 24, "index": null, "newColle": 36 }
         ],
         "2": [
-          {
-            "week": 21,
-            "index": null,
-            "newColle": 38
-          }
+          { "week": 21, "index": null, "newColle": 38 }
         ]
       }
     },
@@ -741,30 +613,14 @@
       ],
       "perStudentProgram": {
         "0": [
-          {
-            "week": 23,
-            "index": null,
-            "newColle": 39
-          }
+          { "week": 23, "index": null, "newColle": 39 }
         ],
         "1": [
-          {
-            "week": 23,
-            "index": null,
-            "newColle": 39
-          }
+          { "week": 23, "index": null, "newColle": 39 }
         ],
         "2": [
-          {
-            "week": 16,
-            "index": 0,
-            "newColle": 37
-          },
-          {
-            "week": 21,
-            "index": null,
-            "newColle": 38
-          }
+          { "week": 16, "index": 0, "newColle": 37 },
+          { "week": 21, "index": null, "newColle": 38 }
         ]
       }
     },

@@ -10,7 +10,7 @@ const INDENTATION_ADD = 2
 
 const INLINE_PATHS = [
   /^\.studentGroups\.[0-9]+\.program\.[0-9]+$/,
-  /^\.studentGroups\.[0-9]+\.programOverrides\.[0-9]+\.[0-9]+$/,
+  /^\.studentGroups\.[0-9]+\.perStudentProgram\.[0-9]+\.[0-9]+$/,
   /^\.subjects\.[0-9]+$/
 ]
 
