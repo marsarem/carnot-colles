@@ -15,8 +15,8 @@
     "handlebars": "^4.7.6",
     "html-minifier": "^4.0.0",
     "node-static": "^0.7.11",
-    "svg2png": "^4.1.1",
+    "svg2png": "^3.0.1",
     "terser": "^5.5.1",
-    "to-ico": "^1.1.5"
+    "to-ico": "^1.0.1"
   }
 }
