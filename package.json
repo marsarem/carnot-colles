@@ -6,7 +6,9 @@
   "scripts": {
     "build": "node ./tools/build.mjs",
     "local-server": "node ./tools/local-server.mjs",
-    "format-json": "node ./tools/format-json.mjs"
+    "format-json": "node ./tools/format-json.mjs",
+    "lint": "standard",
+    "lint:fix": "standard --fix"
   },
   "license": "GPL",
   "dependencies": {
@@ -18,5 +20,8 @@
     "svg2png": "^3.0.1",
     "terser": "^5.5.1",
     "to-ico": "^1.0.1"
+  },
+  "devDependencies": {
+    "standard": "^16.0.3"
   }
 }
