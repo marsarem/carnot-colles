@@ -90,19 +90,11 @@ class HttpServer {
   listen () {
     this._http.listen(8000)
     console.log('Listening on port 8000...')
-    console.log('URL: http://localhost:8000/carnot-colles/')
+    console.log('URL: http://localhost:8000/')
   }
 
   _onRequest (req, res) {
-    const PREFIX = '/carnot-colles'
-    if (!req.url.startsWith(PREFIX)) {
-      res.writeHead(404)
-      res.end('Bad URL!')
-      return
-    }
-    const fakeReq = Object.create(req)
-    fakeReq.url = req.url.substring(PREFIX.length)
-    this._files.serve(fakeReq, res)
+    this._files.serve(req, res)
   }
 }
 

@@ -4,20 +4,20 @@
   "description": "Permet de voir une liste des colles à venir de certaines classes CPGE du lycée Carnot.",
   "icons": [
     {
-      "src": "/carnot-colles/icon-192.png",
+      "src": "{{ urlPrefix }}icon-192.png",
       "type": "image/png",
       "purpose": "any maskable",
       "sizes": "192x192"
     },
     {
-      "src": "/carnot-colles/icon-512.png",
+      "src": "{{ urlPrefix }}icon-512.png",
       "type": "image/png",
       "purpose": "any maskable",
       "sizes": "512x512"
     }
   ],
-  "scope": "/carnot-colles/",
-  "start_url": "/carnot-colles/",
+  "scope": "{{ urlPrefix }}",
+  "start_url": "{{ urlPrefix }}",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff"

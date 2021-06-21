@@ -295,6 +295,9 @@ function lightweightIndexPageHtml (classes) {
 }
 
 async function main () {
+  const urlPrefix = process.env.URL_PREFIX ?? '/'
+  const canonical = process.env.URL_CANONICAL ?? 'https://greg904.github.io/carnot-colles/'
+
   await prepareDistDirectory()
 
   // We will compute a digest the depends on the resources that the Service
@@ -314,9 +317,12 @@ async function main () {
   ]).then(arr => {
     const [html, css, js] = arr
     const template = Handlebars.compile(html, { noEscape: true })
+    const jsTemplate = Handlebars.compile(js, { noEscape: true })
     const templateOut = template({
       css: csso.minify(css).css,
-      js: js
+      js: jsTemplate({ urlPrefix }),
+      urlPrefix,
+      canonical
     })
     const minified = minifyHtml(minifyIdsAndClasses(templateOut))
     resourceMap.set('index.html', Buffer.from(minified, 'utf8'))
@@ -359,7 +365,8 @@ async function main () {
   // PWA manifest
   resourcePromises.push(fs.readFile(path.join(SRC_DIR, 'manifest.webmanifest'), 'utf8')
     .then(json => {
-      const str = JSON.stringify(JSON.parse(json))
+      const template = Handlebars.compile(json, { noEscape: true })
+      const str = JSON.stringify(JSON.parse(template({ urlPrefix })))
       resourceMap.set('manifest.webmanifest', Buffer.from(str, 'utf8'))
       fs.writeFile(path.join(DIST_DIR, 'manifest.webmanifest'), str, 'utf8')
     }))
@@ -415,7 +422,7 @@ async function main () {
     fs.readFile(path.join(SRC_DIR, 'sw.js'), 'utf8')
       .then(js => {
         const template = Handlebars.compile(js, { noEscape: true })
-        return template({ resourceDigest })
+        return template({ resourceDigest, urlPrefix })
       })
       .then(minifyJs)
       .then(js => fs.writeFile(path.join(DIST_DIR, 'sw.js'), js, 'utf8')),

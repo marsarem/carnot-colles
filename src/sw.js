@@ -9,7 +9,7 @@
 // the old cache with the new one.
 const CACHE_KEY = 'colles-viewer-{{ resourceDigest }}'
 
-const URL_PREFIX = '/carnot-colles/'
+const URL_PREFIX = '{{ urlPrefix }}'
 
 /**
  * Precaches the viewer's code and data.
