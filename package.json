@@ -23,6 +23,7 @@
     "to-ico": "^1.0.1"
   },
   "devDependencies": {
+    "dotenv": "^10.0.0",
     "standard": "^16.0.3",
     "stylelint": "^13.13.1",
     "stylelint-config-standard": "^22.0.0"

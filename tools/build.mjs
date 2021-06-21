@@ -2,11 +2,11 @@
 
 'use strict'
 
-import crypto from 'crypto'
 import fs from 'fs/promises'
 import path from 'path'
 
 import csso from 'csso'
+import dotenv from 'dotenv'
 import Handlebars from 'handlebars'
 import { minify } from 'html-minifier'
 import svg2png from 'svg2png'
@@ -14,6 +14,8 @@ import * as terser from 'terser'
 import toIco from 'to-ico'
 
 import makeViewerData from '../lib/mk-viewer-data.mjs'
+import getBuildConfig from './build/config.mjs'
+import BuildDigest from './build/build-digest.mjs'
 
 const SRC_DIR = 'src'
 const CLASSES_DIR = 'classes'
@@ -295,8 +297,9 @@ function lightweightIndexPageHtml (classes) {
 }
 
 async function main () {
-  const urlPrefix = process.env.URL_PREFIX ?? '/'
-  const canonical = process.env.URL_CANONICAL ?? 'https://greg904.github.io/carnot-colles/'
+  dotenv.config()
+
+  const { urlBase, canonical } = getBuildConfig()
 
   await prepareDistDirectory()
 
@@ -305,7 +308,7 @@ async function main () {
   // evict the cache. Note that the order of the resources given to the hash
   // needs to be deterministic, which is why we use this map to store them
   // instead of directly adding one to the hash when it's finished building.
-  const resourceMap = new Map()
+  const buildDigest = new BuildDigest()
   const resourcePromises = []
 
   // index.html
@@ -320,12 +323,12 @@ async function main () {
     const jsTemplate = Handlebars.compile(js, { noEscape: true })
     const templateOut = template({
       css: csso.minify(css).css,
-      js: jsTemplate({ urlPrefix }),
-      urlPrefix,
+      js: jsTemplate({ urlBase }),
+      urlBase,
       canonical
     })
     const minified = minifyHtml(minifyIdsAndClasses(templateOut))
-    resourceMap.set('index.html', Buffer.from(minified, 'utf8'))
+    buildDigest.addFile('index.html', Buffer.from(minified, 'utf8'))
     return fs.writeFile(path.join(DIST_DIR, 'index.html'), minified, 'utf8')
   }))
 
@@ -339,7 +342,7 @@ async function main () {
       pngIconsPromises.push(svg2png(buf, { width: size, height: size })
         .then(buf => {
           const name = `icon-${size}.png`
-          resourceMap.set(name, buf)
+          buildDigest.addFile(name, buf)
           return fs.writeFile(path.join(DIST_DIR, name), buf)
         }))
     }
@@ -348,13 +351,13 @@ async function main () {
       Promise.all(faviconPromises)
         .then(bufs => toIco(bufs))
         .then(buf => {
-          resourceMap.set('favicon.ico', buf)
+          buildDigest.addFile('favicon.ico', buf)
           return fs.writeFile(path.join(DIST_DIR, 'favicon.ico'), buf)
         }),
 
       svg2png(buf, { width: 180, height: 180 })
         .then(buf => {
-          resourceMap.set('apple-touch-icon.png', buf)
+          buildDigest.addFile('apple-touch-icon.png', buf)
           return fs.writeFile(path.join(DIST_DIR, 'apple-touch-icon.png'), buf)
         }),
 
@@ -366,8 +369,8 @@ async function main () {
   resourcePromises.push(fs.readFile(path.join(SRC_DIR, 'manifest.webmanifest'), 'utf8')
     .then(json => {
       const template = Handlebars.compile(json, { noEscape: true })
-      const str = JSON.stringify(JSON.parse(template({ urlPrefix })))
-      resourceMap.set('manifest.webmanifest', Buffer.from(str, 'utf8'))
+      const str = JSON.stringify(JSON.parse(template({ urlBase })))
+      buildDigest.addFile('manifest.webmanifest', Buffer.from(str, 'utf8'))
       fs.writeFile(path.join(DIST_DIR, 'manifest.webmanifest'), str, 'utf8')
     }))
 
@@ -405,24 +408,20 @@ async function main () {
     }))
   }).then(() => {
     const str = JSON.stringify(makeViewerData(writtenClasses))
-    resourceMap.set('classes.json', Buffer.from(str, 'utf8'))
+    buildDigest.addFile('classes.json', Buffer.from(str, 'utf8'))
     return fs.writeFile(path.join(DIST_DIR, 'classes.json'), str, 'utf8')
   }))
 
   await Promise.all(resourcePromises)
 
-  const resourceHash = crypto.createHash('sha256')
-  const keys = [...resourceMap.keys()]
-  keys.sort() // Deterministic hash.
-  for (const key of keys) { resourceHash.update(resourceMap.get(key)) }
-  const resourceDigest = resourceHash.digest('base64')
+  const resourceDigest = buildDigest.hash()
 
   await Promise.all([
     // Service Worker
     fs.readFile(path.join(SRC_DIR, 'sw.js'), 'utf8')
       .then(js => {
         const template = Handlebars.compile(js, { noEscape: true })
-        return template({ resourceDigest, urlPrefix })
+        return template({ resourceDigest, urlBase })
       })
       .then(minifyJs)
       .then(js => fs.writeFile(path.join(DIST_DIR, 'sw.js'), js, 'utf8')),
