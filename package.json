@@ -7,8 +7,10 @@
     "build": "node ./tools/build.mjs",
     "local-server": "node ./tools/local-server.mjs",
     "format-json": "node ./tools/format-json.mjs",
-    "lint": "standard",
-    "lint:fix": "standard --fix"
+    "lint:js": "standard",
+    "lint:js:fix": "standard --fix",
+    "lint:css": "stylelint src/*.css",
+    "lint:css:fix": "stylelint --fix src/*.css"
   },
   "license": "GPL",
   "dependencies": {
@@ -22,6 +24,8 @@
     "to-ico": "^1.0.1"
   },
   "devDependencies": {
-    "standard": "^16.0.3"
+    "standard": "^16.0.3",
+    "stylelint": "^13.13.1",
+    "stylelint-config-standard": "^22.0.0"
   }
 }

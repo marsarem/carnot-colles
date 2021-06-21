@@ -6,7 +6,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-const INDENTATION_ADD = 4
+const INDENTATION_ADD = 2
 
 const INLINE_PATHS = [
   /^\.studentGroups\.[0-9]+\.program\.[0-9]+$/,

@@ -1,72 +1,80 @@
 <!doctype html>
 <html lang="fr">
-    <head>
-        <meta http-equiv="content-type" content="text/html;charset=utf-8">
-        <link rel="preload" href="data.json" as="fetch" crossorigin="anonymous">
-        <meta name="description" content="Les colles de certaines classes CPGE du lycée Carnot">
-        <meta name="robots" content="noindex,nofollow">
-        <meta name="viewport" content="width=device-width,initial-scale=1.0">
-        <meta name="theme-color" content="#ffffff">
-        <meta name="color-scheme" content="light dark">
-        <link rel="canonical" href="https://greg904.github.io/carnot-colles/">
-        <link rel="manifest" href="/carnot-colles/manifest.webmanifest">
-        <link rel="apple-touch-icon" href="/carnot-colles/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/carnot-colles/icon-32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/carnot-colles/icon-16.png">
-        <link rel="shortcut icon" type="image/png" href="/carnot-colles/favicon.ico">
-        <style>{{ css }}</style>
-        <title>Colloscope</title>
-        <noscript>
-            <!-- This class will only apply when JS is disabled. -->
-            <style>.c-js-only{display:none}</style>
-        </noscript>
-    </head>
-    <body>
-        <h1 class="c-page-title">Colloscope</h1>
 
-        <noscript class="c-text-left">
-            <p class="c-padding-top">
-                <strong>Votre navigateur ne supporte pas le JavaScript.</strong>
-                <br>
-                <br>
-                Afin d'accéder aux colles, vous pouvez soit :
-            </p>
-            <ul>
-                <li>Activer le JavaScript (si c'est possible).</li>
-                <li>
-                    Accéder à une version simplifiée de cette application
-                    qui ne nécessite pas le JavaScript en cliquant sur
-                    <a href="/carnot-colles/light/" class="c-link">ce lien</a>.
-                </li>
-            </ul>
-        </noscript>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <link rel="preload" href="data.json" as="fetch" crossorigin="anonymous">
+  <meta name="description" content="Les colles de certaines classes CPGE du lycée Carnot">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://greg904.github.io/carnot-colles/">
+  <link rel="manifest" href="/carnot-colles/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/carnot-colles/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/carnot-colles/icon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/carnot-colles/icon-16.png">
+  <link rel="shortcut icon" type="image/png" href="/carnot-colles/favicon.ico">
+  <style>
+    {{ css }}
+  </style>
+  <title>Colloscope</title>
+  <noscript>
+    <!-- This class will only apply when JS is disabled. -->
+    <style>
+      .c-js-only {
+        display: none
+      }
+    </style>
+  </noscript>
+</head>
 
-        <div id="i-form" class="c-padding-top c-js-only" role="form">
-            <label for="i-query" class="c-query__label">Entrez votre nom :</label>
-            <input id="i-query" class="c-query" type="text"
-                placeholder="e.g. Jean Dupont">
-        </div>
+<body>
+  <h1 class="c-page-title">Colloscope</h1>
 
-        <!-- Placeholder for status messages such as loading and errors. -->
-        <p id="i-status" class="c-padding-top c-hide c-js-only"></p>
+  <noscript class="c-text-left">
+    <p class="c-padding-top">
+      <strong>Votre navigateur ne supporte pas le JavaScript.</strong>
+      <br>
+      <br>
+      Afin d'accéder aux colles, vous pouvez soit :
+    </p>
+    <ul>
+      <li>Activer le JavaScript (si c'est possible).</li>
+      <li>
+        Accéder à une version simplifiée de cette application
+        qui ne nécessite pas le JavaScript en cliquant sur
+        <a href="/carnot-colles/light/" class="c-link">ce lien</a>.
+      </li>
+    </ul>
+  </noscript>
 
-        <div id="i-info" class="c-padding-top c-hide c-js-only">
-            <p>
-                Nom :
-                <strong id="i-name"></strong>
-                <br>
+  <div id="i-form" class="c-padding-top c-js-only" role="form">
+    <label for="i-query" class="c-query__label">Entrez votre nom :</label>
+    <input id="i-query" class="c-query" type="text" placeholder="e.g. Jean Dupont">
+  </div>
 
-                Classe :
-                <strong id="i-class"></strong>
-                <br>
+  <!-- Placeholder for status messages such as loading and errors. -->
+  <p id="i-status" class="c-padding-top c-hide c-js-only"></p>
 
-                Groupe de colle :
-                <strong id="i-group-nr"></strong>
-            </p>
+  <div id="i-info" class="c-padding-top c-hide c-js-only">
+    <p>
+      Nom :
+      <strong id="i-name"></strong>
+      <br>
 
-            <div id="i-program" aria-label="Programme de colles"></div>
-        </div>
+      Classe :
+      <strong id="i-class"></strong>
+      <br>
 
-        <script>{{ js }}</script>
-    </body>
+      Groupe de colle :
+      <strong id="i-group-nr"></strong>
+    </p>
+
+    <div id="i-program" aria-label="Programme de colles"></div>
+  </div>
+
+  <script>{{ js }}</script>
+</body>
+
 </html>

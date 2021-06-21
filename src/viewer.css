@@ -1,172 +1,180 @@
 * {
-    box-sizing: border-box;
-    contain: content;
+  box-sizing: border-box;
+  contain: content;
 }
 
 li {
-    /* We cannot set contain: content for li because it paints the marker
-       ouside of the element. */
-    contain: layout;
+  /* We cannot set contain: content for li because it paints the marker
+  ouside of the element. */
+  contain: layout;
 }
 
-html, h1, h2, p, ul {
-    margin: 0;
+html,
+h1,
+h2,
+p,
+ul {
+  margin: 0;
 }
 
 body {
-    /* Center horizontally. */
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 64px 16px;
+  /* Center horizontally. */
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 64px 16px;
 
-    /* Use system fonts to look more like a native application. */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-        Ubuntu, Cantarell, "Open Sans", Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
-
-    text-align: center;
+  /* Use system fonts to look more like a native application. */
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    Helvetica,
+    Arial,
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
 }
 
 /**
- * Utility classes
- */
+* Utility classes
+*/
 
-.c-padding-top, .c-week__colles.c-padding-top {
-    padding-top: 32px;
+.c-padding-top,
+.c-week__colles.c-padding-top {
+  padding-top: 32px;
 }
 
 .c-text-left {
-    text-align: left;
+  text-align: left;
 }
 
 .c-hide {
-    display: none;
+  display: none;
 }
 
 /**
- * Element styling
- */
+* Element styling
+*/
 
 .c-page-title {
-    font-size: 32px;
+  font-size: 32px;
 }
 
 .c-query__label {
-    display: block;
-    padding-bottom: 12px;
+  display: block;
+  padding-bottom: 12px;
 }
 
 .c-query {
-    margin: 0 auto;
-
-    display: block;
-    width: 210px;
-    padding: 8px 10px;
-
-    border: 2px solid #b3c3d0;
-    background-color: #dfeaf3;
-
-    font-size: 16px;
+  margin: 0 auto;
+  display: block;
+  width: 210px;
+  padding: 8px 10px;
+  border: 2px solid #b3c3d0;
+  background-color: #dfeaf3;
+  font-size: 16px;
 }
 
 .c-query:focus {
-    outline: none;
-    border-color: #008cfd;
+  outline: none;
+  border-color: #008cfd;
 }
 
 .c-week__colles {
-    display: grid;
-    grid-template-columns: 100%;
-    gap: 8px;
+  display: grid;
+  grid-template-columns: 100%;
+  gap: 8px;
 
-    /* Undo default styling of ul. */
-    padding: 0;
-    list-style-type: none;
+  /* Undo default styling of ul. */
+  padding: 0;
+  list-style-type: none;
 }
 
 .c-colle {
-    display: inline-block;
-    padding: 16px;
-
-    border-style: solid;
-    border-width: 2px;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    color: #FFFFFF;
+  display: inline-block;
+  padding: 16px;
+  border-style: solid;
+  border-width: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #fff;
 }
 
 .c-colle--subject-0 {
-    background-color: #376A8B;
-    border-color: #083757;
+  background-color: #376a8b;
+  border-color: #083757;
 }
 
 .c-colle--subject-1 {
-    background-color: #34714D;
-    border-color: #073D1E;
+  background-color: #34714d;
+  border-color: #073d1e;
 }
 
 .c-colle--subject-2 {
-    background-color: #9B3838;
-    border-color: #570808;
+  background-color: #9b3838;
+  border-color: #570808;
 }
 
 .c-colle--subject-3 {
-    background-color: #AF2FD0;
-    border-color: #6C0094;
+  background-color: #af2fd0;
+  border-color: #6c0094;
 }
 
 .c-colle--done {
-    opacity: 0.7;
+  opacity: 0.7;
 }
 
 .c-colle--soon {
-    border-color: #E5FF00;
+  border-color: #e5ff00;
 }
 
 .c-colle__link {
-    color: #FFFFFF;
+  color: #fff;
 }
 
 /**
- * Media queries
- */
+* Media queries
+*/
 
 @media (min-width: 480px) {
-    body {
-        text-align: left;
-    }
+  body {
+    text-align: left;
+  }
 
-    .c-query {
-        margin: 0;
-    }
+  .c-query {
+    margin: 0;
+  }
 
-    .c-week__colles {
-        grid-template-columns: repeat(auto-fill, 288px);
-    }
+  .c-week__colles {
+    grid-template-columns: repeat(auto-fill, 288px);
+  }
 }
 
 @media (prefers-color-scheme: dark) {
-    body {
-        background-color: #000000;
-        color: #FFFFFF;
-    }
+  body {
+    background-color: #000;
+    color: #fff;
+  }
 
-    .c-query {
-        background-color: #232425;
-        border-color: #404040;
-        color: #FFFFFF;
-    }
+  .c-query {
+    background-color: #232425;
+    border-color: #404040;
+    color: #fff;
+  }
 
-    .c-query:focus {
-        border-color: #008cfd;
-    }
+  .c-query:focus {
+    border-color: #008cfd;
+  }
 
-    .c-link {
-        /* Adapt the color to be readable on a black background. */
-        color: #57b1ff;
-    }
+  .c-link {
+    /* Adapt the color to be readable on a black background. */
+    color: #57b1ff;
+  }
 }
