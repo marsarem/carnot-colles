@@ -64,9 +64,9 @@ function getWeeksForGroup(classData, groupIndex) {
                         teacher: classData.teachers[c.teacher],
                     };
                 }),
-                studentProgramOverrides: group.programOverrides === undefined ? {} :
+                studentProgramOverrides: group.perStudentProgram === undefined ? {} :
                     Object.fromEntries(
-                        Object.entries(group.programOverrides)
+                        Object.entries(group.perStudentProgram)
                             .map(entry => [entry[0], entry[1].filter(o => o.week === i)])
                             .filter(entry => entry[1].length)),
             };

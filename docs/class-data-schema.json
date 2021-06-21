@@ -137,7 +137,7 @@
                     "type": "array",
                     "items": { "$ref": "#/definitions/ColleProgramWeek" }
                 },
-                "programOverrides": {
+                "perStudentProgram": {
                     "title": "For every student that need it, a list of differences between the student's and group's program",
                     "description": "Sometimes, a student in the group doesn't have the same colles as the other students (maybe they study different languages). A program override can be added for the student here.",
                     "type": "object",
