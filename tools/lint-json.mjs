@@ -92,11 +92,11 @@ async function formatFile (file) {
 
 async function main () {
   const scriptLocation = path.dirname(fileURLToPath(import.meta.url))
-  const DATA_DIR = path.join(path.dirname(scriptLocation), 'data')
-  const files = await fs.readdir(DATA_DIR)
+  const dataDir = path.join(path.dirname(scriptLocation), 'data')
+  const files = await fs.readdir(dataDir)
 
   const promises = []
-  for (const file of files) { promises.push(formatFile(path.join(DATA_DIR, file))) }
+  for (const file of files) { promises.push(formatFile(path.join(dataDir, file))) }
   await Promise.all(promises)
 }
 

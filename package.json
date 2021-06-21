@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node ./tools/build.mjs",
     "development-server": "node ./tools/development-server.mjs",
-    "format-json": "node ./tools/format-json.mjs",
+    "lint:json": "node ./tools/lint-json.mjs",
     "lint:js": "standard",
     "lint:js:fix": "standard --fix",
     "lint:css": "stylelint src/*.css",
