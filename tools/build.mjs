@@ -59,6 +59,8 @@ function getWeeksForGroup (classData, groupIndex) {
         month,
         day,
         colles: w.map(j => {
+          if (j >= classData.colles.length)
+            throw new Error(`invalid colle index ${j} in week ${i} of group ${groupIndex} in class ${classData.name}`)
           const c = classData.colles[j]
           return {
             ...c,
@@ -447,5 +449,5 @@ async function main () {
 
 main().catch(err => {
   console.error(err)
-  process.exit(1)
+  process.exitCode = 1
 })
