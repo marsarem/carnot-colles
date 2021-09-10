@@ -158,7 +158,7 @@ async function main () {
   }
 
   const watcher = chokidar.watch([
-    path.join(root, 'data'),
+    path.join(root, 'classes'),
     path.join(root, 'lib'),
     path.join(root, 'src'),
     path.join(root, 'tools')
