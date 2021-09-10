@@ -15,7 +15,7 @@ const INLINE_PATHS = [
 ]
 
 function serializeJsonString (str) {
-  return '"' + str.replaceAll(/(["\\])/g, '\\$1') + '"'
+  return '"' + str.replace(/(["\\])/g, '\\$1') + '"'
 }
 
 function serializeJson (object, state) {
