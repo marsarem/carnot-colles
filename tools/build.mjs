@@ -59,8 +59,7 @@ function getWeeksForGroup (classData, groupIndex) {
         month,
         day,
         colles: w.map(j => {
-          if (j >= classData.colles.length)
-            throw new Error(`invalid colle index ${j} in week ${i} of group ${groupIndex} in class ${classData.name}`)
+          if (j >= classData.colles.length) { throw new Error(`invalid colle index ${j} in week ${i} of group ${groupIndex} in class ${classData.name}`) }
           const c = classData.colles[j]
           return {
             ...c,
