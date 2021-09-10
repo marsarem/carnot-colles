@@ -9,7 +9,7 @@ import csso from 'csso'
 import dotenv from 'dotenv'
 import Handlebars from 'handlebars'
 import { minify } from 'html-minifier'
-import svg2png from 'svg2png'
+import sharp from 'sharp'
 import * as terser from 'terser'
 import toIco from 'to-ico'
 
@@ -335,11 +335,19 @@ async function main () {
   // Icons
   resourcePromises.push(fs.readFile(path.join(SRC_DIR, 'icon.svg')).then(buf => {
     const faviconPromises = []
-    for (const size of [16, 32, 48]) { faviconPromises.push(svg2png(buf, { width: size, height: size })) }
+    for (const size of [16, 32, 48]) {
+      faviconPromises.push(sharp(buf)
+        .resize(size)
+        .png()
+        .toBuffer())
+    }
 
     const pngIconsPromises = []
     for (const size of [16, 32, 192, 512]) {
-      pngIconsPromises.push(svg2png(buf, { width: size, height: size })
+      pngIconsPromises.push(sharp(buf)
+        .resize(size)
+        .png()
+        .toBuffer()
         .then(buf => {
           const name = `icon-${size}.png`
           buildDigest.addFile(name, buf)
@@ -355,7 +363,10 @@ async function main () {
           return fs.writeFile(path.join(DIST_DIR, 'favicon.ico'), buf)
         }),
 
-      svg2png(buf, { width: 180, height: 180 })
+      sharp(buf)
+        .resize(180)
+        .png()
+        .toBuffer()
         .then(buf => {
           buildDigest.addFile('apple-touch-icon.png', buf)
           return fs.writeFile(path.join(DIST_DIR, 'apple-touch-icon.png'), buf)
