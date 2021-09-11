@@ -1,0 +1,315 @@
+{
+  "$schema": "../docs/class-data-schema.json",
+  "name": "MP*",
+  "firstGroup": 1,
+  "groups": [
+    {
+      "students": [
+        "BARATA",
+        "COLLIER",
+        "CORNELOUP"
+      ],
+      "program": [
+        [1, 15],
+        [2, 11],
+        [3, 16],
+        [4, 12],
+        [5, 17],
+        [6, 13],
+        [7, 18],
+        [8, 14],
+        [9, 19],
+        [0, 10],
+        [1, 15],
+        [2, 11],
+        [3, 16],
+        [4, 12],
+        [5, 17],
+        [6, 13],
+        [7, 18],
+        [8, 14],
+        [9, 19],
+        [0, 10],
+        [1, 15],
+        [2, 11],
+        [3, 16]
+      ]
+    },
+    {
+      "students": [
+        "BARIL Eloïse",
+        "BAZEROLLE François",
+        "VERVOORT"
+      ],
+      "program": [
+        [2, 11],
+        [3, 16],
+        [4, 12],
+        [5, 17],
+        [6, 13],
+        [7, 18],
+        [8, 14],
+        [9, 19],
+        [0, 10],
+        [1, 15],
+        [2, 11],
+        [3, 16],
+        [4, 12],
+        [5, 17],
+        [6, 13],
+        [7, 18],
+        [8, 14],
+        [9, 19],
+        [0, 10],
+        [1, 15],
+        [2, 11],
+        [3, 16],
+        [4, 12]
+      ]
+    },
+    {
+      "students": [
+        "CAVAILLAC Hugo",
+        "LUCYSZYN Edward",
+        "LAFRAD Sonia"
+      ],
+      "program": [
+        [3, 16],
+        [4, 12],
+        [5, 17],
+        [6, 13],
+        [7, 18],
+        [8, 14],
+        [9, 19],
+        [0, 10],
+        [1, 15],
+        [2, 11],
+        [3, 16],
+        [4, 12],
+        [5, 17],
+        [6, 13],
+        [7, 18],
+        [8, 14],
+        [9, 19],
+        [0, 10],
+        [1, 15],
+        [2, 11],
+        [3, 16],
+        [4, 12],
+        [5, 17]
+      ]
+    },
+    {
+      "students": [
+        "COSTE Elio",
+        "GIRARDOT Alexandre",
+        "OUTREY Arthur"
+      ],
+      "program": [
+        [4, 12],
+        [5, 17],
+        [6, 13],
+        [7, 18],
+        [8, 14],
+        [9, 19],
+        [0, 10],
+        [1, 15],
+        [2, 11],
+        [3, 16],
+        [4, 12],
+        [5, 17],
+        [6, 13],
+        [7, 18],
+        [8, 14],
+        [9, 19],
+        [0, 10],
+        [1, 15],
+        [2, 11],
+        [3, 16],
+        [4, 12],
+        [5, 17],
+        [6, 13]
+      ]
+    }
+  ],
+  "subjects": [
+    { "name": "Mathématiques" },
+    { "name": "Physique" },
+    { "name": "Anglais" }
+  ],
+  "teachers": [
+    "Mr GOZARD",
+    "Mr POURTIER",
+    "Mr MAGNIN",
+    "Mr GACHET",
+    "Mr LACOUTURE",
+    "Mr JEBRANE",
+    "Mr VANNIER",
+    "Mr RIDDE",
+    "Mr AUBRIOT",
+    "Mr OFFRET",
+    "Mr BARTHES",
+    "Mr PERNETTE",
+    "Mr MILLOT",
+    "Mr SIBAUD",
+    "Mr CARPENTIER",
+    "Mme RENAULT",
+    "Mme MAMET",
+    "Mme CHAVEL",
+    "Mme RENAULT",
+    "Mme MAMET"
+  ],
+  "colles": [
+    {
+      "subject": 0,
+      "teacher": 0,
+      "day": 0,
+      "room": "206",
+      "time": "17:00"
+    },
+    {
+      "subject": 0,
+      "teacher": 1,
+      "day": 1,
+      "time": "13:00"
+    },
+    {
+      "subject": 0,
+      "teacher": 2,
+      "day": 1,
+      "time": "17:00"
+    },
+    {
+      "subject": 0,
+      "teacher": 3,
+      "day": 1,
+      "time": "17:00"
+    },
+    {
+      "subject": 0,
+      "teacher": 4,
+      "day": 1,
+      "time": "17:00"
+    },
+    {
+      "subject": 0,
+      "teacher": 5,
+      "day": 4,
+      "time": "17:55"
+    },
+    {
+      "subject": 0,
+      "teacher": 6,
+      "day": 4,
+      "time": "17:55"
+    },
+    {
+      "subject": 0,
+      "teacher": 7,
+      "day": 3,
+      "time": "17:55"
+    },
+    {
+      "subject": 0,
+      "teacher": 8,
+      "day": 1,
+      "time": "17:00"
+    },
+    {
+      "subject": 0,
+      "teacher": 9,
+      "day": 1,
+      "time": "17:00"
+    },
+    {
+      "subject": 1,
+      "teacher": 10,
+      "day": 4,
+      "room": "157",
+      "time": "13:00"
+    },
+    {
+      "subject": 1,
+      "teacher": 11,
+      "day": 3,
+      "room": "155",
+      "time": "17:55"
+    },
+    {
+      "subject": 1,
+      "teacher": 12,
+      "day": 0,
+      "room": "163",
+      "time": "13:00"
+    },
+    {
+      "subject": 1,
+      "teacher": 13,
+      "day": 0,
+      "room": "157",
+      "time": "17:55"
+    },
+    {
+      "subject": 1,
+      "teacher": 14,
+      "day": 4,
+      "room": "174",
+      "time": "13:00"
+    },
+    {
+      "subject": 2,
+      "teacher": 15,
+      "day": 1,
+      "time": "17:00"
+    },
+    {
+      "subject": 2,
+      "teacher": 16,
+      "day": 3,
+      "time": "17:00"
+    },
+    {
+      "subject": 2,
+      "teacher": 17,
+      "day": 3,
+      "time": "13:55"
+    },
+    {
+      "subject": 2,
+      "teacher": 18,
+      "day": 1,
+      "time": "17:55"
+    },
+    {
+      "subject": 2,
+      "teacher": 19,
+      "day": 3,
+      "time": "13:55"
+    }
+  ],
+  "weeks": [
+    "2021-09-13",
+    "2021-09-20",
+    "2021-09-27",
+    "2021-10-04",
+    "2021-10-11",
+    "2021-10-18",
+    "2021-11-08",
+    "2021-11-15",
+    "2021-11-22",
+    "2021-11-29",
+    "2021-12-06",
+    "2021-12-13",
+    "2022-01-03",
+    "2022-01-10",
+    "2022-01-17",
+    "2022-01-24",
+    "2022-01-31",
+    "2022-02-07",
+    "2022-02-14",
+    "2022-03-07",
+    "2022-03-14",
+    "2022-03-21",
+    "2022-03-28"
+  ]
+}
