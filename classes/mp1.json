@@ -509,6 +509,7 @@
       "day": 0
     },
     {
+      "room": "106",
       "teacher": 1,
       "subject": 0,
       "time": "13:05",
@@ -522,12 +523,14 @@
       "day": 4
     },
     {
+      "room": "108",
       "teacher": 3,
       "subject": 0,
       "time": "17:55",
       "day": 1
     },
     {
+      "room": "107",
       "teacher": 4,
       "subject": 0,
       "time": "17:00",
@@ -555,6 +558,7 @@
       "day": 0
     },
     {
+      "room": "210",
       "teacher": 8,
       "subject": 0,
       "time": "17:00",
@@ -684,24 +688,28 @@
       "day": 3
     },
     {
+      "room": "12",
       "teacher": 13,
       "subject": 2,
       "time": "13:05",
       "day": 3
     },
     {
+      "room": "261",
       "teacher": 24,
       "subject": 2,
       "time": "17:55",
       "day": 1
     },
     {
+      "room": "203",
       "teacher": 24,
       "subject": 2,
       "time": "16:05",
       "day": 4
     },
     {
+      "room": "203",
       "teacher": 24,
       "subject": 2,
       "time": "17:00",
@@ -714,6 +722,7 @@
       "day": 1
     },
     {
+      "room": "27",
       "teacher": 26,
       "subject": 3,
       "time": "16:05",
