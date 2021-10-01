@@ -69,7 +69,7 @@
       "students": [
         "ARNOUX Sarah",
         "BOUQUET Victoire",
-        "NICOLET  Capucine"
+        "NICOLET Capucine"
       ],
       "program": [
         [16, 27],
@@ -130,7 +130,7 @@
     {
       "students": [
         "BAY-LAPLANTE Louis",
-        "TABEL  Romain",
+        "TABEL Romain",
         "COPIE Gaelle"
       ],
       "program": [
@@ -161,8 +161,8 @@
     {
       "students": [
         "DAHLEM Clarisse",
-        "COLLIN  Sacha",
-        "CAINAUD  Adèle"
+        "COLLIN Sacha",
+        "CAINAUD Adèle"
       ],
       "program": [
         [2, 9],
@@ -285,7 +285,7 @@
     {
       "students": [
         "DRISSI-EL-BOUZAIDI Abdelmajid",
-        "DUFFAUT  Eugénie",
+        "DUFFAUT Eugénie",
         "PLIQUET Hugo"
       ],
       "program": [
@@ -379,8 +379,7 @@
       "students": [
         "GRAPOTTE Louis-Malo",
         "SCHERPEREL Jules",
-        "DREVON Paul",
-        ""
+        "DREVON Paul"
       ],
       "program": [
         [25, 32],
@@ -416,27 +415,27 @@
     { "name": "Français" }
   ],
   "teachers": [
-    "RENAULT",
-    "BOULEY",
-    "GARNIER",
-    "GROSSE ",
-    "RABENDA",
-    "AUBRIOT",
-    "LAOUES",
-    "POURTIER",
-    "SEMLALI",
-    "KHOLI",
-    "ESTRAMPES",
-    "SIBAUD ",
-    "JOUSSOT",
-    "NICOLET",
-    "RIBOULET",
-    "MAUNY",
-    "DUPUY",
-    "BARSU",
-    "DEMOLLIENS",
-    "MARCET",
-    "CAMEL"
+    "Mme Renault",
+    "Bouley",
+    "Mme Garnier",
+    "M. Grosse",
+    "M. Rabenda",
+    "Aubriot",
+    "M. Laouès",
+    "M. Pourtier",
+    "M. Semlali",
+    "M. Kholi",
+    "M. Estrampes",
+    "M. Sibaud",
+    "M. Joussot",
+    "Mme Nicolet",
+    "M. Riboulet",
+    "M. Mauny",
+    "M. Dupuy",
+    "M. Barsu",
+    "M. Demolliens",
+    "Mme Marcet",
+    "Mme Camel"
   ],
   "colles": [
     {
