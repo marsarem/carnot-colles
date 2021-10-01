@@ -548,6 +548,7 @@
   ],
   "colles": [
     {
+      "room":"108",
       "teacher": 0,
       "subject": 0,
       "time": "16:05",
@@ -582,12 +583,14 @@
       "day": 3
     },
     {
+      "room":"10",
       "teacher": 5,
       "subject": 0,
       "time": "10:05",
       "day": 2
     },
     {
+      "room":"271",
       "teacher": 6,
       "subject": 0,
       "time": "10:05",
@@ -629,6 +632,7 @@
       "day": 2
     },
     {
+      "room":"10",
       "teacher": 5,
       "subject": 0,
       "time": "11:00",
@@ -642,6 +646,7 @@
       "day": 4
     },
     {
+      "room":"271",
       "teacher": 6,
       "subject": 0,
       "time": "11:00",
@@ -697,7 +702,7 @@
       "day": 1
     },
     {
-      "room": "155",
+      "room": "158",
       "teacher": 16,
       "subject": 1,
       "time": "16:05",
@@ -711,66 +716,77 @@
       "day": 0
     },
     {
+      "room":"239",
       "teacher": 18,
       "subject": 2,
       "time": "16:05",
       "day": 3
     },
     {
+      "room":"C11",
       "teacher": 19,
       "subject": 2,
       "time": "16:05",
       "day": 0
     },
     {
+      "room":"209",
       "teacher": 20,
       "subject": 2,
       "time": "17:00",
       "day": 0
     },
     {
+      "room":"C11",
       "teacher": 19,
       "subject": 2,
       "time": "17:00",
       "day": 0
     },
     {
+      "room":"239",
       "teacher": 18,
       "subject": 2,
       "time": "16:05",
       "day": 0
     },
     {
+      "room":"202",
       "teacher": 20,
       "subject": 2,
       "time": "11:00",
       "day": 2
     },
     {
+      "room":"C11",
       "teacher": 19,
       "subject": 2,
       "time": "17:55",
       "day": 0
     },
     {
+      "room":"202",
       "teacher": 20,
       "subject": 2,
       "time": "17:55",
       "day": 1
     },
     {
+      "room":"24",
       "teacher": 21,
       "subject": 3,
       "time": "17:30",
       "day": 0
     },
     {
+      "room":"223",
       "teacher": 22,
       "subject": 3,
       "time": "10:05",
       "day": 2
     },
     {
+      "room":"105",
       "teacher": 23,
       "subject": 3,
       "time": "16:05",
