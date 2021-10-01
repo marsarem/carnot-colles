@@ -408,11 +408,11 @@
     }
   ],
   "subjects": [
-    { "name": "Anglais" },
-    { "name": "Maths" },
+    { "name": "Mathématiques" },
     { "name": "Physique" },
-    { "name": "Chimie" },
-    { "name": "Français" }
+    { "name": "Anglais" },
+    { "name": "Français" },
+    { "name": "Chimie" }
   ],
   "teachers": [
     "Mme Renault",
@@ -440,248 +440,248 @@
   "colles": [
     {
       "teacher": 0,
-      "subject": 0,
+      "subject": 2,
       "time": "11:55",
       "day": 0
     },
     {
       "teacher": 1,
-      "subject": 0,
+      "subject": 2,
       "time": "17:00",
       "day": 3
     },
     {
       "teacher": 0,
-      "subject": 0,
+      "subject": 2,
       "time": "13:05",
       "day": 0
     },
     {
       "teacher": 2,
-      "subject": 0,
+      "subject": 2,
       "time": "11:55",
       "day": 0
     },
     {
       "teacher": 0,
-      "subject": 0,
+      "subject": 2,
       "time": "11:55",
       "day": 2
     },
     {
       "teacher": 1,
-      "subject": 0,
+      "subject": 2,
       "time": "17:55",
       "day": 3
     },
     {
       "teacher": 0,
-      "subject": 0,
+      "subject": 2,
       "time": "13:05",
       "day": 2
     },
     {
       "teacher": 3,
-      "subject": 1,
+      "subject": 0,
       "time": "17:55",
       "day": 3
     },
     {
       "teacher": 4,
-      "subject": 1,
+      "subject": 0,
       "time": "13:05",
       "day": 4
     },
     {
       "teacher": 5,
-      "subject": 1,
+      "subject": 0,
       "time": "17:00",
       "day": 3
     },
     {
       "teacher": 6,
-      "subject": 1,
+      "subject": 0,
       "time": "17:00",
       "day": 3
     },
     {
       "teacher": 7,
-      "subject": 1,
+      "subject": 0,
       "time": "14:55",
       "day": 3
     },
     {
       "teacher": 8,
-      "subject": 1,
+      "subject": 0,
       "time": "11:55",
       "day": 1
     },
     {
       "teacher": 9,
-      "subject": 1,
+      "subject": 0,
       "time": "17:55",
       "day": 3
     },
     {
       "teacher": 10,
-      "subject": 2,
+      "subject": 1,
       "time": "13:05",
       "day": 2,
       "room": "163"
     },
     {
       "teacher": 10,
-      "subject": 2,
+      "subject": 1,
       "time": "13:05",
       "day": 3
     },
     {
       "teacher": 11,
-      "subject": 2,
+      "subject": 1,
       "time": "17:00",
       "day": 0,
       "room": "157"
     },
     {
       "teacher": 11,
-      "subject": 2,
+      "subject": 1,
       "time": "11:55",
       "day": 2
     },
     {
       "teacher": 12,
-      "subject": 2,
+      "subject": 1,
       "time": "13:05",
       "day": 2,
       "room": "159"
     },
     {
       "teacher": 12,
-      "subject": 2,
+      "subject": 1,
       "time": "13:05",
       "day": 3
     },
     {
       "teacher": 13,
-      "subject": 2,
+      "subject": 1,
       "time": "11:55",
       "day": 3,
       "room": "165"
     },
     {
       "teacher": 14,
-      "subject": 2,
+      "subject": 1,
       "time": "17:55",
       "day": 3
     },
     {
       "teacher": 15,
-      "subject": 2,
+      "subject": 1,
       "time": "14:00",
       "day": 2,
       "room": "157"
     },
     {
       "teacher": 15,
-      "subject": 2,
+      "subject": 1,
       "time": "13:05",
       "day": 4
     },
     {
       "teacher": 15,
-      "subject": 2,
+      "subject": 1,
       "time": "17:00",
       "day": 3
     },
     {
       "teacher": 13,
-      "subject": 2,
+      "subject": 1,
       "time": "13:05",
       "day": 0,
       "room": "164"
     },
     {
       "teacher": 16,
-      "subject": 3,
+      "subject": 4,
       "time": "11:55",
       "day": 1,
       "room": "3"
     },
     {
       "teacher": 17,
-      "subject": 3,
+      "subject": 4,
       "time": "16:05",
       "day": 3,
       "room": "3"
     },
     {
       "teacher": 18,
-      "subject": 3,
+      "subject": 4,
       "time": "16:05",
       "day": 3,
       "room": "3"
     },
     {
       "teacher": 19,
-      "subject": 3,
+      "subject": 4,
       "time": "11:55",
       "day": 4,
       "room": "158"
     },
     {
       "teacher": 16,
-      "subject": 3,
+      "subject": 4,
       "time": "13:05",
       "day": 1,
       "room": "3"
     },
     {
       "teacher": 17,
-      "subject": 3,
+      "subject": 4,
       "time": "17:00",
       "day": 3,
       "room": "3"
     },
     {
       "teacher": 18,
-      "subject": 3,
+      "subject": 4,
       "time": "17:55",
       "day": 1,
       "room": "6"
     },
     {
       "teacher": 20,
-      "subject": 4,
+      "subject": 3,
       "time": "17:00",
       "day": 0
     },
     {
       "teacher": 20,
-      "subject": 4,
+      "subject": 3,
       "time": "17:30",
       "day": 0
     },
     {
       "teacher": 20,
-      "subject": 4,
+      "subject": 3,
       "time": "18:00",
       "day": 0
     },
     {
       "teacher": 20,
-      "subject": 4,
+      "subject": 3,
       "time": "18:30",
       "day": 0
     },
     {
       "teacher": 20,
-      "subject": 4,
+      "subject": 3,
       "time": "14:00",
       "day": 2
     },
     {
       "teacher": 20,
-      "subject": 4,
+      "subject": 3,
       "time": "14:30",
       "day": 2
     }
