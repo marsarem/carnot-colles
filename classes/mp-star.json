@@ -361,54 +361,63 @@
       "subject": 0,
       "teacher": 1,
       "day": 1,
+      "room": "209",
       "time": "13:00"
     },
     {
       "subject": 0,
       "teacher": 2,
       "day": 1,
+      "room": "275",
       "time": "17:00"
     },
     {
       "subject": 0,
       "teacher": 3,
       "day": 1,
+      "room": "105",
       "time": "17:00"
     },
     {
       "subject": 0,
       "teacher": 4,
       "day": 1,
+      "room": "276",
       "time": "17:00"
     },
     {
       "subject": 0,
       "teacher": 5,
       "day": 4,
+      "room": "271",
       "time": "17:55"
     },
     {
       "subject": 0,
       "teacher": 6,
       "day": 4,
+      "room": "275",
       "time": "17:55"
     },
     {
       "subject": 0,
       "teacher": 7,
       "day": 3,
+      "room": "207",
       "time": "17:55"
     },
     {
       "subject": 0,
       "teacher": 8,
       "day": 1,
+      "room": "206",
       "time": "17:00"
     },
     {
       "subject": 0,
       "teacher": 9,
       "day": 1,
+      "room": "108",
       "time": "17:00"
     },
     {
@@ -450,6 +459,7 @@
       "subject": 2,
       "teacher": 15,
       "day": 1,
+      "room": "200",
       "time": "17:00"
     },
     {
@@ -468,6 +478,7 @@
       "subject": 2,
       "teacher": 18,
       "day": 1,
+      "room": "200",
       "time": "17:55"
     },
     {
