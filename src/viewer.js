@@ -379,6 +379,7 @@ function makeColleHtml (colle, now) {
     'c-colle--subject-2',
     'c-colle--subject-3',
     'c-colle--subject-4',
+    'c-colle--subject-5',
   ]
   $colle.classList.add(SUBJECT_CLASSES[colle.subjectIndex % SUBJECT_CLASSES.length])
 

@@ -132,6 +132,12 @@ body {
   border-color: #573c08;
 }
 
+.c-colle--subject-5 {
+  background-color: #ffe11c;
+  border-color: #b5a224;
+  color: #000000;
+}
+
 .c-colle--done {
   opacity: 0.7;
 }
